@@ -7,8 +7,8 @@
 
 <style>
 body {
-  background: #0a0a0a;
-  color: #ffffff;
+  background: #0b0b0b;
+  color: #00ff88;
   font-family: monospace;
   display: flex;
   justify-content: center;
@@ -16,68 +16,64 @@ body {
   height: 100vh;
 }
 
-.card {
-  background: #000;
-  border: 1px solid #222;
-  padding: 30px;
-  width: 320px;
-  text-align: center;
+.terminal {
+  width: 360px;
+  border: 1px solid #00ff88;
+  padding: 20px;
 }
 
-.username {
-  font-size: 24px;
-  margin-bottom: 10px;
+.name {
+  font-size: 22px;
+  margin-bottom: 5px;
 }
 
-.subtitle {
-  opacity: 0.6;
-  font-size: 14px;
+.role {
+  font-size: 13px;
+  opacity: 0.7;
   margin-bottom: 20px;
 }
 
-a {
+.link {
   display: block;
-  margin: 10px 0;
-  padding: 12px;
-  border: 1px solid #444;
-  color: white;
+  color: #00ff88;
   text-decoration: none;
+  margin: 10px 0;
 }
 
-a:hover {
-  background: white;
-  color: black;
+.link:hover {
+  background: #00ff88;
+  color: #000;
+  padding-left: 5px;
 }
 
-.footer {
-  margin-top: 15px;
-  font-size: 11px;
-  opacity: 0.4;
+.status {
+  margin-top: 20px;
+  font-size: 12px;
+  opacity: 0.6;
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
-  <div class="username">mathkasa</div>
-  <div class="subtitle">developer / creator</div>
+<div class="terminal">
+  <div class="name">mathkasa</div>
+  <div class="role">developer • content creator</div>
 
-  <!-- RÉSEAUX -->
-  <a href="https://www.youtube.com/@mathkasa" target="_blank">
-    YouTube
+  <a class="link" href="https://www.youtube.com/@mathkasa" target="_blank">
+    > youtube
   </a>
 
-  <a href="https://www.tiktok.com/@mathkasa" target="_blank">
-    TikTok
+  <a class="link" href="https://www.tiktok.com/@mathkasa" target="_blank">
+    > tiktok
   </a>
 
-  <a href="https://discord.com/users/1376961618130505738" target="_blank">
-    Discord
+  <a class="link" href="https://discord.com/users/1376961618130505738" target="_blank">
+    > discord
   </a>
 
-  <div class="footer">
-    © mathkasa
+  <div class="status">
+    status: online · public profile
   </div>
 </div>
 
