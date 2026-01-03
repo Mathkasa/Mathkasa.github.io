@@ -9,7 +9,6 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-
 body{
   background:radial-gradient(circle at top,#111 0%,#000 70%);
   font-family:Arial,sans-serif;
@@ -18,13 +17,9 @@ body{
   overflow:hidden;
   padding-bottom:env(safe-area-inset-bottom);
 }
+canvas{position:fixed;inset:0;z-index:0}
 
-canvas{
-  position:fixed;
-  inset:0;
-  z-index:0;
-}
-
+/* CONTAINER PRINCIPAL */
 .container{
   position:relative;
   z-index:1;
@@ -45,13 +40,14 @@ canvas{
   justify-content:center;
   align-items:center;
   cursor:pointer;
+  user-select:none;
 }
-
 .enter span{
   font-size:28px;
   color:#ff9900;
   text-shadow:0 0 20px #ff9900;
 }
+.enter:focus{outline:none}
 
 /* AVATAR */
 .avatar{
@@ -63,14 +59,12 @@ canvas{
   box-shadow:0 0 25px #ff9900;
   margin-bottom:15px;
 }
-
 .name{
   font-size:34px;
   font-weight:bold;
   color:#ff9900;
   text-shadow:0 0 15px #ff9900;
 }
-
 .location{
   opacity:.7;
   margin-bottom:20px;
@@ -82,7 +76,6 @@ canvas{
   gap:22px;
   margin-bottom:30px;
 }
-
 .links a{
   width:55px;
   height:55px;
@@ -97,7 +90,6 @@ canvas{
   text-decoration:none;
   transition:.25s;
 }
-
 .links a:hover{
   background:#ff9900;
   color:#000;
@@ -107,19 +99,17 @@ canvas{
 
 /* PLAYER */
 .player{
-  width:260px;
+  width:280px;
   text-align:center;
 }
-
 .controls{
   display:flex;
   align-items:center;
   gap:10px;
 }
-
-.play{
-  width:46px;
-  height:46px;
+.btn{
+  width:44px;
+  height:44px;
   border-radius:50%;
   background:#ff9900;
   color:#000;
@@ -128,7 +118,6 @@ canvas{
   justify-content:center;
   cursor:pointer;
 }
-
 .bar{
   flex:1;
   height:6px;
@@ -136,28 +125,38 @@ canvas{
   border-radius:10px;
   cursor:pointer;
 }
-
 .progress{
   height:100%;
   width:0%;
   background:#ff9900;
   border-radius:10px;
 }
-
+.volume{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:10px;
+}
+.volume input{flex:1}
 .time{
   font-size:12px;
   opacity:.7;
   margin-top:6px;
+  text-align:center;
 }
-
+.views{
+  position:absolute;
+  bottom:25px;
+  font-size:14px;
+  opacity:.6;
+}
 audio{display:none}
 </style>
 </head>
-
 <body>
 
 <!-- CLICK TO ENTER -->
-<div class="enter" id="enter">
+<div class="enter" id="enter" tabindex="0">
   <span>Click to enter</span>
 </div>
 
@@ -181,11 +180,18 @@ audio{display:none}
 
   <div class="player">
     <div class="controls">
-      <div class="play" id="play"><i class="fa fa-play"></i></div>
+      <div class="btn" id="play"><i class="fa fa-play"></i></div>
       <div class="bar" id="bar"><div class="progress" id="progress"></div></div>
+      <div class="btn" id="fs"><i class="fa fa-expand"></i></div>
+    </div>
+    <div class="volume">
+      <i class="fa fa-volume-high" id="volIcon"></i>
+      <input type="range" id="vol" min="0" max="1" step="0.01">
     </div>
     <div class="time" id="time">0:00 / 0:00</div>
   </div>
+
+  <div class="views">👁 <span id="views">0</span></div>
 </div>
 
 <script>
@@ -193,14 +199,7 @@ audio{display:none}
 const c=document.getElementById("bg"),ctx=c.getContext("2d");
 function resize(){c.width=innerWidth;c.height=innerHeight}
 resize();addEventListener("resize",resize);
-
-const stars=[...Array(140)].map(()=>({
-  x:Math.random()*c.width,
-  y:Math.random()*c.height,
-  r:Math.random()*1.5,
-  v:Math.random()*.4+.1
-}));
-
+const stars=[...Array(140)].map(()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.5,v:Math.random()*.4+.1}));
 (function anim(){
   ctx.clearRect(0,0,c.width,c.height);
   ctx.fillStyle="#fff";
@@ -209,55 +208,70 @@ const stars=[...Array(140)].map(()=>({
     ctx.beginPath();
     ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
     ctx.fill();
-    s.y+=s.v;
-    if(s.y>c.height)s.y=0;
+    s.y+=s.v;if(s.y>c.height)s.y=0;
   });
   requestAnimationFrame(anim);
 })();
 
-/* MUSIC */
+/* MUSIC PLAYER */
 const audio=document.getElementById("music");
 const enter=document.getElementById("enter");
 const play=document.getElementById("play");
 const bar=document.getElementById("bar");
 const prog=document.getElementById("progress");
 const time=document.getElementById("time");
+const vol=document.getElementById("vol");
+const volIcon=document.getElementById("volIcon");
+const fsBtn=document.getElementById("fs");
+const views=document.getElementById("views");
 
-function format(t){
-  return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0");
-}
+function format(t){return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0");}
 
+/* ENTER CLICK */
 enter.addEventListener("click",async()=>{
   enter.style.display="none";
-  try{
-    await audio.play();
-    play.innerHTML='<i class="fa fa-pause"></i>';
-  }catch{
-    alert("Clique sur Play pour lancer la musique");
-  }
+  try{await audio.play();play.innerHTML='<i class="fa fa-pause"></i>';}
+  catch{alert("Clique sur Play pour lancer la musique");}
 });
 
+/* PLAY/PAUSE */
 play.addEventListener("click",async()=>{
-  if(audio.paused){
-    await audio.play();
-    play.innerHTML='<i class="fa fa-pause"></i>';
-  }else{
-    audio.pause();
-    play.innerHTML='<i class="fa fa-play"></i>';
-  }
+  if(audio.paused){await audio.play();play.innerHTML='<i class="fa fa-pause"></i>';}
+  else{audio.pause();play.innerHTML='<i class="fa fa-play"></i>';}
 });
 
+/* PROGRESS */
 audio.addEventListener("timeupdate",()=>{
   if(audio.duration){
     prog.style.width=(audio.currentTime/audio.duration*100)+"%";
     time.textContent=`${format(audio.currentTime)} / ${format(audio.duration)}`;
   }
 });
-
 bar.addEventListener("click",e=>{
   const r=bar.getBoundingClientRect();
   audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;
 });
+
+/* VOLUME */
+vol.value=localStorage.vol||0.5;
+audio.volume=vol.value;
+volIcon.className=audio.volume==0?'fa fa-volume-xmark':'fa fa-volume-high';
+vol.addEventListener("input",()=>{
+  audio.volume=vol.value;
+  localStorage.vol=vol.value;
+  volIcon.className=audio.volume==0?'fa fa-volume-xmark':'fa fa-volume-high';
+});
+
+/* FULLSCREEN */
+fsBtn.addEventListener("click",()=>{
+  if(!document.fullscreenElement)document.documentElement.requestFullscreen();
+  else document.exitFullscreen();
+});
+
+/* VIEWS (CountAPI) */
+fetch('https://api.countapi.xyz/hit/mathkasa/site')
+.then(res=>res.json())
+.then(d=>views.textContent=d.value);
 </script>
 
 </body>
