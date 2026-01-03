@@ -36,7 +36,7 @@ canvas{position:fixed;inset:0;z-index:0}
   position:fixed;
   inset:0;
   background:#000;
-  z-index:5;
+  z-index:10;
   display:flex;
   justify-content:center;
   align-items:center;
@@ -52,7 +52,7 @@ canvas{position:fixed;inset:0;z-index:0}
 /* AVATAR */
 .avatar{
   width:120px;height:120px;border-radius:50%;
-  background:url("https://i.imgur.com/eqQkW9H.jpeg") center/cover;
+  background:url("https://i.imgur.com/eqQkW9H.jpeg") center/cover no-repeat;
   border:3px solid #ff9900;
   box-shadow:0 0 25px #ff9900;
   margin-bottom:15px;
@@ -67,7 +67,12 @@ canvas{position:fixed;inset:0;z-index:0}
 
 .location{opacity:.7;margin-bottom:20px}
 
-.links{display:flex;gap:22px;margin-bottom:30px}
+/* LINKS */
+.links{
+  display:flex;
+  gap:22px;
+  margin-bottom:25px;
+}
 
 .links a{
   width:55px;height:55px;
@@ -87,10 +92,7 @@ canvas{position:fixed;inset:0;z-index:0}
 }
 
 /* PLAYER */
-.player{
-  width:260px;
-  text-align:center;
-}
+.player{width:280px}
 
 .controls{
   display:flex;
@@ -98,8 +100,8 @@ canvas{position:fixed;inset:0;z-index:0}
   gap:10px;
 }
 
-.play{
-  width:45px;height:45px;
+.btn{
+  width:44px;height:44px;
   border-radius:50%;
   background:#ff9900;
   color:#000;
@@ -110,24 +112,37 @@ canvas{position:fixed;inset:0;z-index:0}
 }
 
 .bar{
-  flex:1;
-  height:6px;
-  background:#333;
-  border-radius:10px;
+  flex:1;height:6px;
+  background:#333;border-radius:10px;
   cursor:pointer;
 }
 
 .progress{
-  height:100%;
-  width:0%;
-  background:#ff9900;
-  border-radius:10px;
+  height:100%;width:0%;
+  background:#ff9900;border-radius:10px;
 }
+
+.volume{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:10px;
+}
+
+.volume input{flex:1}
 
 .time{
   font-size:12px;
   opacity:.7;
   margin-top:6px;
+  text-align:center;
+}
+
+.views{
+  position:absolute;
+  bottom:25px;
+  font-size:14px;
+  opacity:.6;
 }
 
 audio{display:none}
@@ -136,13 +151,13 @@ audio{display:none}
 
 <body>
 
-<div class="enter" id="enter">
-  <span>Click to enter</span>
-</div>
+<div class="enter" id="enter"><span>Click to enter</span></div>
 
 <canvas id="bg"></canvas>
 
-<audio id="music" src="assets/jdtestelesflammes.mp3"></audio>
+<audio id="music" preload="auto">
+  <source src="assets/jdtestelesflammes.mp3" type="audio/mpeg">
+</audio>
 
 <div class="container">
   <div class="avatar"></div>
@@ -157,67 +172,89 @@ audio{display:none}
 
   <div class="player">
     <div class="controls">
-      <div class="play" id="play"><i class="fa fa-play"></i></div>
+      <div class="btn" id="play"><i class="fa fa-play"></i></div>
       <div class="bar" id="bar"><div class="progress" id="progress"></div></div>
+      <div class="btn" id="fs"><i class="fa fa-expand"></i></div>
     </div>
+
+    <div class="volume">
+      <i class="fa fa-volume-high" id="volIcon"></i>
+      <input type="range" id="vol" min="0" max="1" step="0.01">
+    </div>
+
     <div class="time" id="time">0:00 / 0:00</div>
   </div>
+
+  <div class="views">👁 <span id="views">0</span></div>
 </div>
 
 <script>
 /* STARS */
-const c=document.getElementById("bg"),x=c.getContext("2d");
-function r(){c.width=innerWidth;c.height=innerHeight}
-r();addEventListener("resize",r);
-const s=[...Array(140)].map(()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.5,v:Math.random()*.4+.1}));
+const c=document.getElementById("bg"),ctx=c.getContext("2d");
+function resize(){c.width=innerWidth;c.height=innerHeight}
+resize();addEventListener("resize",resize);
+const stars=[...Array(140)].map(()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.5,v:Math.random()*.4+.1}));
 (function a(){
-  x.clearRect(0,0,c.width,c.height);
-  x.fillStyle="#fff";
-  s.forEach(o=>{
-    x.globalAlpha=Math.random();
-    x.beginPath();x.arc(o.x,o.y,o.r,0,Math.PI*2);x.fill();
-    o.y+=o.v;if(o.y>c.height)o.y=0;
+  ctx.clearRect(0,0,c.width,c.height);
+  ctx.fillStyle="#fff";
+  stars.forEach(s=>{
+    ctx.globalAlpha=Math.random();
+    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();
+    s.y+=s.v;if(s.y>c.height)s.y=0;
   });
   requestAnimationFrame(a);
 })();
 
 /* MUSIC */
-const audio=document.getElementById("music");
-const play=document.getElementById("play");
-const bar=document.getElementById("bar");
-const prog=document.getElementById("progress");
-const time=document.getElementById("time");
-const enter=document.getElementById("enter");
+const audio=music,playBtn=play,bar=bar,prog=progress,timeEl=time;
+const vol=document.getElementById("vol"),volIcon=document.getElementById("volIcon");
 
-enter.onclick=()=>{
+const format=t=>Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0");
+
+enter.onclick=async()=>{
   enter.style.display="none";
-  audio.play();
-  play.innerHTML='<i class="fa fa-pause"></i>';
+  await audio.play();
+  playBtn.innerHTML='<i class="fa fa-pause"></i>';
 };
 
-play.onclick=()=>{
-  if(audio.paused){
-    audio.play();
-    play.innerHTML='<i class="fa fa-pause"></i>';
-  }else{
-    audio.pause();
-    play.innerHTML='<i class="fa fa-play"></i>';
-  }
+playBtn.onclick=()=>{
+  if(audio.paused){audio.play();playBtn.innerHTML='<i class="fa fa-pause"></i>';}
+  else{audio.pause();playBtn.innerHTML='<i class="fa fa-play"></i>';}
 };
 
 audio.ontimeupdate=()=>{
-  const p=(audio.currentTime/audio.duration)*100;
-  prog.style.width=p+"%";
-
-  const f=t=>Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0");
-  time.textContent=`${f(audio.currentTime)} / ${f(audio.duration)}`;
+  if(audio.duration){
+    prog.style.width=(audio.currentTime/audio.duration*100)+"%";
+    timeEl.textContent=`${format(audio.currentTime)} / ${format(audio.duration)}`;
+  }
 };
 
 bar.onclick=e=>{
   const r=bar.getBoundingClientRect();
   audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;
 };
+
+/* VOLUME */
+vol.value=localStorage.vol||0.5;
+audio.volume=vol.value;
+
+vol.oninput=()=>{
+  audio.volume=vol.value;
+  localStorage.vol=vol.value;
+  volIcon.className=audio.volume==0?'fa fa-volume-xmark':'fa fa-volume-high';
+};
+
+/* FULLSCREEN */
+fs.onclick=()=>{
+  if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+  else document.exitFullscreen();
+};
+
+/* VIEWS (CountAPI) */
+fetch('https://api.countapi.xyz/hit/mathkasa/site')
+.then(res=>res.json())
+.then(d=>views.textContent=d.value);
 </script>
 
 </body>
-</html>
+  </html>
