@@ -28,7 +28,7 @@ canvas{position:fixed;inset:0;z-index:0}
   justify-content:center;
   align-items:center;
   opacity:0;
-  transition:opacity 1s ease;
+  transition: opacity 1s ease;
 }
 
 /* CLICK TO ENTER */
@@ -65,7 +65,7 @@ canvas{position:fixed;inset:0;z-index:0}
 .location{opacity:.7;margin-bottom:20px}
 
 /* LINKS */
-.links{display:flex;gap:22px;margin-bottom:30px}
+.links{display:flex;gap:22px;margin-bottom:30px;opacity:0;transition:opacity 0.8s ease;}
 .links a{
   width:55px;height:55px;background:rgba(255,153,0,.15);
   border:1px solid #ff9900;border-radius:16px;
@@ -73,14 +73,13 @@ canvas{position:fixed;inset:0;z-index:0}
   color:#ff9900;font-size:26px;text-decoration:none;
   transition:.25s;
 }
-.links a:hover{
-  background:#ff9900;color:#000;
-  transform:scale(1.15);
-}
+.links a:hover{background:#ff9900;color:#000;transform:scale(1.15);}
 
 /* PLAYER CENTRÉ */
 .player{
   width:280px;text-align:center;margin-bottom:15px;
+  opacity:0;
+  transition:opacity 0.8s ease;
 }
 .controls{display:flex;align-items:center;gap:10px;justify-content:center}
 .btn{width:44px;height:44px;border-radius:50%;background:#ff9900;color:#000;
@@ -89,7 +88,7 @@ transition:0.2s;}
 .btn:hover{transform:scale(1.1);}
 .bar{flex:1;height:6px;background:#333;border-radius:10px;cursor:pointer}
 .progress{height:100%;width:0%;background:#ff9900;border-radius:10px}
-.time{font-size:12px;opacity:.7;margin-top:6px;text-align:center}
+.time{font-size:12px;opacity:.7;margin-top:6px;text-align:center;opacity:0;transition:opacity 0.8s ease;}
 
 /* VOLUME EN HAUT À GAUCHE */
 .volume{
@@ -100,6 +99,8 @@ transition:0.2s;}
   align-items:center;
   gap:8px;
   z-index:20;
+  opacity:0;
+  transition:opacity 0.8s ease;
 }
 .volume input{
   flex:1;
@@ -116,11 +117,7 @@ transition:0.2s;}
   background:#ff9900;
   cursor:pointer;
 }
-.volume i{
-  cursor:pointer;
-  color:#ff9900;
-  font-size:20px;
-}
+.volume i{cursor:pointer;color:#ff9900;font-size:20px;}
 
 /* FULLSCREEN EN HAUT À DROITE */
 #fs{
@@ -136,8 +133,9 @@ transition:0.2s;}
   bottom:25px;
   left:15px;
   font-size:24px;
-  opacity:.9;
+  opacity:0;
   z-index:20;
+  transition:opacity 0.8s ease;
 }
 
 audio{display:none}
@@ -221,6 +219,7 @@ const vol=document.getElementById("vol");
 const volIcon=document.getElementById("volIcon");
 const fsBtn=document.getElementById("fs");
 const views=document.getElementById("views");
+const links=document.querySelector(".links");
 
 /* UTIL */
 function format(t){return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0");}
@@ -229,6 +228,12 @@ function format(t){return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart
 enter.addEventListener("click",async()=>{
   enter.style.display="none";
   container.style.opacity=1;
+  links.style.opacity=1;
+  document.querySelector(".volume").style.opacity=1;
+  document.querySelector(".views").style.opacity=1;
+  document.querySelector(".player").style.opacity=1;
+  timeEl.style.opacity=1;
+
   try{await audio.play();playBtn.innerHTML='<i class="fa fa-pause"></i>';}catch{}
 });
 
@@ -272,4 +277,4 @@ fetch('https://api.countapi.xyz/hit/mathkasa/site')
 .then(d=>views.textContent=d.value);
 </script>
 </body>
-                           </html>
+</html>
