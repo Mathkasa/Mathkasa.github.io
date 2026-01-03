@@ -5,9 +5,7 @@
 <title>Mathkasa</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- LOGO GOOGLE -->
 <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2572/2572734.png">
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
@@ -15,16 +13,23 @@
   margin:0;
   padding:0;
   box-sizing:border-box;
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color:transparent;
   user-select:none;
 }
 
 body{
-  background:radial-gradient(circle at top,#111 0%,#000 70%);
-  font-family:Arial,sans-serif;
+  background:#000;
   color:#fff;
+  font-family:Arial,sans-serif;
   height:100vh;
   overflow:hidden;
+}
+
+/* STARS */
+#stars{
+  position:fixed;
+  inset:0;
+  z-index:0;
 }
 
 /* CLICK TO ENTER */
@@ -43,7 +48,7 @@ body{
   font-size:28px;
   color:#ff0000;
   text-shadow:0 0 20px #ff0000;
-  animation:pulse 1.6s infinite;
+  animation:pulse 1.5s infinite;
 }
 
 @keyframes pulse{
@@ -54,14 +59,15 @@ body{
 
 /* MAIN */
 .container{
+  position:relative;
+  z-index:1;
   opacity:0;
-  transition:opacity .8s ease;
+  transition:.8s;
   height:100%;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  position:relative;
 }
 
 /* AVATAR */
@@ -101,10 +107,7 @@ body{
 }
 
 /* PLAYER */
-.player{
-  width:300px;
-}
-
+.player{width:300px}
 .controls{
   display:flex;
   align-items:center;
@@ -141,8 +144,8 @@ body{
 .time{
   font-size:12px;
   opacity:.7;
-  margin-top:6px;
   text-align:center;
+  margin-top:6px;
 }
 
 /* FULLSCREEN */
@@ -151,8 +154,9 @@ body{
   top:15px;
   right:15px;
   font-size:20px;
-  cursor:pointer;
   color:#ff0000;
+  cursor:pointer;
+  z-index:2;
 }
 
 /* VIEWS */
@@ -162,21 +166,45 @@ body{
   left:15px;
   font-size:18px;
   opacity:.8;
+  z-index:2;
+}
+
+/* GLITCH */
+#glitch{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.9);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:10;
+}
+
+#terminal{
+  color:#ff0000;
+  font-family:monospace;
+  font-size:14px;
+  text-shadow:0 0 5px #ff0000;
+  animation:flicker .12s infinite alternate;
+}
+
+@keyframes flicker{
+  from{opacity:.7}
+  to{opacity:1}
 }
 </style>
 </head>
 
 <body>
 
-<div class="enter" id="enter">
-  <span>Click to enter</span>
-</div>
+<canvas id="stars"></canvas>
 
-<div class="fullscreen" id="fs">
-  <i class="fa fa-expand"></i>
-</div>
+<div class="enter" id="enter"><span>Click to enter</span></div>
 
+<div class="fullscreen" id="fs"><i class="fa fa-expand"></i></div>
 <div class="views">👁 <span id="views">0</span></div>
+
+<div id="glitch"><pre id="terminal"></pre></div>
 
 <div class="container" id="container">
   <div class="avatar"></div>
@@ -200,72 +228,74 @@ body{
 </div>
 
 <script>
-const playlist=[
-  "assets/jdtestelesflammes.mp3",
-  "assets/melodrama.mp3"
-];
+/* UTIL */
+function vibrate(p){ if("vibrate" in navigator) navigator.vibrate(p); }
+function format(t){ return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0"); }
 
-let index=0;
-let audio;
+/* STARS */
+const sc=document.getElementById("stars"),sctx=sc.getContext("2d");
+function resize(){ sc.width=innerWidth; sc.height=innerHeight }
+resize(); addEventListener("resize",resize);
+
+const stars=[...Array(150)].map(()=>({x:Math.random()*sc.width,y:Math.random()*sc.height,r:Math.random()*1.5,v:Math.random()*.6+.3}));
+
+(function drawStars(){
+  sctx.clearRect(0,0,sc.width,sc.height);
+  sctx.fillStyle="#fff";
+  stars.forEach(s=>{
+    sctx.globalAlpha=Math.random();
+    sctx.beginPath(); sctx.arc(s.x,s.y,s.r,0,Math.PI*2); sctx.fill();
+    s.y+=s.v; if(s.y>sc.height){ s.y=0; s.x=Math.random()*sc.width; }
+  });
+  requestAnimationFrame(drawStars);
+})();
+
+/* MUSIC */
+const playlist=["assets/jdtestelesflammes.mp3","assets/melodrama.mp3"];
+let index=0,audio;
 
 const enter=document.getElementById("enter");
 const container=document.getElementById("container");
-const playBtn=document.getElementById("play");
+const play=document.getElementById("play");
 const prev=document.getElementById("prev");
 const next=document.getElementById("next");
 const bar=document.getElementById("bar");
 const progress=document.getElementById("progress");
-const timeEl=document.getElementById("time");
-const fs=document.getElementById("fs");
-
-function format(t){
-  return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0");
-}
+const time=document.getElementById("time");
 
 enter.onclick=()=>{
+  vibrate([120,40,120]);
   enter.style.display="none";
   container.style.opacity=1;
 
   audio=new Audio(playlist[index]);
-  audio.volume=0.6;
+  audio.volume=.6;
   audio.play();
+  play.innerHTML='<i class="fa fa-pause"></i>';
 
-  playBtn.innerHTML='<i class="fa fa-pause"></i>';
-
-  audio.addEventListener("timeupdate",()=>{
+  audio.ontimeupdate=()=>{
     progress.style.width=(audio.currentTime/audio.duration*100)+"%";
-    timeEl.textContent=`${format(audio.currentTime)} / ${format(audio.duration)}`;
-  });
+    time.textContent=`${format(audio.currentTime)} / ${format(audio.duration)}`;
+  };
 };
 
-playBtn.onclick=()=>{
-  if(audio.paused){
-    audio.play();
-    playBtn.innerHTML='<i class="fa fa-pause"></i>';
-  }else{
-    audio.pause();
-    playBtn.innerHTML='<i class="fa fa-play"></i>';
-  }
+play.onclick=()=>{
+  vibrate(40);
+  if(audio.paused){ audio.play(); play.innerHTML='<i class="fa fa-pause"></i>'; }
+  else{ audio.pause(); play.innerHTML='<i class="fa fa-play"></i>'; }
 };
 
-prev.onclick=()=>{
-  index=(index-1+playlist.length)%playlist.length;
-  audio.src=playlist[index];
-  audio.play();
-};
-
-next.onclick=()=>{
-  index=(index+1)%playlist.length;
-  audio.src=playlist[index];
-  audio.play();
-};
+prev.onclick=()=>{ vibrate(60); index=(index-1+playlist.length)%playlist.length; audio.src=playlist[index]; audio.play(); };
+next.onclick=()=>{ vibrate(60); index=(index+1)%playlist.length; audio.src=playlist[index]; audio.play(); };
 
 bar.onclick=e=>{
+  vibrate(30);
   const r=bar.getBoundingClientRect();
   audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;
 };
 
 /* FULLSCREEN */
+const fs=document.getElementById("fs");
 fs.onclick=()=>{
   if(!document.fullscreenElement){
     document.documentElement.requestFullscreen();
@@ -276,8 +306,34 @@ fs.onclick=()=>{
   }
 };
 
+/* GLITCH */
+const glitch=document.getElementById("glitch");
+const terminal=document.getElementById("terminal");
+const lines=[
+  "> init connection...",
+  "> bypass firewall",
+  "> access granted",
+  "> decrypting data",
+  "> uploading payload",
+  "> complete."
+];
+
+function showGlitch(){
+  glitch.style.display="flex";
+  terminal.textContent="";
+  vibrate([200,80,150,60,300,100,200,50,400]);
+  let i=0;
+  const t=setInterval(()=>{
+    terminal.textContent+=lines[i++]+"\n";
+    if(i>=lines.length) clearInterval(t);
+  },120);
+  setTimeout(()=>glitch.style.display="none",3000);
+}
+
+setInterval(()=>{ if(Math.random()>.6) showGlitch(); },25000);
+
 /* VIEWS */
-fetch('https://api.countapi.xyz/hit/mathkasa/site')
+fetch("https://api.countapi.xyz/hit/mathkasa/site")
 .then(r=>r.json())
 .then(d=>views.textContent=d.value);
 </script>
