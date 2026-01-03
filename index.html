@@ -2,87 +2,84 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>ERROR 404</title>
+<title>mathkasa</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body {
-  background: black;
-  color: #00ff88;
+  background: #0a0a0a;
+  color: #ffffff;
   font-family: monospace;
-  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-.container {
-  max-width: 800px;
-  margin: auto;
+.card {
+  background: #000;
+  border: 1px solid #222;
+  padding: 30px;
+  width: 320px;
   text-align: center;
 }
 
-.red { color: #ff4444; }
-.dim { opacity: 0.6; }
+.username {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  opacity: 0.6;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
 
 a {
   display: block;
-  margin-top: 14px;
-  padding: 10px;
-  border: 1px solid #00ff88;
-  color: #00ff88;
+  margin: 10px 0;
+  padding: 12px;
+  border: 1px solid #444;
+  color: white;
   text-decoration: none;
 }
 
 a:hover {
-  background: #00ff88;
+  background: white;
   color: black;
 }
 
 .footer {
-  margin-top: 20px;
-  font-size: 0.8em;
-  opacity: 0.5;
+  margin-top: 15px;
+  font-size: 11px;
+  opacity: 0.4;
 }
 </style>
 </head>
 
 <body>
-<div class="container">
 
-  <div class="red">ERROR 404 — ACCESS DENIED</div>
-  <div class="dim">operating system: kali-linux</div>
-  <br>
+<div class="card">
+  <div class="username">mathkasa</div>
+  <div class="subtitle">developer / creator</div>
 
-  <div>remote address: <span id="ip"></span></div>
-  <div>status: restricted</div>
-  <div class="dim">session visibility: limited</div>
-
-  <br>
-  <div class="red">unauthorized request detected</div>
-  <div class="dim">no personal data has been collected</div>
-
-  <br>
-
-  <!-- BOUTON CONTACT ADMIN (CORRECT) -->
-  <a href="https://github.com/mathkasa/mathkasa.github.io/issues/new?title=Access%20Request&body=Describe%20your%20request%20below%0A%0ADetails%3A" target="_blank">
-    Contact system administrator
+  <!-- RÉSEAUX -->
+  <a href="https://www.youtube.com/@mathkasa" target="_blank">
+    YouTube
   </a>
 
-  <!-- LIEN PROFIL -->
-  <a href="https://github.com/mathkasa" target="_blank">
-    View public profile
+  <a href="https://www.tiktok.com/@mathkasa" target="_blank">
+    TikTok
+  </a>
+
+  <a href="https://discord.com/users/1376961618130505738" target="_blank">
+    Discord
   </a>
 
   <div class="footer">
-    error_code: 404-AUTH · user: mathkasa
+    © mathkasa
   </div>
-
 </div>
-
-<script>
-// IP FAKE PARTIELLE (jamais réelle)
-const fakeIPs = ["203.0.113", "192.0.2", "198.51.100"];
-document.getElementById("ip").textContent =
-  fakeIPs[Math.floor(Math.random() * fakeIPs.length)] + ".xxx";
-</script>
 
 </body>
 </html>
