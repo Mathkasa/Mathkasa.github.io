@@ -27,7 +27,7 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 .name{font-size:34px;color:#ff0000;text-shadow:0 0 15px #ff0000;}
 
 /* LINKS */
-.links{display:flex;gap:20px;margin:15px 0;}
+.links{display:flex;gap:20px;margin:15px 0;z-index:2;}
 .links a{width:50px;height:50px;border:1px solid #ff0000;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#ff0000;text-decoration:none;transition:.2s;}
 .links a:hover{background:#ff0000;color:#000;transform:scale(1.1);}
 
@@ -43,11 +43,16 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 /* FULLSCREEN */
 .fullscreen{position:fixed;top:15px;right:15px;font-size:20px;color:#ff0000;cursor:pointer;z-index:2;}
 
+/* VOLUME */
+.volume-container{position:fixed;top:15px;left:15px;display:flex;align-items:center;gap:6px;z-index:2;}
+.volume-container input[type=range]{width:120px;}
+
 /* VIEWS */
 .views{position:fixed;bottom:15px;left:15px;font-size:20px;opacity:.8;z-index:2;}
 
-/* GLITCH RAPIDE */
-#glitchRapid{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;pointer-events:none;z-index:1;color:#ff0000;font-family:monospace;font-size:14px;white-space:pre;line-height:1.1;}
+/* POPUPS */
+.popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a0000;border:2px solid #ff0000;color:#ff0000;padding:15px;font-family:monospace;display:none;z-index:50;text-align:center;max-width:90%;animation:popupAnim .3s;}
+@keyframes popupAnim{0%{transform:translate(-50%,-60%) scale(0.8);opacity:0}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
 </style>
 </head>
 <body>
@@ -57,16 +62,22 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 
 <div class="fullscreen" id="fs"><i class="fa fa-expand"></i></div>
 <div class="views">👁 <span id="views">0</span></div>
-<div id="glitchRapid"></div>
+
+<div class="volume-container">
+  <i class="fa fa-volume-high" id="volIcon"></i>
+  <input type="range" id="vol" min="0" max="1" step="0.01">
+</div>
+
+<div class="popup" id="popup">⚠️ Popups rouges massifs !</div>
 
 <div class="container" id="container">
   <div class="avatar"></div>
   <div class="name">Mathkasa</div>
 
   <div class="links">
-    <a href="#"><i class="fab fa-discord"></i></a>
-    <a href="#"><i class="fab fa-tiktok"></i></a>
-    <a href="#"><i class="fab fa-youtube"></i></a>
+    <a href="https://discord.com/" target="_blank"><i class="fab fa-discord"></i></a>
+    <a href="https://www.tiktok.com/" target="_blank"><i class="fab fa-tiktok"></i></a>
+    <a href="https://www.youtube.com/" target="_blank"><i class="fab fa-youtube"></i></a>
   </div>
 
   <div class="player">
@@ -111,7 +122,7 @@ const stars=[...Array(150)].map(()=>({x:Math.random()*sc.width,y:Math.random()*s
 })();
 
 /* PLAYLIST */
-const playlist=["assets/jdtestelesflammes.mp3","assets/melodrama.mp3"];
+const playlist=["assets/melodrama.mp3","assets/jdtestelesflammes.mp3"];
 let index=0,audio=null;
 
 const enter=document.getElementById("enter");
@@ -124,6 +135,9 @@ const progress=document.getElementById("progress");
 const knob=document.getElementById("knob");
 const timeCurrent=document.getElementById("time-current");
 const timeTotal=document.getElementById("time-total");
+const volSlider=document.getElementById("vol");
+const volIcon=document.getElementById("volIcon");
+const popup=document.getElementById("popup");
 
 function format(t){ return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0"); }
 
@@ -134,7 +148,7 @@ enter.onclick=()=>{
   container.style.opacity=1;
 
   audio=new Audio(playlist[index]);
-  audio.volume=.6;
+  audio.volume=volSlider.value||0.6;
   audio.play();
   play.innerHTML='<i class="fa fa-pause"></i>';
 
@@ -159,6 +173,10 @@ bar.onclick=e=>{
   audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;
 };
 
+/* VOLUME */
+volSlider.value=0.6;
+volSlider.oninput=()=>{audio.volume=volSlider.value; volIcon.className=audio.volume==0?'fa fa-volume-xmark':'fa fa-volume-high';}
+
 /* FULLSCREEN */
 const fs=document.getElementById("fs");
 fs.onclick=()=>{
@@ -169,33 +187,17 @@ fs.onclick=()=>{
 /* VIEWS */
 fetch("https://api.countapi.xyz/hit/mathkasa/site").then(r=>r.json()).then(d=>document.querySelector(".views span").textContent=d.value);
 
-/* GLITCH RAPIDE */
-const glitchDiv=document.getElementById("glitchRapid");
-const commands=[
-  "init connection...","bypass firewall","access granted",
-  "decrypting data","uploading payload","complete.",
-  "ping server","sync database","launch protocol","override lock",
-  "encrypting files","virus injected","system compromised"
-];
-
-function glitchUltraRapid(){
-  sc.style.display="none";
-  glitchDiv.style.display="flex";
-  glitchDiv.style.background="rgba(0,0,0,0.7)";
-  vibrate([200,100,200]);
-  
-  let count=0;
-  const interval=setInterval(()=>{
-    let lines="";
-    for(let i=0;i<15;i++){ lines+=commands[Math.floor(Math.random()*commands.length)]+"\n"; }
-    glitchDiv.innerText=lines;
-    count++;
-    if(count>6){ clearInterval(interval); glitchDiv.style.display="none"; sc.style.display="block"; }
-  },80);
+/* POPUPS RAPIDES */
+function showPopupRapid(text){
+  popup.innerText=text;
+  popup.style.display="block";
+  vibrate(200); // grosse vibration sur mobile
+  setTimeout(()=>{popup.style.display="none";},3000);
 }
 
-/* déclenche glitch aléatoire */
-setInterval(()=>{ if(Math.random()>0.5) glitchUltraRapid(); },25000);
+// Exemple d'apparition aléatoire
+setInterval(()=>{if(Math.random()>0.8) showPopupRapid("⚠️ Popups rouges massifs !");},15000);
+
 </script>
 </body>
 </html>
