@@ -6,59 +6,68 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body {
-  margin: 0;
-  background: #000;
+  background: black;
   color: #00ff88;
   font-family: monospace;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  padding: 20px;
 }
 .container {
-  text-align: center;
+  max-width: 800px;
+  margin: auto;
 }
-h1 {
-  font-size: 2.5em;
-  margin-bottom: 10px;
-}
-p {
-  opacity: 0.8;
-}
-a {
+.red { color: #ff4444; }
+.dim { opacity: 0.6; }
+a, button {
   display: block;
-  margin: 10px 0;
-  color: #00ff88;
-  text-decoration: none;
-  border: 1px solid #00ff88;
+  margin-top: 12px;
   padding: 10px;
-  transition: 0.2s;
+  background: none;
+  border: 1px solid #00ff88;
+  color: #00ff88;
+  font-family: monospace;
+  cursor: pointer;
+  text-decoration: none;
 }
-a:hover {
+a:hover, button:hover {
   background: #00ff88;
-  color: #000;
-}
-.footer {
-  margin-top: 20px;
-  font-size: 0.8em;
-  opacity: 0.6;
+  color: black;
 }
 </style>
 </head>
 
 <body>
 <div class="container">
-  <h1>ERROR 404</h1>
-  <p>Unauthorized access detected</p>
+  <div class="red">ERROR 404 — ACCESS DENIED</div>
+  <div class="dim">operating system: kali-linux</div>
+  <br>
 
-  <a href="https://discord.gg/TONINVITE" target="_blank">Discord</a>
-  <a href="https://instagram.com/TONPSEUDO" target="_blank">Instagram</a>
-  <a href="https://twitter.com/TONPSEUDO" target="_blank">X / Twitter</a>
-  <a href="https://github.com/TONPSEUDO" target="_blank">GitHub</a>
+  <div>remote address: <span id="ip"></span></div>
+  <div>status: restricted</div>
+  <div class="dim">session visibility: limited</div>
 
-  <div class="footer">
-    system.status = compromised
+  <br>
+  <div class="red">unauthorized request detected</div>
+  <div class="dim">no data has been collected</div>
+
+  <br>
+  <a href="https://github.com/TONPSEUDO/TONREPO/issues/new">
+    Contact system administrator
+  </a>
+
+  <a href="https://discord.gg/TONINVITE">
+    Request manual review (Discord)
+  </a>
+
+  <div class="dim" style="margin-top:20px;">
+    error_code: 404-AUTH
   </div>
 </div>
+
+<script>
+// IP FAKE PARTIELLE (jamais réelle)
+const fakeBlocks = ["203.0.113", "192.0.2", "198.51.100"];
+document.getElementById("ip").textContent =
+  fakeBlocks[Math.floor(Math.random() * fakeBlocks.length)] + ".xxx";
+</script>
 </body>
 </html>
