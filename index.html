@@ -19,9 +19,12 @@ body{
   padding-bottom:env(safe-area-inset-bottom);
 }
 
-canvas{position:fixed;inset:0;z-index:0}
+canvas{
+  position:fixed;
+  inset:0;
+  z-index:0;
+}
 
-/* CONTAINER PRINCIPAL */
 .container{
   position:relative;
   z-index:1;
@@ -42,7 +45,6 @@ canvas{position:fixed;inset:0;z-index:0}
   justify-content:center;
   align-items:center;
   cursor:pointer;
-  user-select:none;
 }
 
 .enter span{
@@ -51,13 +53,11 @@ canvas{position:fixed;inset:0;z-index:0}
   text-shadow:0 0 20px #ff9900;
 }
 
-.enter:focus{
-  outline:none;
-}
-
 /* AVATAR */
 .avatar{
-  width:120px;height:120px;border-radius:50%;
+  width:120px;
+  height:120px;
+  border-radius:50%;
   background:url("https://i.imgur.com/eqQkW9H.jpeg") center/cover no-repeat;
   border:3px solid #ff9900;
   box-shadow:0 0 25px #ff9900;
@@ -71,34 +71,45 @@ canvas{position:fixed;inset:0;z-index:0}
   text-shadow:0 0 15px #ff9900;
 }
 
-.location{opacity:.7;margin-bottom:20px}
+.location{
+  opacity:.7;
+  margin-bottom:20px;
+}
 
 /* LINKS */
 .links{
   display:flex;
   gap:22px;
-  margin-bottom:25px;
+  margin-bottom:30px;
 }
 
 .links a{
-  width:55px;height:55px;
+  width:55px;
+  height:55px;
   background:rgba(255,153,0,.15);
   border:1px solid #ff9900;
   border-radius:16px;
-  display:flex;align-items:center;justify-content:center;
-  color:#ff9900;font-size:26px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#ff9900;
+  font-size:26px;
   text-decoration:none;
   transition:.25s;
 }
 
 .links a:hover{
-  background:#ff9900;color:#000;
+  background:#ff9900;
+  color:#000;
   box-shadow:0 0 20px #ff9900;
   transform:scale(1.15);
 }
 
 /* PLAYER */
-.player{width:280px}
+.player{
+  width:260px;
+  text-align:center;
+}
 
 .controls{
   display:flex;
@@ -106,8 +117,9 @@ canvas{position:fixed;inset:0;z-index:0}
   gap:10px;
 }
 
-.btn{
-  width:44px;height:44px;
+.play{
+  width:46px;
+  height:46px;
   border-radius:50%;
   background:#ff9900;
   color:#000;
@@ -118,37 +130,24 @@ canvas{position:fixed;inset:0;z-index:0}
 }
 
 .bar{
-  flex:1;height:6px;
-  background:#333;border-radius:10px;
+  flex:1;
+  height:6px;
+  background:#333;
+  border-radius:10px;
   cursor:pointer;
 }
 
 .progress{
-  height:100%;width:0%;
-  background:#ff9900;border-radius:10px;
+  height:100%;
+  width:0%;
+  background:#ff9900;
+  border-radius:10px;
 }
-
-.volume{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-top:10px;
-}
-
-.volume input{flex:1}
 
 .time{
   font-size:12px;
   opacity:.7;
   margin-top:6px;
-  text-align:center;
-}
-
-.views{
-  position:absolute;
-  bottom:25px;
-  font-size:14px;
-  opacity:.6;
 }
 
 audio{display:none}
@@ -158,16 +157,17 @@ audio{display:none}
 <body>
 
 <!-- CLICK TO ENTER -->
-<div class="enter" id="enter" tabindex="0"><span>Click to enter</span></div>
+<div class="enter" id="enter">
+  <span>Click to enter</span>
+</div>
 
 <canvas id="bg"></canvas>
 
-<!-- MUSIQUE -->
+<!-- AUDIO -->
 <audio id="music" preload="auto">
   <source src="assets/jdtestelesflammes.mp3" type="audio/mpeg">
 </audio>
 
-<!-- CONTENU PRINCIPAL -->
 <div class="container">
   <div class="avatar"></div>
   <div class="name">Mathkasa</div>
@@ -181,91 +181,83 @@ audio{display:none}
 
   <div class="player">
     <div class="controls">
-      <div class="btn" id="play"><i class="fa fa-play"></i></div>
+      <div class="play" id="play"><i class="fa fa-play"></i></div>
       <div class="bar" id="bar"><div class="progress" id="progress"></div></div>
-      <div class="btn" id="fs"><i class="fa fa-expand"></i></div>
     </div>
-
-    <div class="volume">
-      <i class="fa fa-volume-high" id="volIcon"></i>
-      <input type="range" id="vol" min="0" max="1" step="0.01">
-    </div>
-
     <div class="time" id="time">0:00 / 0:00</div>
   </div>
-
-  <div class="views">👁 <span id="views">0</span></div>
 </div>
 
 <script>
-/* STARS BACKGROUND */
+/* BACKGROUND STARS */
 const c=document.getElementById("bg"),ctx=c.getContext("2d");
 function resize(){c.width=innerWidth;c.height=innerHeight}
 resize();addEventListener("resize",resize);
-const stars=[...Array(140)].map(()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.5,v:Math.random()*.4+.1}));
-(function a(){
+
+const stars=[...Array(140)].map(()=>({
+  x:Math.random()*c.width,
+  y:Math.random()*c.height,
+  r:Math.random()*1.5,
+  v:Math.random()*.4+.1
+}));
+
+(function anim(){
   ctx.clearRect(0,0,c.width,c.height);
   ctx.fillStyle="#fff";
   stars.forEach(s=>{
     ctx.globalAlpha=Math.random();
-    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();
-    s.y+=s.v;if(s.y>c.height)s.y=0;
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fill();
+    s.y+=s.v;
+    if(s.y>c.height)s.y=0;
   });
-  requestAnimationFrame(a);
+  requestAnimationFrame(anim);
 })();
 
-/* MUSIC PLAYER */
-const audio=music,playBtn=play,bar=bar,prog=progress,timeEl=time;
-const vol=document.getElementById("vol"),volIcon=document.getElementById("volIcon");
+/* MUSIC */
+const audio=document.getElementById("music");
+const enter=document.getElementById("enter");
+const play=document.getElementById("play");
+const bar=document.getElementById("bar");
+const prog=document.getElementById("progress");
+const time=document.getElementById("time");
 
-const format=t=>Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0");
+function format(t){
+  return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0");
+}
 
-/* ENTER CLICK */
-enter.onclick=async()=>{
+enter.addEventListener("click",async()=>{
   enter.style.display="none";
-  await audio.play();
-  playBtn.innerHTML='<i class="fa fa-pause"></i>';
-};
+  try{
+    await audio.play();
+    play.innerHTML='<i class="fa fa-pause"></i>';
+  }catch{
+    alert("Clique sur Play pour lancer la musique");
+  }
+});
 
-/* PLAY/PAUSE */
-playBtn.onclick=()=>{
-  if(audio.paused){audio.play();playBtn.innerHTML='<i class="fa fa-pause"></i>';}
-  else{audio.pause();playBtn.innerHTML='<i class="fa fa-play"></i>';}
-};
+play.addEventListener("click",async()=>{
+  if(audio.paused){
+    await audio.play();
+    play.innerHTML='<i class="fa fa-pause"></i>';
+  }else{
+    audio.pause();
+    play.innerHTML='<i class="fa fa-play"></i>';
+  }
+});
 
-/* PROGRESS BAR */
-audio.ontimeupdate=()=>{
+audio.addEventListener("timeupdate",()=>{
   if(audio.duration){
     prog.style.width=(audio.currentTime/audio.duration*100)+"%";
-    timeEl.textContent=`${format(audio.currentTime)} / ${format(audio.duration)}`;
+    time.textContent=`${format(audio.currentTime)} / ${format(audio.duration)}`;
   }
-};
+});
 
-bar.onclick=e=>{
+bar.addEventListener("click",e=>{
   const r=bar.getBoundingClientRect();
   audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;
-};
-
-/* VOLUME */
-vol.value=localStorage.vol||0.5;
-audio.volume=vol.value;
-
-vol.oninput=()=>{
-  audio.volume=vol.value;
-  localStorage.vol=vol.value;
-  volIcon.className=audio.volume==0?'fa fa-volume-xmark':'fa fa-volume-high';
-};
-
-/* FULLSCREEN */
-fs.onclick=()=>{
-  if(!document.fullscreenElement) document.documentElement.requestFullscreen();
-  else document.exitFullscreen();
-};
-
-/* VIEWS COUNTER */
-fetch('https://api.countapi.xyz/hit/mathkasa/site')
-.then(res=>res.json())
-.then(d=>views.textContent=d.value);
+});
 </script>
 
 </body>
