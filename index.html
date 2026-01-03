@@ -10,7 +10,7 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:radial-gradient(circle at top,#111 0%,#000 70%);font-family:Arial,sans-serif;color:#fff;height:100dvh;overflow:hidden;perspective:1000px;}
 canvas{position:fixed;inset:0;z-index:0;}
-.container{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;opacity:1;transition:transform 0.1s ease;}
+.container{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;transition:transform 0.1s ease;}
 .avatar{width:120px;height:120px;border-radius:50%;background:url("https://i.imgur.com/eqQkW9H.jpeg") center/cover no-repeat;border:3px solid #ff9900;margin-bottom:15px;}
 .name{font-size:34px;font-weight:bold;color:#ff9900;}
 .location{opacity:.7;margin-bottom:20px;}
@@ -31,13 +31,16 @@ canvas{position:fixed;inset:0;z-index:0;}
 #fs{position:fixed;top:15px;right:15px;z-index:20;cursor:pointer;background:#ff9900;color:#000;border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;transition:0.2s;-webkit-tap-highlight-color: transparent;}
 #fs:hover{transform:scale(1.1);}
 .views{position:fixed;bottom:25px;left:15px;font-size:28px;z-index:20;}
-#vis{position:fixed;bottom:0;left:0;width:100%;height:100px;pointer-events:none;z-index:5;}
+.enter{position:fixed;inset:0;background:#000;z-index:30;display:flex;justify-content:center;align-items:center;cursor:pointer;}
+.enter span{font-size:28px;color:#ff9900;text-shadow:0 0 20px #ff9900;}
 </style>
 </head>
 <body>
 
 <canvas id="bg"></canvas>
 <canvas id="vis"></canvas>
+
+<div class="enter" id="enter"><span>Click to enter</span></div>
 
 <div class="container" id="container">
   <div class="avatar"></div>
@@ -100,6 +103,7 @@ const vol=document.getElementById("vol");
 const volIcon=document.getElementById("volIcon");
 const fsBtn=document.getElementById("fs");
 const views=document.getElementById("views");
+const enter=document.getElementById("enter");
 const visCanvas=document.getElementById("vis");
 const visCtx=visCanvas.getContext("2d");
 visCanvas.width=window.innerWidth; visCanvas.height=100;
@@ -116,14 +120,12 @@ function playTrack(index){
   playBtn.innerHTML='<i class="fa fa-pause"></i>';
 }
 
-// AUTOPLAY sur premier clic / tap
-function initAudio(){
-  audio.play().catch(()=>{}); // Chrome bloque si pas d'interaction
-  document.removeEventListener("click",initAudio);
-  document.removeEventListener("touchstart",initAudio);
-}
-document.addEventListener("click",initAudio);
-document.addEventListener("touchstart",initAudio);
+// ENTER CLICK
+enter.addEventListener("click",()=>{
+  enter.style.display="none";
+  audio.play().catch(()=>{});
+  playBtn.innerHTML='<i class="fa fa-pause"></i>';
+});
 
 // PLAY / PAUSE
 playBtn.addEventListener("click",()=>{if(audio.paused){audio.play(); playBtn.innerHTML='<i class="fa fa-pause"></i>';} else{audio.pause(); playBtn.innerHTML='<i class="fa fa-play"></i>';}});
@@ -148,13 +150,18 @@ fsBtn.addEventListener("click",()=>{if(!document.fullscreenElement){document.doc
 // COUNTAPI
 fetch('https://api.countapi.xyz/hit/mathkasa/site').then(res=>res.json()).then(d=>views.textContent=d.value);
 
-// PARALLAX 3D
-let isTouching=false;
-window.addEventListener('touchstart',()=>{isTouching=true;});
-window.addEventListener('touchend',()=>{isTouching=false;});
-function applyParallax(xFactor,yFactor){if(isTouching) return; const multiplier=15; container.style.transform=`translate3d(${xFactor*multiplier}px,${yFactor*multiplier}px,0)`; document.querySelector(".links").style.transform=`translate3d(${xFactor*multiplier/2}px,${yFactor*multiplier/2}px,0)`; document.querySelector(".player").style.transform=`translate3d(${xFactor*multiplier/3}px,${yFactor*multiplier/3}px,0)`; document.querySelector(".volume").style.transform=`translate3d(${xFactor*multiplier/4}px,${yFactor*multiplier/4}px,0)`; views.style.transform=`translate3d(${xFactor*multiplier/4}px,${yFactor*multiplier/4}px,0)`;}
-window.addEventListener('deviceorientation', e=>{applyParallax(e.gamma/45,e.beta/45);});
-window.addEventListener('mousemove', e=>{applyParallax((e.clientX/window.innerWidth-0.5)*2,(e.clientY/window.innerHeight-0.5)*2);});
+// PARALLAX 3D MOBILE UNIQUEMENT
+function applyParallax(xFactor,yFactor){
+  const multiplier=15;
+  container.style.transform=`translate3d(${xFactor*multiplier}px,${yFactor*multiplier}px,0)`;
+  document.querySelector(".links").style.transform=`translate3d(${xFactor*multiplier/2}px,${yFactor*multiplier/2}px,0)`;
+  document.querySelector(".player").style.transform=`translate3d(${xFactor*multiplier/3}px,${yFactor*multiplier/3}px,0)`;
+  document.querySelector(".volume").style.transform=`translate3d(${xFactor*multiplier/4}px,${yFactor*multiplier/4}px,0)`;
+  views.style.transform=`translate3d(${xFactor*multiplier/4}px,${yFactor*multiplier/4}px,0)`;
+}
+if(/Mobi|Android/i.test(navigator.userAgent)){
+  window.addEventListener('deviceorientation', e=>{applyParallax(e.gamma/45,e.beta/45);});
+}
 
 // VISUALIZER
 const analyserCtx=new (window.AudioContext||window.webkitAudioContext)();
