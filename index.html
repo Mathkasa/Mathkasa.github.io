@@ -7,64 +7,36 @@
 
 <!-- Favicon -->
 <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2572/2572734.png">
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{
-  background:radial-gradient(circle at top,#111 0%,#000 70%);
-  font-family:Arial,sans-serif;
-  color:#fff;
-  height:100dvh;
-  overflow:hidden;
-  perspective:1000px;
-}
+body{background:radial-gradient(circle at top,#111 0%,#000 70%);font-family:Arial,sans-serif;color:#fff;height:100dvh;overflow:hidden;perspective:1000px;}
 canvas{position:fixed;inset:0;z-index:0}
 
 /* CONTAINER */
-.container{
-  position:relative;
-  z-index:1;
-  height:100%;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  opacity:0;
-  transition: opacity 1s ease, transform 0.1s ease;
-}
+.container{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;opacity:0;transition:opacity 1s ease, transform 0.1s ease;}
 
 /* CLICK TO ENTER */
-.enter{
-  position:fixed;inset:0;background:#000;z-index:10;
-  display:flex;justify-content:center;align-items:center;
-  cursor:pointer;user-select:none;
-}
-.enter span{
-  font-size:28px;color:#ff9900;text-shadow:0 0 20px #ff9900;
-}
+.enter{position:fixed;inset:0;background:#000;z-index:10;display:flex;justify-content:center;align-items:center;cursor:pointer;user-select:none;}
+.enter span{font-size:28px;color:#ff9900;text-shadow:0 0 20px #ff9900;}
 
 /* AVATAR */
-.avatar{width:120px;height:120px;border-radius:50%;
-background:url("https://i.imgur.com/eqQkW9H.jpeg") center/cover no-repeat;
-border:3px solid #ff9900;margin-bottom:15px;}
+.avatar{width:120px;height:120px;border-radius:50%;background:url("https://i.imgur.com/eqQkW9H.jpeg") center/cover no-repeat;border:3px solid #ff9900;margin-bottom:15px;}
 .name{font-size:34px;font-weight:bold;color:#ff9900;}
-.location{opacity:.7;margin-bottom:20px}
+.location{opacity:.7;margin-bottom:20px;}
 
 /* LINKS */
 .links{display:flex;gap:22px;margin-bottom:30px;opacity:0;transition:opacity 0.8s ease;}
-.links a{width:55px;height:55px;background:rgba(255,153,0,.15);
-border:1px solid #ff9900;border-radius:16px;display:flex;align-items:center;
-justify-content:center;color:#ff9900;font-size:26px;text-decoration:none;transition:0.25s;}
+.links a{width:55px;height:55px;background:rgba(255,153,0,.15);border:1px solid #ff9900;border-radius:16px;display:flex;align-items:center;justify-content:center;color:#ff9900;font-size:26px;text-decoration:none;transition:0.25s;}
 .links a:hover{background:#ff9900;color:#000;transform:scale(1.1);}
 
 /* PLAYER */
-.player{width:280px;text-align:center;margin-bottom:15px;opacity:0;transition:opacity 0.8s ease, transform 0.1s ease;}
-.controls{display:flex;align-items:center;gap:10px;justify-content:center;}
+.player{width:300px;text-align:center;margin-bottom:15px;opacity:0;transition:opacity 0.8s ease, transform 0.1s ease;}
+.controls{display:flex;align-items:center;gap:10px;justify-content:space-between;}
 .btn{width:44px;height:44px;border-radius:50%;background:#ff9900;color:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:0.2s;outline:none;border:none;}
 .btn:hover{transform:scale(1.1);}
-.bar{flex:1;height:6px;background:#333;border-radius:10px;cursor:pointer;}
+.bar{flex:1;height:6px;background:#333;border-radius:10px;cursor:pointer;margin:0 15px;}
 .progress{height:100%;width:0%;background:#ff9900;border-radius:10px;}
 .time{font-size:12px;opacity:.7;margin-top:6px;text-align:center;opacity:0;transition:opacity 0.8s ease;}
 
@@ -105,10 +77,15 @@ canvas#vis{width:100%;height:100%;}
 
   <div class="player">
     <div class="controls">
-      <div class="btn" id="prev"><i class="fa fa-backward"></i></div>
-      <div class="btn" id="play"><i class="fa fa-play"></i></div>
-      <div class="btn" id="next"><i class="fa fa-forward"></i></div>
+      <!-- LEFT -->
+      <div style="display:flex;gap:10px;">
+        <div class="btn" id="prev"><i class="fa fa-backward"></i></div>
+        <div class="btn" id="play"><i class="fa fa-play"></i></div>
+      </div>
+      <!-- CENTER -->
       <div class="bar" id="bar"><div class="progress" id="progress"></div></div>
+      <!-- RIGHT -->
+      <div class="btn" id="next"><i class="fa fa-forward"></i></div>
     </div>
     <div class="time" id="time">0:00 / 0:00</div>
   </div>
@@ -130,8 +107,14 @@ resize();window.addEventListener("resize",resize);
 const stars=[...Array(140)].map(()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.5,v:Math.random()*.4+.1}));
 (function anim(){ctx.clearRect(0,0,c.width,c.height);ctx.fillStyle="#fff";stars.forEach(s=>{ctx.globalAlpha=Math.random();ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();s.y+=s.v;if(s.y>c.height)s.y=0;});requestAnimationFrame(anim);})();
 
-// ELEMENTS
+// AUDIO
 const audio=new Audio();
+const playlist=["assets/jdtestelesflammes.mp3","assets/melodrama.mp3"];
+let trackIndex=0;
+audio.src=playlist[trackIndex];
+audio.crossOrigin="anonymous";
+
+// ELEMENTS
 const enter=document.getElementById("enter");
 const container=document.getElementById("container");
 const playBtn=document.getElementById("play");
@@ -150,34 +133,43 @@ const visCtx=visCanvas.getContext("2d");
 visCanvas.width=window.innerWidth; visCanvas.height=100;
 window.addEventListener("resize",()=>{visCanvas.width=window.innerWidth; visCanvas.height=100;});
 
-// PLAYLIST
-const playlist=["assets/jdtestelesflammes.mp3","assets/melodrama.mp3"];
-let trackIndex=0;
-audio.src=playlist[trackIndex];
-
-// UTIL
+// FORMAT TIME
 function format(t){return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0");}
+
+// AUDIO CONTEXT
+let audioCtx,resumeCtx=false;
+function ensureAudioContext(){
+  if(!audioCtx){
+    audioCtx=new (window.AudioContext || window.webkitAudioContext)();
+    const source=audioCtx.createMediaElementSource(audio);
+    source.connect(audioCtx.destination);
+    resumeCtx=true;
+  }
+  if(resumeCtx && audioCtx.state==='suspended'){audioCtx.resume();resumeCtx=false;}
+}
 
 // ENTER CLICK
 enter.addEventListener("click",async()=>{
   enter.style.display="none";
-  container.style.opacity=1;
-  links.style.opacity=1;
+  container.style.opacity=1; links.style.opacity=1;
   document.querySelector(".volume").style.opacity=1;
   document.querySelector(".views").style.opacity=1;
   document.querySelector(".player").style.opacity=1;
   timeEl.style.opacity=1;
-  try{await audio.play();playBtn.innerHTML='<i class="fa fa-pause"></i>';}catch{}
+  ensureAudioContext();
+  await audio.play(); playBtn.innerHTML='<i class="fa fa-pause"></i>';
 });
 
 // PLAY/PAUSE
 playBtn.addEventListener("click",async()=>{
+  ensureAudioContext();
   if(audio.paused){await audio.play();playBtn.innerHTML='<i class="fa fa-pause"></i>';}
   else{audio.pause();playBtn.innerHTML='<i class="fa fa-play"></i>';}
 });
 
 // NEXT / PREV
 function playTrack(index){
+  ensureAudioContext();
   trackIndex=index;
   audio.src=playlist[trackIndex];
   audio.play();
@@ -196,38 +188,26 @@ bar.addEventListener("click",e=>{
 });
 
 // VOLUME
-vol.value=localStorage.vol||0.5;
-audio.volume=vol.value;
+vol.value=localStorage.vol||0.5; audio.volume=vol.value;
 volIcon.className=audio.volume==0?'fa fa-volume-xmark':'fa fa-volume-high';
-volIcon.addEventListener("click",()=>{
-  audio.muted = !audio.muted;
-  volIcon.className = audio.muted?'fa fa-volume-xmark':'fa fa-volume-high';
-});
-vol.addEventListener("input",()=>{
-  audio.volume=vol.value;
-  localStorage.vol=vol.value;
-  audio.muted = false;
-  volIcon.className='fa fa-volume-high';
-});
+volIcon.addEventListener("click",()=>{audio.muted=!audio.muted; volIcon.className=audio.muted?'fa fa-volume-xmark':'fa fa-volume-high';});
+vol.addEventListener("input",()=>{audio.volume=vol.value; localStorage.vol=vol.value; audio.muted=false; volIcon.className='fa fa-volume-high';});
 
 // FULLSCREEN
 fsBtn.addEventListener("click",()=>{
-  if(!document.fullscreenElement){
-    document.documentElement.requestFullscreen();
-    fsBtn.innerHTML='<i class="fa fa-compress"></i>';
-  } else {
-    document.exitFullscreen();
-    fsBtn.innerHTML='<i class="fa fa-expand"></i>';
-  }
+  if(!document.fullscreenElement){document.documentElement.requestFullscreen(); fsBtn.innerHTML='<i class="fa fa-compress"></i>';}
+  else{document.exitFullscreen(); fsBtn.innerHTML='<i class="fa fa-expand"></i>';}
 });
 
 // COUNTAPI
-fetch('https://api.countapi.xyz/hit/mathkasa/site')
-.then(res=>res.json())
-.then(d=>views.textContent=d.value);
+fetch('https://api.countapi.xyz/hit/mathkasa/site').then(res=>res.json()).then(d=>views.textContent=d.value);
 
 // PARALLAX 3D
+let isTouching=false;
+window.addEventListener('touchstart',()=>{isTouching=true;});
+window.addEventListener('touchend',()=>{isTouching=false;});
 function applyParallax(xFactor,yFactor){
+  if(isTouching) return;
   const multiplier=15;
   container.style.transform=`translate3d(${xFactor*multiplier}px,${yFactor*multiplier}px,0)`;
   links.style.transform=`translate3d(${xFactor*multiplier/2}px,${yFactor*multiplier/2}px,0)`;
@@ -239,14 +219,11 @@ window.addEventListener('deviceorientation', e=>{applyParallax(e.gamma/45,e.beta
 window.addEventListener('mousemove', e=>{applyParallax((e.clientX/window.innerWidth-0.5)*2,(e.clientY/window.innerHeight-0.5)*2);});
 
 // AUDIO VISUALIZER
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-const analyser = audioCtx.createAnalyser();
-const source = audioCtx.createMediaElementSource(audio);
-source.connect(analyser);
-analyser.connect(audioCtx.destination);
-analyser.fftSize = 128;
-const bufferLength = analyser.frequencyBinCount;
-const dataArray = new Uint8Array(bufferLength);
+const analyserCtx = new (window.AudioContext || window.webkitAudioContext)();
+const analyser = analyserCtx.createAnalyser();
+const source = analyserCtx.createMediaElementSource(audio);
+source.connect(analyser); analyser.connect(analyserCtx.destination);
+analyser.fftSize = 128; const bufferLength = analyser.frequencyBinCount; const dataArray = new Uint8Array(bufferLength);
 function drawVis(){
   requestAnimationFrame(drawVis);
   analyser.getByteFrequencyData(dataArray);
