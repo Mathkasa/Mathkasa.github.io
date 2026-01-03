@@ -125,6 +125,15 @@ enter.addEventListener("click",()=>{
   enter.style.display="none";
   audio.play().catch(()=>{});
   playBtn.innerHTML='<i class="fa fa-pause"></i>';
+
+  // AudioContext & visualizer après clic pour éviter blocage navigateur
+  const analyserCtx=new (window.AudioContext||window.webkitAudioContext)();
+  const analyser=analyserCtx.createAnalyser();
+  const source=analyserCtx.createMediaElementSource(audio);
+  source.connect(analyser); analyser.connect(analyserCtx.destination);
+  analyser.fftSize=128; const bufferLength=analyser.frequencyBinCount; const dataArray=new Uint8Array(bufferLength);
+  function drawVis(){requestAnimationFrame(drawVis); analyser.getByteFrequencyData(dataArray); visCtx.clearRect(0,0,visCanvas.width,visCanvas.height); const barWidth=visCanvas.width/bufferLength; for(let i=0;i<bufferLength;i++){const barHeight=dataArray[i]; visCtx.fillStyle="#ff9900"; visCtx.fillRect(i*barWidth,visCanvas.height-barHeight,barWidth,barHeight);}}
+  drawVis();
 });
 
 // PLAY / PAUSE
@@ -162,16 +171,6 @@ function applyParallax(xFactor,yFactor){
 if(/Mobi|Android/i.test(navigator.userAgent)){
   window.addEventListener('deviceorientation', e=>{applyParallax(e.gamma/45,e.beta/45);});
 }
-
-// VISUALIZER
-const analyserCtx=new (window.AudioContext||window.webkitAudioContext)();
-const analyser=analyserCtx.createAnalyser();
-const source=analyserCtx.createMediaElementSource(audio);
-source.connect(analyser); analyser.connect(analyserCtx.destination);
-analyser.fftSize=128; const bufferLength=analyser.frequencyBinCount; const dataArray=new Uint8Array(bufferLength);
-function drawVis(){requestAnimationFrame(drawVis); analyser.getByteFrequencyData(dataArray); visCtx.clearRect(0,0,visCanvas.width,visCanvas.height); const barWidth=visCanvas.width/bufferLength; for(let i=0;i<bufferLength;i++){const barHeight=dataArray[i]; visCtx.fillStyle="#ff9900"; visCtx.fillRect(i*barWidth,visCanvas.height-barHeight,barWidth,barHeight);}}
-drawVis();
 </script>
-
 </body>
 </html>
