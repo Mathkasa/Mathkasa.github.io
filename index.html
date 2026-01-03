@@ -5,6 +5,7 @@
 <title>Mathkasa</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<!-- LOGO GOOGLE -->
 <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2572/2572734.png">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -15,6 +16,7 @@
   padding:0;
   box-sizing:border-box;
   -webkit-tap-highlight-color: transparent;
+  user-select:none;
 }
 
 body{
@@ -41,7 +43,7 @@ body{
   font-size:28px;
   color:#ff0000;
   text-shadow:0 0 20px #ff0000;
-  animation:pulse 1.8s infinite;
+  animation:pulse 1.6s infinite;
 }
 
 @keyframes pulse{
@@ -50,6 +52,7 @@ body{
   100%{opacity:.4}
 }
 
+/* MAIN */
 .container{
   opacity:0;
   transition:opacity .8s ease;
@@ -61,13 +64,14 @@ body{
   position:relative;
 }
 
+/* AVATAR */
 .avatar{
   width:120px;
   height:120px;
   border-radius:50%;
   background:url("https://i.pinimg.com/originals/85/9d/02/859d02cc14248320a24a21e13939ed73.gif") center/cover;
   border:3px solid #ff0000;
-  box-shadow:0 0 30px #ff0000;
+  box-shadow:0 0 25px #ff0000;
   margin-bottom:15px;
 }
 
@@ -77,6 +81,7 @@ body{
   text-shadow:0 0 15px #ff0000;
 }
 
+/* LINKS */
 .links{
   display:flex;
   gap:20px;
@@ -103,12 +108,12 @@ body{
 .controls{
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:10px;
 }
 
 .btn{
-  width:44px;
-  height:44px;
+  width:42px;
+  height:42px;
   border-radius:50%;
   background:#ff0000;
   color:#000;
@@ -136,18 +141,27 @@ body{
 .time{
   font-size:12px;
   opacity:.7;
-  text-align:center;
   margin-top:6px;
+  text-align:center;
 }
 
-/* VISUALIZER */
-#vis{
+/* FULLSCREEN */
+.fullscreen{
   position:fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  height:50px;
-  pointer-events:none;
+  top:15px;
+  right:15px;
+  font-size:20px;
+  cursor:pointer;
+  color:#ff0000;
+}
+
+/* VIEWS */
+.views{
+  position:fixed;
+  bottom:15px;
+  left:15px;
+  font-size:18px;
+  opacity:.8;
 }
 </style>
 </head>
@@ -158,7 +172,11 @@ body{
   <span>Click to enter</span>
 </div>
 
-<canvas id="vis"></canvas>
+<div class="fullscreen" id="fs">
+  <i class="fa fa-expand"></i>
+</div>
+
+<div class="views">👁 <span id="views">0</span></div>
 
 <div class="container" id="container">
   <div class="avatar"></div>
@@ -188,7 +206,7 @@ const playlist=[
 ];
 
 let index=0;
-let audio, ctx, analyser, dataArray, bufferLength;
+let audio;
 
 const enter=document.getElementById("enter");
 const container=document.getElementById("container");
@@ -198,11 +216,7 @@ const next=document.getElementById("next");
 const bar=document.getElementById("bar");
 const progress=document.getElementById("progress");
 const timeEl=document.getElementById("time");
-
-const vis=document.getElementById("vis");
-const vctx=vis.getContext("2d");
-vis.width=innerWidth;
-vis.height=50;
+const fs=document.getElementById("fs");
 
 function format(t){
   return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0");
@@ -214,24 +228,14 @@ enter.onclick=()=>{
 
   audio=new Audio(playlist[index]);
   audio.volume=0.6;
-
-  ctx=new (window.AudioContext||window.webkitAudioContext)();
-  ctx.resume();
-
-  const source=ctx.createMediaElementSource(audio);
-  analyser=ctx.createAnalyser();
-  analyser.fftSize=64;
-
-  source.connect(analyser);
-  analyser.connect(ctx.destination);
-
-  bufferLength=analyser.frequencyBinCount;
-  dataArray=new Uint8Array(bufferLength);
-
   audio.play();
+
   playBtn.innerHTML='<i class="fa fa-pause"></i>';
 
-  draw();
+  audio.addEventListener("timeupdate",()=>{
+    progress.style.width=(audio.currentTime/audio.duration*100)+"%";
+    timeEl.textContent=`${format(audio.currentTime)} / ${format(audio.duration)}`;
+  });
 };
 
 playBtn.onclick=()=>{
@@ -256,27 +260,26 @@ next.onclick=()=>{
   audio.play();
 };
 
-audio?.addEventListener("timeupdate",()=>{
-  progress.style.width=(audio.currentTime/audio.duration*100)+"%";
-  timeEl.textContent=`${format(audio.currentTime)} / ${format(audio.duration)}`;
-});
-
 bar.onclick=e=>{
   const r=bar.getBoundingClientRect();
   audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;
 };
 
-function draw(){
-  requestAnimationFrame(draw);
-  analyser.getByteFrequencyData(dataArray);
-  vctx.clearRect(0,0,vis.width,vis.height);
-  const w=vis.width/bufferLength;
-  for(let i=0;i<bufferLength;i++){
-    const h=dataArray[i]/3;
-    vctx.fillStyle="#ff0000";
-    vctx.fillRect(i*w,vis.height-h,w*0.7,h);
+/* FULLSCREEN */
+fs.onclick=()=>{
+  if(!document.fullscreenElement){
+    document.documentElement.requestFullscreen();
+    fs.innerHTML='<i class="fa fa-compress"></i>';
+  }else{
+    document.exitFullscreen();
+    fs.innerHTML='<i class="fa fa-expand"></i>';
   }
-}
+};
+
+/* VIEWS */
+fetch('https://api.countapi.xyz/hit/mathkasa/site')
+.then(r=>r.json())
+.then(d=>views.textContent=d.value);
 </script>
 
 </body>
