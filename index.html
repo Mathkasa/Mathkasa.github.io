@@ -6,24 +6,48 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
-  background: #0b0b0b;
-  color: #00ff88;
-  font-family: monospace;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.terminal {
-  width: 360px;
+body {
+  background: black;
+  font-family: monospace;
+  overflow: hidden;
+}
+
+/* FOND TERMINAL */
+#terminal-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: #00ff88;
+  font-size: 13px;
+  opacity: 0.15;
+  padding: 10px;
+  white-space: pre;
+  pointer-events: none;
+}
+
+/* CARTE CENTRALE */
+.card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   border: 1px solid #00ff88;
-  padding: 20px;
+  padding: 25px;
+  text-align: center;
+  color: #00ff88;
+  background: rgba(0,0,0,0.85);
 }
 
 .name {
-  font-size: 22px;
+  font-size: 24px;
   margin-bottom: 5px;
 }
 
@@ -33,49 +57,79 @@ body {
   margin-bottom: 20px;
 }
 
-.link {
+a {
   display: block;
+  margin: 10px 0;
   color: #00ff88;
   text-decoration: none;
-  margin: 10px 0;
 }
 
-.link:hover {
+a:hover {
   background: #00ff88;
-  color: #000;
-  padding-left: 5px;
+  color: black;
 }
 
-.status {
-  margin-top: 20px;
-  font-size: 12px;
-  opacity: 0.6;
+.footer {
+  margin-top: 15px;
+  font-size: 11px;
+  opacity: 0.5;
 }
 </style>
 </head>
 
 <body>
 
-<div class="terminal">
+<div id="terminal-bg"></div>
+
+<div class="card">
   <div class="name">mathkasa</div>
   <div class="role">developer • content creator</div>
 
-  <a class="link" href="https://www.youtube.com/@mathkasa" target="_blank">
-    > youtube
+  <a href="https://www.youtube.com/@mathkasa" target="_blank">
+    > YouTube
   </a>
 
-  <a class="link" href="https://www.tiktok.com/@mathkasa" target="_blank">
-    > tiktok
+  <a href="https://www.tiktok.com/@mathkasa" target="_blank">
+    > TikTok
   </a>
 
-  <a class="link" href="https://discord.com/users/1376961618130505738" target="_blank">
-    > discord
+  <a href="https://discord.com/users/1376961618130505738" target="_blank">
+    > Discord
   </a>
 
-  <div class="status">
-    status: online · public profile
+  <div class="footer">
+    system online
   </div>
 </div>
+
+<script>
+const terminal = document.getElementById("terminal-bg");
+
+const lines = [
+  "[ OK ] loading kernel modules",
+  "[ OK ] initializing network stack",
+  "[ OK ] mounting /dev/root",
+  "[ OK ] starting system services",
+  "[ OK ] user session created",
+  "[ OK ] checking permissions",
+  "[ OK ] environment ready",
+  "[ OK ] listening on port 443",
+  "[ OK ] handshake complete",
+  "[ OK ] process running"
+];
+
+function addLine() {
+  const line = lines[Math.floor(Math.random() * lines.length)];
+  terminal.textContent += line + "\n";
+  terminal.scrollTop = terminal.scrollHeight;
+
+  if (terminal.textContent.split("\n").length > 60) {
+    terminal.textContent = terminal.textContent.split("\n").slice(10).join("\n");
+  }
+}
+
+setInterval(addLine, 120);
+</script>
 
 </body>
 </html>
