@@ -6,155 +6,187 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2572/2572734.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;}
 body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overflow:hidden;}
+
+/* STARS */
+#stars{position:fixed;inset:0;z-index:0;}
+
+/* CLICK TO ENTER */
 .enter{position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;z-index:20;cursor:pointer;}
 .enter span{font-size:28px;color:#ff0000;text-shadow:0 0 20px #ff0000;animation:pulse 1.5s infinite;}
 @keyframes pulse{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
+
+/* MAIN */
 .container{position:relative;z-index:1;opacity:0;transition:.8s;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+
+/* AVATAR */
 .avatar{width:120px;height:120px;border-radius:50%;background:url("https://i.pinimg.com/originals/85/9d/02/859d02cc14248320a24a21e13939ed73.gif") center/cover;border:3px solid #ff0000;box-shadow:0 0 25px #ff0000;margin-bottom:15px;}
 .name{font-size:34px;color:#ff0000;text-shadow:0 0 15px #ff0000;}
+
+/* LINKS */
 .links{display:flex;gap:20px;margin:15px 0;z-index:2;}
-.links a{width:50px;height:50px;border:1px solid #ff0000;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#ff0000;font-size:22px;text-decoration:none;transition:.25s;}
-.links a:hover{background:#ff0000;color:#000;}
-.player{width:300px;text-align:center;margin-top:10px;}
-.controls{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:5px;}
-.play, .prev, .next, .like, .dislike{width:40px;height:40px;border-radius:50%;background:#ff0000;color:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;}
-.bar{flex:1;height:6px;background:#333;border-radius:10px;cursor:pointer;margin:0 10px;position:relative;}
-.progress{height:100%;width:0%;background:#ff0000;border-radius:10px;}
-.volume-container{position:absolute;top:10px;left:10px;display:flex;align-items:center;gap:5px;}
-#vol{width:120px;}
-#volIcon{cursor:pointer;color:#ff0000;font-size:20px;}
-#fs{position:absolute;top:10px;right:10px;width:35px;height:35px;background:#ff0000;color:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-.time{font-size:12px;margin-top:5px;}
-.views{position:absolute;bottom:10px;left:10px;font-size:18px;color:#ff0000;}
-.likes-count, .dislikes-count{color:#ff0000;margin-left:5px;font-weight:bold;font-size:16px;}
-canvas{position:fixed;inset:0;z-index:0;}
+.links a{width:50px;height:50px;border:1px solid #ff0000;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#ff0000;text-decoration:none;transition:.2s;}
+.links a:hover{background:#ff0000;color:#000;transform:scale(1.1);}
+
+/* PLAYER */
+.player{width:90%;max-width:500px;margin-top:10px;}
+.progress-container{position:relative;width:100%;height:8px;background:#333;border-radius:4px;cursor:pointer;margin-bottom:15px;}
+.progress-bar{height:100%;width:0%;background:#ff0000;border-radius:4px;position:relative;}
+.knob{position:absolute;top:50%;transform:translate(-50%,-50%);width:14px;height:14px;background:#ff0000;border-radius:50%;pointer-events:none;}
+.time-container{display:flex;justify-content:space-between;font-size:12px;opacity:.7;margin-bottom:8px;}
+.controls{display:flex;justify-content:center;gap:10px;margin-bottom:10px;}
+.btn{width:44px;height:44px;border-radius:50%;background:#ff0000;color:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+
+/* FULLSCREEN */
+.fullscreen{position:fixed;top:15px;right:15px;font-size:20px;color:#ff0000;cursor:pointer;z-index:2;}
+
+/* VOLUME */
+.volume-container{position:fixed;top:15px;left:15px;display:flex;align-items:center;gap:6px;z-index:2;}
+.volume-container input[type=range]{width:120px;}
+
+/* VIEWS */
+.views{position:fixed;bottom:15px;left:15px;font-size:20px;opacity:.8;z-index:2;}
 </style>
 </head>
 <body>
 
+<canvas id="stars"></canvas>
 <div class="enter" id="enter"><span>Click to enter</span></div>
 
-<canvas id="bg"></canvas>
+<div class="fullscreen" id="fs"><i class="fa fa-expand"></i></div>
+<div class="views">👁 <span id="views">0</span></div>
 
-<audio id="music" preload="auto">
-  <source src="assets/melodrama.mp3" type="audio/mpeg">
-</audio>
+<div class="volume-container">
+  <i class="fa fa-volume-high" id="volIcon"></i>
+  <input type="range" id="vol" min="0" max="1" step="0.01">
+</div>
 
-<div class="container">
+<div class="container" id="container">
   <div class="avatar"></div>
   <div class="name">Mathkasa</div>
 
   <div class="links">
-    <a href="https://discord.com/users/1376961618130505738" target="_blank"><i class="fab fa-discord"></i></a>
-    <a href="https://www.tiktok.com/@mathkasa" target="_blank"><i class="fab fa-tiktok"></i></a>
-    <a href="https://www.youtube.com/@mathkasa" target="_blank"><i class="fab fa-youtube"></i></a>
-  </div>
-
-  <div class="volume-container">
-    <i class="fa fa-volume-high" id="volIcon"></i>
-    <input type="range" id="vol" min="0" max="1" step="0.01">
+    <a href="https://discord.com/" target="_blank"><i class="fab fa-discord"></i></a>
+    <a href="https://www.tiktok.com/" target="_blank"><i class="fab fa-tiktok"></i></a>
+    <a href="https://www.youtube.com/" target="_blank"><i class="fab fa-youtube"></i></a>
   </div>
 
   <div class="player">
-    <div class="bar" id="bar"><div class="progress" id="progress"></div></div>
-    <div class="controls">
-      <div class="like" id="like"><i class="fa fa-thumbs-up"></i> <span class="likes-count" id="likes">0</span></div>
-      <div class="prev" id="prev"><i class="fa fa-backward"></i></div>
-      <div class="play" id="play"><i class="fa fa-play"></i></div>
-      <div class="next" id="next"><i class="fa fa-forward"></i></div>
-      <div class="dislike" id="dislike"><i class="fa fa-thumbs-down"></i> <span class="dislikes-count" id="dislikes">0</span></div>
+    <div class="progress-container" id="bar">
+      <div class="progress-bar" id="progress">
+        <div class="knob" id="knob"></div>
+      </div>
     </div>
-    <div class="time" id="time">0:00 / 0:00</div>
+    <div class="time-container">
+      <span id="time-current">0:00</span>
+      <span id="time-total">0:00</span>
+    </div>
+    <div class="controls">
+      <div class="btn" id="prev"><i class="fa fa-backward"></i></div>
+      <div class="btn" id="play"><i class="fa fa-play"></i></div>
+      <div class="btn" id="next"><i class="fa fa-forward"></i></div>
+      <div class="btn" id="like"><i class="fa fa-thumbs-up"></i></div>
+    </div>
   </div>
-
-  <div class="views">👁 <span id="views">0</span></div>
-
-  <div id="fs"><i class="fa fa-expand"></i></div>
 </div>
 
 <script>
-/* BACKGROUND STARS */
-const c=document.getElementById("bg"),ctx=c.getContext("2d");
-function resize(){c.width=innerWidth;c.height=innerHeight;}
-resize();window.addEventListener("resize",resize);
-const stars=[...Array(140)].map(()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.5,v:Math.random()*.4+.1}));
-(function anim(){ctx.clearRect(0,0,c.width,c.height);ctx.fillStyle="#fff";stars.forEach(s=>{ctx.globalAlpha=Math.random();ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();s.y+=s.v;if(s.y>c.height)s.y=0;});requestAnimationFrame(anim);})();
+/* VIBRATION */
+function vibrate(p){if("vibrate" in navigator) navigator.vibrate(p);}
 
-/* ELEMENTS */
+/* STARS */
+const sc=document.getElementById("stars"),sctx=sc.getContext("2d");
+function resize(){sc.width=innerWidth; sc.height=innerHeight;}
+resize(); window.addEventListener("resize",resize);
+const stars=[...Array(150)].map(()=>({x:Math.random()*sc.width,y:Math.random()*sc.height,r:Math.random()*1.5,v:Math.random()*.6+.3}));
+(function drawStars(){
+  sctx.clearRect(0,0,sc.width,sc.height);
+  sctx.fillStyle="#fff";
+  stars.forEach(s=>{
+    sctx.globalAlpha=Math.random();
+    sctx.beginPath();
+    sctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    sctx.fill();
+    s.y+=s.v;
+    if(s.y>sc.height){ s.y=0; s.x=Math.random()*sc.width; }
+  });
+  requestAnimationFrame(drawStars);
+})();
+
+/* PLAYLIST */
+const playlist=["assets/melodrama.mp3","assets/jdtestelesflammes.mp3"];
+let index=0,audio=null;
+
 const enter=document.getElementById("enter");
-const container=document.querySelector(".container");
-const audio=document.getElementById("music");
-const playBtn=document.getElementById("play");
-const prevBtn=document.getElementById("prev");
-const nextBtn=document.getElementById("next");
+const container=document.getElementById("container");
+const play=document.getElementById("play");
+const prev=document.getElementById("prev");
+const next=document.getElementById("next");
+const like=document.getElementById("like");
 const bar=document.getElementById("bar");
-const prog=document.getElementById("progress");
-const timeEl=document.getElementById("time");
-const vol=document.getElementById("vol");
+const progress=document.getElementById("progress");
+const knob=document.getElementById("knob");
+const timeCurrent=document.getElementById("time-current");
+const timeTotal=document.getElementById("time-total");
+const volSlider=document.getElementById("vol");
 const volIcon=document.getElementById("volIcon");
-const fsBtn=document.getElementById("fs");
-const viewsEl=document.getElementById("views");
-const likeBtn=document.getElementById("like");
-const dislikeBtn=document.getElementById("dislike");
-const likesCount=document.getElementById("likes");
-const dislikesCount=document.getElementById("dislikes");
 
-let liked=false, disliked=false;
+function format(t){ return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0"); }
 
-/* FORMAT TIME */
-function format(t){return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0");}
-
-/* ENTER CLICK */
-enter.addEventListener("click",async()=>{
+/* CLICK TO ENTER */
+enter.onclick=()=>{
+  vibrate([120,40,120]);
   enter.style.display="none";
   container.style.opacity=1;
-  try{await audio.play(); playBtn.innerHTML='<i class="fa fa-pause"></i>';}catch{}
-});
 
-/* PLAY / PAUSE */
-playBtn.addEventListener("click",async()=>{
-  if(audio.paused){await audio.play(); playBtn.innerHTML='<i class="fa fa-pause"></i>';vibrate(50);}
-  else{audio.pause(); playBtn.innerHTML='<i class="fa fa-play"></i>';}
-});
+  audio=new Audio(playlist[index]);
+  audio.volume=volSlider.value||0.6;
+  audio.play();
+  play.innerHTML='<i class="fa fa-pause"></i>';
 
-/* PREV / NEXT - just placeholders */
-prevBtn.addEventListener("click",()=>{audio.currentTime=0; vibrate(30);});
-nextBtn.addEventListener("click",()=>{audio.currentTime=audio.duration; vibrate(30);});
+  audio.ontimeupdate=()=>{
+    const pct=(audio.currentTime/audio.duration*100);
+    progress.style.width=pct+"%";
+    knob.style.left=pct+"%";
+    timeCurrent.textContent=format(audio.currentTime);
+    timeTotal.textContent=format(audio.duration);
+  };
+};
 
-/* PROGRESS BAR */
-audio.addEventListener("timeupdate",()=>{
-  if(audio.duration){prog.style.width=(audio.currentTime/audio.duration*100)+"%"; timeEl.textContent=`${format(audio.currentTime)} / ${format(audio.duration)}`;}
-});
-bar.addEventListener("click",e=>{const r=bar.getBoundingClientRect(); audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;});
+/* BUTTONS */
+play.onclick=()=>{vibrate(40); if(audio.paused){audio.play(); play.innerHTML='<i class="fa fa-pause"></i>';} else{audio.pause(); play.innerHTML='<i class="fa fa-play"></i>';}}
+prev.onclick=()=>{vibrate(60); index=(index-1+playlist.length)%playlist.length; audio.src=playlist[index]; audio.play(); play.innerHTML='<i class="fa fa-pause"></i>'; }
+next.onclick=()=>{vibrate(60); index=(index+1)%playlist.length; audio.src=playlist[index]; audio.play(); play.innerHTML='<i class="fa fa-pause"></i>'; }
+
+/* LIKE */
+like.onclick=()=>{
+  if(!localStorage.liked){ localStorage.liked=true; alert("Vous avez liké !"); }
+};
+
+/* BAR CLICK */
+bar.onclick=e=>{
+  vibrate(30);
+  const r=bar.getBoundingClientRect();
+  audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;
+};
 
 /* VOLUME */
-vol.value=localStorage.vol||0.5; audio.volume=vol.value;
-vol.oninput=()=>{audio.volume=vol.value;localStorage.vol=vol.value;volIcon.className=audio.volume==0?'fa fa-volume-xmark':'fa fa-volume-high';};
-volIcon.addEventListener("click",()=>{audio.muted=!audio.muted;volIcon.className=audio.muted?'fa fa-volume-xmark':'fa fa-volume-high';});
+volSlider.value=0.6;
+volSlider.oninput=()=>{audio.volume=volSlider.value; volIcon.className=audio.volume==0?'fa fa-volume-xmark':'fa fa-volume-high';}
+volIcon.onclick=()=>{audio.volume=audio.volume>0?0:volSlider.value; volIcon.className=audio.volume==0?'fa fa-volume-xmark':'fa fa-volume-high';}
 
 /* FULLSCREEN */
-fsBtn.addEventListener("click",()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen().then(()=>{fsBtn.innerHTML='<i class="fa fa-compress"></i>';}).catch(()=>{}); else document.exitFullscreen().then(()=>{fsBtn.innerHTML='<i class="fa fa-expand"></i>';});});
+const fs=document.getElementById("fs");
+fs.onclick=()=>{
+  if(!document.fullscreenElement){document.documentElement.requestFullscreen(); fs.innerHTML='<i class="fa fa-compress"></i>';}
+  else{document.exitFullscreen(); fs.innerHTML='<i class="fa fa-expand"></i>';}
+};
 
 /* VIEWS */
-fetch('https://api.countapi.xyz/hit/mathkasa/site').then(r=>r.json()).then(d=>viewsEl.textContent=d.value);
-
-/* LIKE / DISLIKE */
-likeBtn.addEventListener("click",()=>{
-  if(!liked){liked=true; dislikesCount.textContent=Math.max(0,parseInt(dislikesCount.textContent)); likesCount.textContent=parseInt(likesCount.textContent)+1; vibrate(50);}
-});
-dislikeBtn.addEventListener("click",()=>{
-  if(!disliked){disliked=true; likesCount.textContent=Math.max(0,parseInt(likesCount.textContent)); dislikesCount.textContent=parseInt(dislikesCount.textContent)+1; vibrate(50);}
-});
-
-/* VIBRATION HELPER */
-function vibrate(ms){if("vibrate" in navigator){navigator.vibrate(ms);}}
-
-/* INIT VOLUME */
-vol.dispatchEvent(new Event("input"));
+fetch("https://api.countapi.xyz/hit/mathkasa/site").then(r=>r.json()).then(d=>document.querySelector(".views span").textContent=d.value);
 </script>
-
 </body>
 </html>
