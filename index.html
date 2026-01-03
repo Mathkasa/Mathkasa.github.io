@@ -111,7 +111,7 @@ body{
 .controls{
   display:flex;
   align-items:center;
-  gap:10px;
+  gap:8px;
 }
 
 .btn{
@@ -164,33 +164,17 @@ body{
   position:fixed;
   bottom:15px;
   left:15px;
-  font-size:18px;
+  font-size:20px;
   opacity:.8;
   z-index:2;
 }
 
-/* GLITCH */
-#glitch{
+/* GLITCH RAPIDE */
+#glitchRapid{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.9);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:10;
-}
-
-#terminal{
-  color:#ff0000;
-  font-family:monospace;
-  font-size:14px;
-  text-shadow:0 0 5px #ff0000;
-  animation:flicker .12s infinite alternate;
-}
-
-@keyframes flicker{
-  from{opacity:.7}
-  to{opacity:1}
+  pointer-events:none;
+  z-index:1;
 }
 </style>
 </head>
@@ -204,7 +188,7 @@ body{
 <div class="fullscreen" id="fs"><i class="fa fa-expand"></i></div>
 <div class="views">👁 <span id="views">0</span></div>
 
-<div id="glitch"><pre id="terminal"></pre></div>
+<div id="glitchRapid"></div>
 
 <div class="container" id="container">
   <div class="avatar"></div>
@@ -232,25 +216,26 @@ body{
 function vibrate(p){ if("vibrate" in navigator) navigator.vibrate(p); }
 function format(t){ return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0"); }
 
-/* STARS */
+/* ⭐ Etoiles */
 const sc=document.getElementById("stars"),sctx=sc.getContext("2d");
-function resize(){ sc.width=innerWidth; sc.height=innerHeight }
-resize(); addEventListener("resize",resize);
-
+function resize(){sc.width=innerWidth; sc.height=innerHeight;}
+resize(); window.addEventListener("resize",resize);
 const stars=[...Array(150)].map(()=>({x:Math.random()*sc.width,y:Math.random()*sc.height,r:Math.random()*1.5,v:Math.random()*.6+.3}));
-
 (function drawStars(){
   sctx.clearRect(0,0,sc.width,sc.height);
   sctx.fillStyle="#fff";
   stars.forEach(s=>{
     sctx.globalAlpha=Math.random();
-    sctx.beginPath(); sctx.arc(s.x,s.y,s.r,0,Math.PI*2); sctx.fill();
-    s.y+=s.v; if(s.y>sc.height){ s.y=0; s.x=Math.random()*sc.width; }
+    sctx.beginPath();
+    sctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    sctx.fill();
+    s.y+=s.v;
+    if(s.y>sc.height){ s.y=0; s.x=Math.random()*sc.width; }
   });
   requestAnimationFrame(drawStars);
 })();
 
-/* MUSIC */
+/* 🎵 MUSIQUE */
 const playlist=["assets/jdtestelesflammes.mp3","assets/melodrama.mp3"];
 let index=0,audio;
 
@@ -263,6 +248,7 @@ const bar=document.getElementById("bar");
 const progress=document.getElementById("progress");
 const time=document.getElementById("time");
 
+/* Click to enter */
 enter.onclick=()=>{
   vibrate([120,40,120]);
   enter.style.display="none";
@@ -279,22 +265,25 @@ enter.onclick=()=>{
   };
 };
 
+/* Play / Pause */
 play.onclick=()=>{
   vibrate(40);
   if(audio.paused){ audio.play(); play.innerHTML='<i class="fa fa-pause"></i>'; }
   else{ audio.pause(); play.innerHTML='<i class="fa fa-play"></i>'; }
 };
 
+/* Next / Prev */
 prev.onclick=()=>{ vibrate(60); index=(index-1+playlist.length)%playlist.length; audio.src=playlist[index]; audio.play(); };
 next.onclick=()=>{ vibrate(60); index=(index+1)%playlist.length; audio.src=playlist[index]; audio.play(); };
 
+/* Barre */
 bar.onclick=e=>{
   vibrate(30);
   const r=bar.getBoundingClientRect();
   audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;
 };
 
-/* FULLSCREEN */
+/* Fullscreen */
 const fs=document.getElementById("fs");
 fs.onclick=()=>{
   if(!document.fullscreenElement){
@@ -306,36 +295,53 @@ fs.onclick=()=>{
   }
 };
 
-/* GLITCH */
-const glitch=document.getElementById("glitch");
-const terminal=document.getElementById("terminal");
-const lines=[
-  "> init connection...",
-  "> bypass firewall",
-  "> access granted",
-  "> decrypting data",
-  "> uploading payload",
-  "> complete."
-];
-
-function showGlitch(){
-  glitch.style.display="flex";
-  terminal.textContent="";
-  vibrate([200,80,150,60,300,100,200,50,400]);
-  let i=0;
-  const t=setInterval(()=>{
-    terminal.textContent+=lines[i++]+"\n";
-    if(i>=lines.length) clearInterval(t);
-  },120);
-  setTimeout(()=>glitch.style.display="none",3000);
-}
-
-setInterval(()=>{ if(Math.random()>.6) showGlitch(); },25000);
-
 /* VIEWS */
 fetch("https://api.countapi.xyz/hit/mathkasa/site")
 .then(r=>r.json())
 .then(d=>views.textContent=d.value);
+
+/* ⚡ GLITCH RAPIDE */
+const glitchDiv=document.getElementById("glitchRapid");
+const commands=[
+  "init connection...","bypass firewall","access granted",
+  "decrypting data","uploading payload","complete.",
+  "ping server","sync database","launch protocol","override lock",
+  "encrypting files","virus injected","system compromised"
+];
+
+function glitchUltraRapid(){
+  // 1️⃣ Flash rapide
+  glitchDiv.style.background="rgba(255,0,0,0.4)";
+  vibrate([200,100,200]); // grosse vibration mobile
+  setTimeout(()=>{
+    glitchDiv.style.background="transparent";
+    
+    // 2️⃣ Terminal ultra rapide
+    let count=0;
+    const interval=setInterval(()=>{
+      let lines="";
+      for(let i=0;i<15;i++){
+        const cmd=commands[Math.floor(Math.random()*commands.length)];
+        lines+=cmd+"\n";
+      }
+      glitchDiv.style.color="#ff0000";
+      glitchDiv.style.fontFamily="monospace";
+      glitchDiv.style.fontSize="12px";
+      glitchDiv.style.whiteSpace="pre";
+      glitchDiv.innerHTML=lines;
+      count++;
+      if(count>6){
+        clearInterval(interval);
+        glitchDiv.innerHTML="";
+      }
+    },80);
+
+  },1000); // flash 1s
+}
+
+// déclenche aléatoire toutes les 20-40s
+setInterval(()=>{ if(Math.random()>0.5) glitchUltraRapid(); },25000);
+
 </script>
 
 </body>
