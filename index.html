@@ -107,8 +107,25 @@ body{
 }
 
 /* PLAYER */
-.player{width:300px}
+.player{
+  width:90%;
+  max-width:500px;
+}
 .controls{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:6px;
+}
+
+.left-controls{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.right-controls{
   display:flex;
   align-items:center;
   gap:8px;
@@ -202,10 +219,14 @@ body{
 
   <div class="player">
     <div class="controls">
-      <div class="btn" id="prev"><i class="fa fa-backward"></i></div>
-      <div class="btn" id="play"><i class="fa fa-play"></i></div>
-      <div class="btn" id="next"><i class="fa fa-forward"></i></div>
+      <div class="left-controls">
+        <div class="btn" id="prev"><i class="fa fa-backward"></i></div>
+        <div class="btn" id="play"><i class="fa fa-play"></i></div>
+      </div>
       <div class="bar" id="bar"><div class="progress" id="progress"></div></div>
+      <div class="right-controls">
+        <div class="btn" id="next"><i class="fa fa-forward"></i></div>
+      </div>
     </div>
     <div class="time" id="time">0:00 / 0:00</div>
   </div>
@@ -300,7 +321,7 @@ fetch("https://api.countapi.xyz/hit/mathkasa/site")
 .then(r=>r.json())
 .then(d=>views.textContent=d.value);
 
-/* ⚡ GLITCH RAPIDE */
+/* ⚡ GLITCH RAPIDE avec terminal en arrière-plan */
 const glitchDiv=document.getElementById("glitchRapid");
 const commands=[
   "init connection...","bypass firewall","access granted",
@@ -310,8 +331,11 @@ const commands=[
 ];
 
 function glitchUltraRapid(){
+  // désactiver étoiles
+  sc.style.display="none";
+  
   // 1️⃣ Flash rapide
-  glitchDiv.style.background="rgba(255,0,0,0.4)";
+  glitchDiv.style.background="rgba(255,0,0,0.2)";
   vibrate([200,100,200]); // grosse vibration mobile
   setTimeout(()=>{
     glitchDiv.style.background="transparent";
@@ -333,6 +357,7 @@ function glitchUltraRapid(){
       if(count>6){
         clearInterval(interval);
         glitchDiv.innerHTML="";
+        sc.style.display="block"; // étoiles reviennent
       }
     },80);
 
