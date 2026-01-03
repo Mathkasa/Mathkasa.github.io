@@ -33,11 +33,10 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 
 /* PLAYER */
 .player{width:90%;max-width:500px;margin-top:10px;}
-.progress-container{position:relative;width:100%;height:8px;background:#333;border-radius:4px;cursor:pointer;margin-bottom:25px;}
+.progress-container{position:relative;width:100%;height:8px;background:#333;border-radius:4px;cursor:pointer;margin-bottom:10px;}
 .progress-bar{height:100%;width:0%;background:#ff0000;border-radius:4px;position:relative;}
-.knob{position:absolute;top:50%;transform:translate(-50%,-50%);width:14px;height:14px;background:#ff0000;border-radius:50%;pointer-events:none;}
 .time-container{display:flex;justify-content:space-between;font-size:12px;opacity:.7;margin-bottom:8px;}
-.controls{display:flex;justify-content:center;gap:15px;}
+.controls{display:flex;justify-content:center;gap:15px;margin-bottom:15px;}
 .btn{width:44px;height:44px;border-radius:50%;background:#ff0000;color:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;}
 
 /* FULLSCREEN */
@@ -45,14 +44,14 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 
 /* VOLUME */
 .volume-container{position:fixed;top:15px;left:15px;display:flex;align-items:center;gap:6px;z-index:2;}
-.volume-container input[type=range]{width:120px;}
+.volume-container input[type=range]{width:120px;accent-color:#ff0000;}
+#volIcon{font-size:20px;color:#ff0000;cursor:pointer;}
 
 /* VIEWS */
 .views{position:fixed;bottom:15px;left:15px;font-size:20px;opacity:.8;z-index:2;}
 
-/* POPUPS */
-.popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a0000;border:2px solid #ff0000;color:#ff0000;padding:15px;font-family:monospace;display:none;z-index:50;text-align:center;max-width:90%;animation:popupAnim .3s;}
-@keyframes popupAnim{0%{transform:translate(-50%,-60%) scale(0.8);opacity:0}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
+/* LIKES */
+.likes{position:fixed;bottom:15px;right:15px;font-size:20px;opacity:.8;z-index:2;display:flex;align-items:center;gap:6px;cursor:pointer;color:#ff0000;}
 </style>
 </head>
 <body>
@@ -68,7 +67,7 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
   <input type="range" id="vol" min="0" max="1" step="0.01">
 </div>
 
-<div class="popup" id="popup">⚠️ Popups rouges massifs !</div>
+<div class="likes" id="likes"><i class="fa fa-heart"></i> <span id="likeCount">0</span></div>
 
 <div class="container" id="container">
   <div class="avatar"></div>
@@ -82,9 +81,7 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 
   <div class="player">
     <div class="progress-container" id="bar">
-      <div class="progress-bar" id="progress">
-        <div class="knob" id="knob"></div>
-      </div>
+      <div class="progress-bar" id="progress"></div>
     </div>
     <div class="time-container">
       <span id="time-current">0:00</span>
@@ -132,14 +129,19 @@ const prev=document.getElementById("prev");
 const next=document.getElementById("next");
 const bar=document.getElementById("bar");
 const progress=document.getElementById("progress");
-const knob=document.getElementById("knob");
 const timeCurrent=document.getElementById("time-current");
 const timeTotal=document.getElementById("time-total");
 const volSlider=document.getElementById("vol");
 const volIcon=document.getElementById("volIcon");
-const popup=document.getElementById("popup");
+const likesEl=document.getElementById("likes");
+const likeCount=document.getElementById("likeCount");
 
+/* FORMAT TIME */
 function format(t){ return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0"); }
+
+/* INIT LIKES */
+let likes = localStorage.getItem("likes")||0;
+likeCount.textContent = likes;
 
 /* CLICK TO ENTER */
 enter.onclick=()=>{
@@ -155,7 +157,6 @@ enter.onclick=()=>{
   audio.ontimeupdate=()=>{
     const pct=(audio.currentTime/audio.duration*100);
     progress.style.width=pct+"%";
-    knob.style.left=pct+"%";
     timeCurrent.textContent=format(audio.currentTime);
     timeTotal.textContent=format(audio.duration);
   };
@@ -176,6 +177,12 @@ bar.onclick=e=>{
 /* VOLUME */
 volSlider.value=0.6;
 volSlider.oninput=()=>{audio.volume=volSlider.value; volIcon.className=audio.volume==0?'fa fa-volume-xmark':'fa fa-volume-high';}
+/* CLICK LOGO VOLUME TO MUTE */
+volIcon.onclick=()=>{
+  vibrate(40);
+  if(audio.volume>0){audio.volume=0; volSlider.value=0; volIcon.className='fa fa-volume-xmark';}
+  else{audio.volume=0.6; volSlider.value=0.6; volIcon.className='fa fa-volume-high';}
+}
 
 /* FULLSCREEN */
 const fs=document.getElementById("fs");
@@ -187,17 +194,13 @@ fs.onclick=()=>{
 /* VIEWS */
 fetch("https://api.countapi.xyz/hit/mathkasa/site").then(r=>r.json()).then(d=>document.querySelector(".views span").textContent=d.value);
 
-/* POPUPS RAPIDES */
-function showPopupRapid(text){
-  popup.innerText=text;
-  popup.style.display="block";
-  vibrate(200); // grosse vibration sur mobile
-  setTimeout(()=>{popup.style.display="none";},3000);
+/* LIKES CLICK */
+likesEl.onclick=()=>{
+  likes++;
+  localStorage.setItem("likes",likes);
+  likeCount.textContent=likes;
+  vibrate(40);
 }
-
-// Exemple d'apparition aléatoire
-setInterval(()=>{if(Math.random()>0.8) showPopupRapid("⚠️ Popups rouges massifs !");},15000);
-
 </script>
 </body>
 </html>
