@@ -13,122 +13,144 @@
 }
 
 body {
-  background: black;
-  font-family: monospace;
+  background: radial-gradient(circle at top, #111 0%, #000 60%);
+  font-family: Arial, sans-serif;
+  color: #fff;
+  height: 100vh;
   overflow: hidden;
 }
 
-/* FOND TERMINAL */
-#terminal-bg {
+/* PARTICULES */
+canvas {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
+  z-index: 0;
+}
+
+/* CONTENU */
+.container {
+  position: relative;
+  z-index: 1;
   height: 100%;
-  color: #00ff88;
-  font-size: 13px;
-  opacity: 0.15;
-  padding: 10px;
-  white-space: pre;
-  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-/* CARTE CENTRALE */
-.card {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border: 1px solid #00ff88;
-  padding: 25px;
-  text-align: center;
-  color: #00ff88;
-  background: rgba(0,0,0,0.85);
+.avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: #222;
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 15px;
+  border: 2px solid #ff9f1a;
 }
 
+/* pseudo */
 .name {
-  font-size: 24px;
-  margin-bottom: 5px;
+  font-size: 32px;
+  font-weight: bold;
+  color: #ff9f1a;
+  text-shadow: 0 0 10px rgba(255,159,26,0.6);
 }
 
-.role {
-  font-size: 13px;
-  opacity: 0.7;
-  margin-bottom: 20px;
+/* réseaux */
+.links {
+  margin-top: 25px;
+  display: flex;
+  gap: 20px;
 }
 
-a {
-  display: block;
-  margin: 10px 0;
-  color: #00ff88;
+.links a {
+  width: 48px;
+  height: 48px;
+  background: #ff9f1a;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 22px;
   text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-a:hover {
-  background: #00ff88;
-  color: black;
+.links a:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 15px rgba(255,159,26,0.8);
 }
 
+/* footer */
 .footer {
-  margin-top: 15px;
-  font-size: 11px;
-  opacity: 0.5;
+  margin-top: 25px;
+  font-size: 12px;
+  opacity: 0.6;
 }
 </style>
 </head>
 
 <body>
 
-<div id="terminal-bg"></div>
+<canvas id="stars"></canvas>
 
-<div class="card">
+<div class="container">
+  <!-- AVATAR -->
+  <!-- tu pourras remplacer l'image plus tard -->
+  <div class="avatar" style="background-image:url('https://i.imgur.com/eqQkW9H.jpeg')"></div>
+
   <div class="name">mathkasa</div>
-  <div class="role">developer • content creator</div>
 
-  <a href="https://www.youtube.com/@mathkasa" target="_blank">
-    > YouTube
-  </a>
-
-  <a href="https://www.tiktok.com/@mathkasa" target="_blank">
-    > TikTok
-  </a>
-
-  <a href="https://discord.com/users/1376961618130505738" target="_blank">
-    > Discord
-  </a>
+  <div class="links">
+    <a href="https://www.youtube.com/@mathkasa" target="_blank">▶</a>
+    <a href="https://www.tiktok.com/@mathkasa" target="_blank">♪</a>
+    <a href="https://discord.com/users/1376961618130505738" target="_blank">☰</a>
+  </div>
 
   <div class="footer">
-    system online
+    online
   </div>
 </div>
 
 <script>
-const terminal = document.getElementById("terminal-bg");
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
 
-const lines = [
-  "[ OK ] loading kernel modules",
-  "[ OK ] initializing network stack",
-  "[ OK ] mounting /dev/root",
-  "[ OK ] starting system services",
-  "[ OK ] user session created",
-  "[ OK ] checking permissions",
-  "[ OK ] environment ready",
-  "[ OK ] listening on port 443",
-  "[ OK ] handshake complete",
-  "[ OK ] process running"
-];
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-function addLine() {
-  const line = lines[Math.floor(Math.random() * lines.length)];
-  terminal.textContent += line + "\n";
-  terminal.scrollTop = terminal.scrollHeight;
+const stars = Array.from({ length: 120 }, () => ({
+  x: Math.random() * canvas.width,
+  y: Math.random() * canvas.height,
+  r: Math.random() * 1.5,
+  s: Math.random() * 0.3 + 0.1
+}));
 
-  if (terminal.textContent.split("\n").length > 60) {
-    terminal.textContent = terminal.textContent.split("\n").slice(10).join("\n");
-  }
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#fff";
+
+  stars.forEach(star => {
+    ctx.globalAlpha = Math.random();
+    ctx.beginPath();
+    ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+    ctx.fill();
+    star.y += star.s;
+    if (star.y > canvas.height) star.y = 0;
+  });
+
+  requestAnimationFrame(animate);
 }
 
-setInterval(addLine, 120);
+animate();
+
+window.onresize = () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+};
 </script>
 
 </body>
