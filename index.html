@@ -2,156 +2,128 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>mathkasa — guns.lol style</title>
+<title>mathkasa</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Font Awesome pour les logos -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  background:radial-gradient(circle at top,#111 0%,#000 70%);
+  font-family:Arial,sans-serif;
+  color:#fff;
+  height:100vh;
+  overflow:hidden;
 }
 
-body {
-  font-family: Arial, sans-serif;
-  background: #0f0f10;
-  color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  text-align: center;
+canvas{
+  position:fixed;
+  inset:0;
+  z-index:0;
 }
 
-.container {
-  width: 100%;
-  max-width: 400px;
-  padding: 20px;
+.container{
+  position:relative;
+  z-index:1;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
 }
 
-.avatar {
-  width: 120px;
-  height: 120px;
-  margin: 0 auto 20px;
-  background: #222;
-  background-size: cover;
-  background-position: center;
-  border-radius: 50%;
-  border: 3px solid #ff0066;
+.avatar{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  background-image:url("https://i.imgur.com/eqQkW9H.jpeg");
+  background-size:cover;
+  background-position:center;
+  border:3px solid #ff9900;
+  box-shadow:0 0 25px #ff9900;
+  margin-bottom:15px;
 }
 
-.name {
-  font-size: 28px;
-  font-weight: bold;
-  color: #ff0066;
-  margin-bottom: 20px;
+.name{
+  font-size:34px;
+  font-weight:bold;
+  color:#ff9900;
+  text-shadow:0 0 15px #ff9900;
 }
 
-/* Boutons avec logo */
-.links {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-bottom: 25px;
+.location{
+  opacity:.7;
+  margin-bottom:25px;
 }
 
-.links a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 14px 0;
-  background: #ff0066;
-  color: #fff;
-  font-size: 18px;
-  text-decoration: none;
-  border-radius: 8px;
-  transition: transform .2s, opacity .2s;
+.links{
+  display:flex;
+  gap:22px;
 }
 
-.links a:hover {
-  opacity: 0.85;
-  transform: scale(1.03);
+.links a{
+  width:55px;
+  height:55px;
+  background:rgba(255,153,0,.15);
+  border:1px solid #ff9900;
+  border-radius:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#ff9900;
+  font-size:26px;
+  text-decoration:none;
+  transition:.25s;
 }
 
-/* Footer */
-.footer {
-  font-size: 12px;
-  opacity: 0.6;
+.links a:hover{
+  background:#ff9900;
+  color:#000;
+  box-shadow:0 0 20px #ff9900;
+  transform:scale(1.15);
 }
+
+audio{display:none}
 </style>
-
 </head>
 
 <body>
 
+<canvas id="bg"></canvas>
+
+<audio id="music" src="assets/music.mp3" autoplay loop></audio>
+
 <div class="container">
-
-  <div class="avatar" style="background-image:url('https://i.imgur.com/eqQkW9H.jpeg')"></div>
-
+  <div class="avatar"></div>
   <div class="name">mathkasa</div>
+  <div class="location">📍 online</div>
 
   <div class="links">
-    <a href="https://www.youtube.com/@mathkasa" target="_blank">
-      <i class="fab fa-youtube"></i> YouTube
-    </a>
-    <a href="https://www.tiktok.com/@mathkasa" target="_blank">
-      <i class="fab fa-tiktok"></i> TikTok
-    </a>
-    <a href="https://discord.com/users/1376961618130505738" target="_blank">
-      <i class="fab fa-discord"></i> Discord
-    </a>
-  </div>
-
-  <div class="footer">Powered by guns.lol style</div>
-
-</div>
-
-</body>
-</html>  <div class="footer">
-    online
+    <a href="https://discord.com/users/1376961618130505738" target="_blank"><i class="fab fa-discord"></i></a>
+    <a href="https://www.tiktok.com/@mathkasa" target="_blank"><i class="fab fa-tiktok"></i></a>
+    <a href="https://www.youtube.com/@mathkasa" target="_blank"><i class="fab fa-youtube"></i></a>
   </div>
 </div>
 
 <script>
-const canvas = document.getElementById("stars");
-const ctx = canvas.getContext("2d");
+const c=document.getElementById("bg"),x=c.getContext("2d");
+function r(){c.width=innerWidth;c.height=innerHeight}
+r();addEventListener("resize",r);
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+const s=[...Array(140)].map(()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.5,v:Math.random()*.4+.1}));
 
-const stars = Array.from({ length: 120 }, () => ({
-  x: Math.random() * canvas.width,
-  y: Math.random() * canvas.height,
-  r: Math.random() * 1.5,
-  s: Math.random() * 0.3 + 0.1
-}));
-
-function animate() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "#fff";
-
-  stars.forEach(star => {
-    ctx.globalAlpha = Math.random();
-    ctx.beginPath();
-    ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
-    ctx.fill();
-    star.y += star.s;
-    if (star.y > canvas.height) star.y = 0;
+(function a(){
+  x.clearRect(0,0,c.width,c.height);
+  x.fillStyle="#fff";
+  s.forEach(o=>{
+    x.globalAlpha=Math.random();
+    x.beginPath();x.arc(o.x,o.y,o.r,0,Math.PI*2);x.fill();
+    o.y+=o.v;if(o.y>c.height)o.y=0;
   });
-
-  requestAnimationFrame(animate);
-}
-
-animate();
-
-window.onresize = () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-};
+  requestAnimationFrame(a);
+})();
 </script>
 
 </body>
