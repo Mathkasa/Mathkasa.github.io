@@ -36,8 +36,13 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 .progress-container{position:relative;width:100%;height:8px;background:#333;border-radius:4px;cursor:pointer;margin-bottom:10px;}
 .progress-bar{height:100%;width:0%;background:#ff0000;border-radius:4px;position:relative;}
 .time-container{display:flex;justify-content:space-between;font-size:12px;opacity:.7;margin-bottom:8px;}
-.controls{display:flex;justify-content:center;gap:15px;margin-bottom:15px;}
-.btn{width:44px;height:44px;border-radius:50%;background:#ff0000;color:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.controls{display:flex;justify-content:center;gap:15px;margin-bottom:15px;align-items:center;}
+.btn{width:44px;height:44px;border-radius:50%;background:#ff0000;color:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;}
+.btn:hover{opacity:.8;}
+
+/* LIKE / DISLIKE */
+.vote-btn{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,0,0,0.3);color:#ff0000;cursor:pointer;transition:.2s;}
+.vote-btn:hover{background:rgba(255,0,0,0.5);}
 
 /* FULLSCREEN */
 .fullscreen{position:fixed;top:15px;right:15px;font-size:20px;color:#ff0000;cursor:pointer;z-index:2;}
@@ -49,9 +54,6 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 
 /* VIEWS */
 .views{position:fixed;bottom:15px;left:15px;font-size:20px;opacity:.8;z-index:2;}
-
-/* LIKES */
-.likes{position:fixed;bottom:15px;right:15px;font-size:20px;opacity:.8;z-index:2;display:flex;align-items:center;gap:6px;cursor:pointer;color:#ff0000;}
 </style>
 </head>
 <body>
@@ -66,8 +68,6 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
   <i class="fa fa-volume-high" id="volIcon"></i>
   <input type="range" id="vol" min="0" max="1" step="0.01">
 </div>
-
-<div class="likes" id="likes"><i class="fa fa-heart"></i> <span id="likeCount">0</span></div>
 
 <div class="container" id="container">
   <div class="avatar"></div>
@@ -91,6 +91,8 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
       <div class="btn" id="prev"><i class="fa fa-backward"></i></div>
       <div class="btn" id="play"><i class="fa fa-play"></i></div>
       <div class="btn" id="next"><i class="fa fa-forward"></i></div>
+      <div class="vote-btn" id="like"><i class="fa fa-thumbs-up"></i></div>
+      <div class="vote-btn" id="dislike"><i class="fa fa-thumbs-down"></i></div>
     </div>
   </div>
 </div>
@@ -119,7 +121,7 @@ const stars=[...Array(150)].map(()=>({x:Math.random()*sc.width,y:Math.random()*s
 })();
 
 /* PLAYLIST */
-const playlist=["assets/melodrama.mp3","assets/jdtestelesflammes.mp3"];
+const playlist=["assets/melodrama.mp3"];
 let index=0,audio=null;
 
 const enter=document.getElementById("enter");
@@ -133,15 +135,15 @@ const timeCurrent=document.getElementById("time-current");
 const timeTotal=document.getElementById("time-total");
 const volSlider=document.getElementById("vol");
 const volIcon=document.getElementById("volIcon");
-const likesEl=document.getElementById("likes");
-const likeCount=document.getElementById("likeCount");
+const likeBtn=document.getElementById("like");
+const dislikeBtn=document.getElementById("dislike");
 
 /* FORMAT TIME */
 function format(t){ return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0"); }
 
 /* INIT LIKES */
-let likes = localStorage.getItem("likes")||0;
-likeCount.textContent = likes;
+let liked = localStorage.getItem("liked")||false;
+let disliked = localStorage.getItem("disliked")||false;
 
 /* CLICK TO ENTER */
 enter.onclick=()=>{
@@ -177,7 +179,6 @@ bar.onclick=e=>{
 /* VOLUME */
 volSlider.value=0.6;
 volSlider.oninput=()=>{audio.volume=volSlider.value; volIcon.className=audio.volume==0?'fa fa-volume-xmark':'fa fa-volume-high';}
-/* CLICK LOGO VOLUME TO MUTE */
 volIcon.onclick=()=>{
   vibrate(40);
   if(audio.volume>0){audio.volume=0; volSlider.value=0; volIcon.className='fa fa-volume-xmark';}
@@ -192,15 +193,26 @@ fs.onclick=()=>{
 };
 
 /* VIEWS */
-fetch("https://api.countapi.xyz/hit/mathkasa/site").then(r=>r.json()).then(d=>document.querySelector(".views span").textContent=d.value);
+const viewsSpan = document.querySelector(".views span");
+fetch("https://api.countapi.xyz/hit/mathkasa/site").then(r=>r.json()).then(d=>{viewsSpan.textContent=d.value;});
 
-/* LIKES CLICK */
-likesEl.onclick=()=>{
-  likes++;
-  localStorage.setItem("likes",likes);
-  likeCount.textContent=likes;
-  vibrate(40);
-}
+/* LIKE / DISLIKE */
+likeBtn.onclick=()=>{
+  if(!liked){
+    liked=true; localStorage.setItem("liked",true);
+    dislikeBtn.style.opacity=0.5; // griser l'autre
+    vibrate(40);
+    alert("Merci pour ton like !");
+  }
+};
+dislikeBtn.onclick=()=>{
+  if(!disliked){
+    disliked=true; localStorage.setItem("disliked",true);
+    likeBtn.style.opacity=0.5; 
+    vibrate(40);
+    alert("Merci pour ton dislike !");
+  }
+};
 </script>
 </body>
 </html>
