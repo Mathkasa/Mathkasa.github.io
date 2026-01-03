@@ -6,13 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2572/2572734.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;}
 body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overflow:hidden;}
-
-/* STARS */
-#stars{position:fixed;inset:0;z-index:0;}
 
 /* CLICK TO ENTER */
 .enter{position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;z-index:20;cursor:pointer;}
@@ -36,13 +32,14 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 .progress-container{position:relative;width:100%;height:8px;background:#333;border-radius:4px;cursor:pointer;margin-bottom:10px;}
 .progress-bar{height:100%;width:0%;background:#ff0000;border-radius:4px;position:relative;}
 .time-container{display:flex;justify-content:space-between;font-size:12px;opacity:.7;margin-bottom:8px;}
-.controls{display:flex;justify-content:center;gap:15px;margin-bottom:15px;align-items:center;}
+.controls{display:flex;justify-content:center;align-items:center;gap:10px;margin-bottom:15px;}
 .btn{width:44px;height:44px;border-radius:50%;background:#ff0000;color:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;}
 .btn:hover{opacity:.8;}
 
 /* LIKE / DISLIKE */
-.vote-btn{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,0,0,0.3);color:#ff0000;cursor:pointer;transition:.2s;}
-.vote-btn:hover{background:rgba(255,0,0,0.5);}
+.vote-btn{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#ff0000;color:#000;cursor:pointer;transition:.2s;}
+.vote-btn:hover{transform:scale(1.2);}
+.vote-count{font-size:14px;color:#ff0000;margin-left:5px;margin-right:5px;}
 
 /* FULLSCREEN */
 .fullscreen{position:fixed;top:15px;right:15px;font-size:20px;color:#ff0000;cursor:pointer;z-index:2;}
@@ -88,11 +85,15 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
       <span id="time-total">0:00</span>
     </div>
     <div class="controls">
+      <!-- Like à gauche du skip précédent -->
+      <div class="vote-btn" id="like"><i class="fa fa-thumbs-up"></i></div><span id="like-count" class="vote-count">0</span>
+
       <div class="btn" id="prev"><i class="fa fa-backward"></i></div>
       <div class="btn" id="play"><i class="fa fa-play"></i></div>
       <div class="btn" id="next"><i class="fa fa-forward"></i></div>
-      <div class="vote-btn" id="like"><i class="fa fa-thumbs-up"></i></div>
-      <div class="vote-btn" id="dislike"><i class="fa fa-thumbs-down"></i></div>
+
+      <!-- Dislike à droite du skip suivant -->
+      <div class="vote-btn" id="dislike"><i class="fa fa-thumbs-down"></i></div><span id="dislike-count" class="vote-count">0</span>
     </div>
   </div>
 </div>
@@ -137,13 +138,19 @@ const volSlider=document.getElementById("vol");
 const volIcon=document.getElementById("volIcon");
 const likeBtn=document.getElementById("like");
 const dislikeBtn=document.getElementById("dislike");
+const likeCount=document.getElementById("like-count");
+const dislikeCount=document.getElementById("dislike-count");
 
 /* FORMAT TIME */
 function format(t){ return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0"); }
 
-/* INIT LIKES */
+/* INIT LIKES / DISLIKES */
 let liked = localStorage.getItem("liked")||false;
 let disliked = localStorage.getItem("disliked")||false;
+let likeNum = parseInt(localStorage.getItem("likeNum"))||0;
+let dislikeNum = parseInt(localStorage.getItem("dislikeNum"))||0;
+likeCount.textContent = likeNum;
+dislikeCount.textContent = dislikeNum;
 
 /* CLICK TO ENTER */
 enter.onclick=()=>{
@@ -200,17 +207,21 @@ fetch("https://api.countapi.xyz/hit/mathkasa/site").then(r=>r.json()).then(d=>{v
 likeBtn.onclick=()=>{
   if(!liked){
     liked=true; localStorage.setItem("liked",true);
+    likeNum++; localStorage.setItem("likeNum",likeNum); likeCount.textContent=likeNum;
     dislikeBtn.style.opacity=0.5; // griser l'autre
+    likeBtn.style.transform="scale(1.3)";
+    setTimeout(()=>{likeBtn.style.transform="scale(1)";},200);
     vibrate(40);
-    alert("Merci pour ton like !");
   }
 };
 dislikeBtn.onclick=()=>{
   if(!disliked){
     disliked=true; localStorage.setItem("disliked",true);
-    likeBtn.style.opacity=0.5; 
+    dislikeNum++; localStorage.setItem("dislikeNum",dislikeNum); dislikeCount.textContent=dislikeNum;
+    likeBtn.style.opacity=0.5;
+    dislikeBtn.style.transform="scale(1.3)";
+    setTimeout(()=>{dislikeBtn.style.transform="scale(1)";},200);
     vibrate(40);
-    alert("Merci pour ton dislike !");
   }
 };
 </script>
