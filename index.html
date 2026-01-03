@@ -15,6 +15,7 @@ body{
   color:#fff;
   height:100dvh;
   overflow:hidden;
+  perspective:1000px;
 }
 canvas{position:fixed;inset:0;z-index:0}
 
@@ -28,7 +29,7 @@ canvas{position:fixed;inset:0;z-index:0}
   justify-content:center;
   align-items:center;
   opacity:0;
-  transition: opacity 1s ease;
+  transition: opacity 1s ease, transform 0.1s ease;
 }
 
 /* CLICK TO ENTER */
@@ -48,19 +49,16 @@ canvas{position:fixed;inset:0;z-index:0}
   color:#ff9900;
   text-shadow:0 0 20px #ff9900;
 }
-.enter:focus, .btn:focus, .volume i:focus {outline:none}
 
 /* AVATAR */
 .avatar{
   width:120px;height:120px;border-radius:50%;
   background:url("https://i.imgur.com/eqQkW9H.jpeg") center/cover no-repeat;
   border:3px solid #ff9900;
-  box-shadow:0 0 25px #ff9900;
   margin-bottom:15px;
 }
 .name{
   font-size:34px;font-weight:bold;color:#ff9900;
-  text-shadow:0 0 15px #ff9900;
 }
 .location{opacity:.7;margin-bottom:20px}
 
@@ -71,86 +69,65 @@ canvas{position:fixed;inset:0;z-index:0}
   border:1px solid #ff9900;border-radius:16px;
   display:flex;align-items:center;justify-content:center;
   color:#ff9900;font-size:26px;text-decoration:none;
-  transition:.25s;
+  transition:0.25s;
 }
-.links a:hover{background:#ff9900;color:#000;transform:scale(1.15);}
+.links a:hover{background:#ff9900;color:#000;transform:scale(1.1);}
 
-/* PLAYER CENTRÉ */
+/* PLAYER */
 .player{
   width:280px;text-align:center;margin-bottom:15px;
   opacity:0;
-  transition:opacity 0.8s ease;
+  transition:opacity 0.8s ease, transform 0.1s ease;
 }
-.controls{display:flex;align-items:center;gap:10px;justify-content:center}
-.btn{width:44px;height:44px;border-radius:50%;background:#ff9900;color:#000;
-display:flex;align-items:center;justify-content:center;cursor:pointer;
-transition:0.2s;}
+.controls{display:flex;align-items:center;gap:10px;justify-content:center;}
+.btn{
+  width:44px;height:44px;border-radius:50%;background:#ff9900;color:#000;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:0.2s;
+  outline:none;
+  border:none;
+}
 .btn:hover{transform:scale(1.1);}
-.bar{flex:1;height:6px;background:#333;border-radius:10px;cursor:pointer}
-.progress{height:100%;width:0%;background:#ff9900;border-radius:10px}
+.bar{flex:1;height:6px;background:#333;border-radius:10px;cursor:pointer;}
+.progress{height:100%;width:0%;background:#ff9900;border-radius:10px;}
 .time{font-size:12px;opacity:.7;margin-top:6px;text-align:center;opacity:0;transition:opacity 0.8s ease;}
 
-/* VOLUME EN HAUT À GAUCHE */
+/* VOLUME TOP LEFT */
 .volume{
-  position:fixed;
-  top:15px;
-  left:15px;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  z-index:20;
-  opacity:0;
-  transition:opacity 0.8s ease;
+  position:fixed;top:15px;left:15px;display:flex;align-items:center;gap:8px;z-index:20;
+  opacity:0;transition:opacity 0.8s ease, transform 0.1s ease;
 }
 .volume input{
-  flex:1;
-  -webkit-appearance:none;
-  height:6px;
-  border-radius:3px;
-  background:#333;
-  cursor:pointer;
+  flex:1;-webkit-appearance:none;height:6px;border-radius:3px;background:#333;cursor:pointer;
 }
 .volume input::-webkit-slider-thumb{
-  -webkit-appearance:none;
-  width:14px;height:14px;
-  border-radius:50%;
-  background:#ff9900;
-  cursor:pointer;
+  -webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#ff9900;cursor:pointer;
 }
 .volume i{cursor:pointer;color:#ff9900;font-size:20px;}
 
-/* FULLSCREEN EN HAUT À DROITE */
+/* FULLSCREEN TOP RIGHT */
 #fs{
-  position:fixed;
-  top:15px;
-  right:15px;
-  z-index:20;
+  position:fixed;top:15px;right:15px;z-index:20;cursor:pointer;
+  background:#ff9900;color:#000;border-radius:50%;width:44px;height:44px;
+  display:flex;align-items:center;justify-content:center;transition:0.2s;
 }
+#fs:hover{transform:scale(1.1);}
 
-/* COMPTEUR VUES EN BAS À GAUCHE */
+/* VIEWS BOTTOM LEFT */
 .views{
-  position:fixed;
-  bottom:25px;
-  left:15px;
-  font-size:24px;
-  opacity:0;
-  z-index:20;
-  transition:opacity 0.8s ease;
+  position:fixed;bottom:25px;left:15px;font-size:24px;opacity:0;z-index:20;
+  transition:opacity 0.8s ease, transform 0.1s ease;
 }
 
-audio{display:none}
+audio{display:none;}
 </style>
 </head>
 <body>
 
-<!-- CLICK TO ENTER -->
-<div class="enter" id="enter" tabindex="0">
-  <span>Click to enter</span>
-</div>
+<div class="enter" id="enter" tabindex="0"><span>Click to enter</span></div>
 
 <canvas id="bg"></canvas>
 
-<!-- AUDIO -->
 <audio id="music" preload="auto">
   <source src="assets/jdtestelesflammes.mp3" type="audio/mpeg">
 </audio>
@@ -166,7 +143,6 @@ audio{display:none}
     <a href="https://www.youtube.com/@mathkasa" target="_blank"><i class="fab fa-youtube"></i></a>
   </div>
 
-  <!-- Player centré -->
   <div class="player">
     <div class="controls">
       <div class="btn" id="play"><i class="fa fa-play"></i></div>
@@ -176,20 +152,16 @@ audio{display:none}
   </div>
 </div>
 
-<!-- VOLUME -->
 <div class="volume">
   <i class="fa fa-volume-high" id="volIcon"></i>
   <input type="range" id="vol" min="0" max="1" step="0.01">
 </div>
 
-<!-- FULLSCREEN -->
-<div class="btn" id="fs"><i class="fa fa-expand"></i></div>
-
-<!-- VUES -->
+<div id="fs"><i class="fa fa-expand"></i></div>
 <div class="views">👁 <span id="views">0</span></div>
 
 <script>
-/* BACKGROUND STARS */
+/* STARS */
 const c=document.getElementById("bg"),ctx=c.getContext("2d");
 function resize(){c.width=innerWidth;c.height=innerHeight}
 resize();addEventListener("resize",resize);
@@ -233,7 +205,6 @@ enter.addEventListener("click",async()=>{
   document.querySelector(".views").style.opacity=1;
   document.querySelector(".player").style.opacity=1;
   timeEl.style.opacity=1;
-
   try{await audio.play();playBtn.innerHTML='<i class="fa fa-pause"></i>';}catch{}
 });
 
@@ -259,22 +230,56 @@ bar.addEventListener("click",e=>{
 vol.value=localStorage.vol||0.5;
 audio.volume=vol.value;
 volIcon.className=audio.volume==0?'fa fa-volume-xmark':'fa fa-volume-high';
+volIcon.addEventListener("click",()=>{
+  audio.muted = !audio.muted;
+  volIcon.className = audio.muted?'fa fa-volume-xmark':'fa fa-volume-high';
+});
 vol.addEventListener("input",()=>{
   audio.volume=vol.value;
   localStorage.vol=vol.value;
-  volIcon.className=audio.volume==0?'fa fa-volume-xmark':'fa fa-volume-high';
+  audio.muted = false;
+  volIcon.className='fa fa-volume-high';
 });
 
 /* FULLSCREEN */
 fsBtn.addEventListener("click",()=>{
-  if(!document.fullscreenElement)document.documentElement.requestFullscreen();
-  else document.exitFullscreen();
+  if(!document.fullscreenElement){
+    document.documentElement.requestFullscreen();
+    fsBtn.innerHTML='<i class="fa fa-compress"></i>';
+  } else {
+    document.exitFullscreen();
+    fsBtn.innerHTML='<i class="fa fa-expand"></i>';
+  }
 });
 
 /* COUNTAPI VIEWS */
 fetch('https://api.countapi.xyz/hit/mathkasa/site')
 .then(res=>res.json())
 .then(d=>views.textContent=d.value);
+
+/* PARALLAX 3D */
+function applyParallax(xFactor,yFactor){
+  const multiplier=15;
+  container.style.transform = `translate3d(${xFactor*multiplier}px, ${yFactor*multiplier}px, 0)`;
+  links.style.transform = `translate3d(${xFactor*multiplier/2}px, ${yFactor*multiplier/2}px, 0)`;
+  document.querySelector(".player").style.transform = `translate3d(${xFactor*multiplier/3}px, ${yFactor*multiplier/3}px, 0)`;
+  document.querySelector(".volume").style.transform = `translate3d(${xFactor*multiplier/4}px, ${yFactor*multiplier/4}px, 0)`;
+  views.style.transform = `translate3d(${xFactor*multiplier/4}px, ${yFactor*multiplier/4}px, 0)`;
+}
+
+/* MOBILE */
+window.addEventListener('deviceorientation', e=>{
+  const xFactor = e.gamma/45;
+  const yFactor = e.beta/45;
+  applyParallax(xFactor,yFactor);
+});
+
+/* PC */
+window.addEventListener('mousemove', e=>{
+  const xFactor = (e.clientX/window.innerWidth - 0.5)*2;
+  const yFactor = (e.clientY/window.innerHeight - 0.5)*2;
+  applyParallax(xFactor,yFactor);
+});
 </script>
 </body>
 </html>
