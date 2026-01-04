@@ -137,6 +137,8 @@ const playlist=["assets/jdtestelesflammes.mp3","assets/melodrama.mp3"];
 let index=0,audio;
 
 /* ENTER */
+const enter=document.getElementById("enter");
+const container=document.getElementById("container");
 enter.onclick=()=>{
   enter.style.display="none";
   container.style.opacity=1;
@@ -166,21 +168,32 @@ fs.onclick=()=>{document.fullscreenElement?(document.exitFullscreen(),fs.innerHT
 
 /* TOOLTIPS */
 ownerBadge.onclick=()=>ownerTooltip.style.display=ownerTooltip.style.display=="block"?"none":"block";
+const viewsBtn=document.getElementById("viewsBtn");
+const viewsTooltip=document.getElementById("viewsTooltip");
 viewsBtn.onclick=e=>{e.stopPropagation();viewsTooltip.style.display=viewsTooltip.style.display=="block"?"none":"block";}
 document.onclick=()=>viewsTooltip.style.display="none";
 
 /* ABOUT */
+const aboutBtn = document.getElementById("aboutBtn");
+const aboutPopup = document.getElementById("aboutPopup");
+const closeAbout = document.getElementById("closeAbout");
 aboutBtn.onclick=()=>aboutPopup.style.display="block";
 closeAbout.onclick=()=>aboutPopup.style.display="none";
 
-/* BIO DYNAMIQUE */
+/* BIO DYNAMIQUE (Unicode safe pour emojis) */
 const role=document.getElementById("role");
 const roles=["👨‍💻 Développeur","🎬 Monteur Vidéo","🤖 Créateur Bot Discord"];
 let r=0,c=0,del=false;
+
 setInterval(()=>{
-  let txt=roles[r];
-  if(!del){role.textContent=txt.slice(0,++c);if(c>txt.length)setTimeout(()=>del=true,1000);}
-  else{role.textContent=txt.slice(0,--c);if(c<0){del=false;r=(r+1)%roles.length;}}
+  let txt=Array.from(roles[r]);
+  if(!del){
+    role.textContent = txt.slice(0,++c).join('');
+    if(c>txt.length) setTimeout(()=>del=true,500);
+  } else {
+    role.textContent = txt.slice(0,--c).join('');
+    if(c<0){ del=false; r=(r+1)%roles.length; }
+  }
 },100);
 </script>
 </body>
