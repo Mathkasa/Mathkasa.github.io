@@ -2,44 +2,62 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Home</title>
+<title>Home – Crée ton site</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2572/2572734.png">
 <style>
-body{background:#000;color:#fff;font-family:Arial,sans-serif;margin:0;padding:0;}
-header{display:flex;justify-content:flex-end;padding:15px;}
-button#loginBtn{background:#ff0000;color:#000;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:bold;}
-/* POPUP LOGIN */
-#loginPopup{
-  display:none;
-  position:fixed;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  background:#111;
-  border:1px solid #ff0000;
-  padding:25px;
-  border-radius:10px;
-  z-index:50;
-  text-align:center;
-}
-#loginPopup input{
-  width:200px;
-  padding:8px;
-  margin:8px 0;
+body{
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
   background:#000;
   color:#fff;
-  border:1px solid #ff0000;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
 }
-#loginPopup button{
-  width:100%;
-  padding:10px;
+header{
+  position:fixed;
+  top:0;
+  right:0;
+  padding:15px;
+}
+button#loginBtn{
   background:#ff0000;
   color:#000;
   border:none;
+  padding:6px 12px;
+  border-radius:6px;
   cursor:pointer;
   font-weight:bold;
 }
-#error{color:red;margin-top:10px;font-size:14px;}
+
+/* BUTTON PRINCIPAL */
+.create-box{
+  text-align:center;
+}
+#createSiteBtn{
+  padding:25px 40px;
+  font-size:28px;
+  background:#ff0000;
+  color:#000;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:bold;
+  transition:0.2s;
+}
+#createSiteBtn:hover{
+  transform:scale(1.05);
+}
+h1{
+  margin-bottom:40px;
+  font-size:40px;
+  color:#ff0000;
+  text-shadow:0 0 20px #ff0000;
+}
 </style>
 </head>
 <body>
@@ -48,35 +66,22 @@ button#loginBtn{background:#ff0000;color:#000;border:none;padding:6px 12px;borde
   <button id="loginBtn">Connexion</button>
 </header>
 
-<div id="loginPopup">
-  <h3 style="color:#ff0000;">Login Admin</h3>
-  <input id="login" placeholder="Identifiant"><br>
-  <input id="password" type="password" placeholder="Mot de passe"><br>
-  <button onclick="doLogin()">Se connecter</button>
-  <div id="error"></div>
+<div class="create-box">
+  <h1>Crée ton site personnalisé</h1>
+  <button id="createSiteBtn">Créer mon site</button>
 </div>
 
 <script>
-// AFFICHER LE POPUP LOGIN
+// BOUTON CONNEXION
 document.getElementById("loginBtn").onclick = ()=>{
-  document.getElementById("loginPopup").style.display="block";
+  window.location.href = "login.html"; // ou /home/login si tu l'as sur GitHub Pages
 };
 
-// IDENTIFIANT UNIQUE
-const adminLogin = "Owner";
-const adminPass = "mathkasa";
-
-function doLogin(){
-  const l = document.getElementById("login").value.trim();
-  const p = document.getElementById("password").value.trim();
-  const error = document.getElementById("error");
-
-  if(l === adminLogin && p === adminPass){
-    window.location.href = "https://mathkasa.github.io/mathkasa/admin-8f3K9dPqLx72M.html";
-  } else {
-    error.textContent = "Identifiant ou mot de passe incorrect";
-  }
-}
+// BOUTON CREER MON SITE
+document.getElementById("createSiteBtn").onclick = ()=>{
+  window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLS.../viewform"; 
+  // remplace le lien par ton Google Form réel
+};
 </script>
 
 </body>
