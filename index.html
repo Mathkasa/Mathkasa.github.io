@@ -6,39 +6,36 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2572/2572734.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;}
 body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overflow:hidden;}
 #stars{position:fixed;inset:0;z-index:0;}
 
-/* 404 ENTER */
+/* CLICK TO ENTER */
 .enter{position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;z-index:20;cursor:pointer;}
-.enter span{font-size:32px;color:#ff0000;text-shadow:0 0 20px #ff0000;animation:pulse 1.5s infinite;}
+.enter span{font-size:28px;color:#ff0000;text-shadow:0 0 20px #ff0000;animation:pulse 1.5s infinite;}
 @keyframes pulse{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
 
 /* MAIN */
 .container{position:relative;z-index:1;opacity:0;transition:.8s;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:translate(0,0);}
 
-/* AVATAR */
+/* AVATAR + NAME + BADGE */
 .avatar{width:120px;height:120px;border-radius:50%;background:url("https://i.pinimg.com/originals/85/9d/02/859d02cc14248320a24a21e13939ed73.gif") center/cover;border:3px solid #ff0000;box-shadow:0 0 25px #ff0000;margin-bottom:10px;}
-
 .name-container{display:flex;align-items:center;gap:8px;margin-bottom:5px;position:relative;}
 .name{font-size:34px;color:#ff0000;text-shadow:0 0 15px #ff0000;}
 .badge{width:28px;height:28px;cursor:pointer;}
 .tooltip{position:absolute;top:50%;left:110%;transform:translateY(-50%);background:#000;border:1px solid #ff0000;color:#ff0000;padding:4px 8px;font-size:12px;white-space:nowrap;display:none;border-radius:4px;}
-
 .role{font-size:16px;color:#ff0000;text-shadow:0 0 10px #ff0000;margin-bottom:15px;min-height:20px;}
 
 /* LINKS */
-.links{display:flex;gap:20px;margin:10px 0;}
+.links{display:flex;gap:20px;margin:10px 0;z-index:2;}
 .links a{width:50px;height:50px;border:1px solid #ff0000;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#ff0000;text-decoration:none;transition:.2s;}
 .links a:hover{background:#ff0000;color:#000;transform:scale(1.1);}
 
 /* PLAYER */
 .player{width:90%;max-width:500px;margin-top:10px;display:flex;flex-direction:column;align-items:center;}
-.progress-container{width:300px;height:8px;background:#333;border-radius:4px;cursor:pointer;margin-bottom:10px;}
-.progress-bar{height:100%;width:0%;background:#ff0000;border-radius:4px;}
+.progress-container{position:relative;width:300px;height:8px;background:#333;border-radius:4px;cursor:pointer;margin-bottom:10px;}
+.progress-bar{height:100%;width:0%;background:#ff0000;border-radius:4px;position:relative;}
 .time-container{display:flex;justify-content:space-between;font-size:12px;opacity:.7;width:300px;margin-bottom:8px;}
 .controls{display:flex;gap:15px;}
 .btn{width:44px;height:44px;border-radius:50%;background:#ff0000;color:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;}
@@ -105,12 +102,10 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded",()=>{
-
-/* STARS */
+// STARS
 const sc=document.getElementById("stars"),ctx=sc.getContext("2d");
 function resize(){sc.width=innerWidth;sc.height=innerHeight;}
-resize();window.onresize=resize;
+resize();window.addEventListener("resize",resize);
 const stars=[...Array(150)].map(()=>({x:Math.random()*sc.width,y:Math.random()*sc.height,r:Math.random()*1.5,v:Math.random()*.6+.3}));
 (function anim(){
   ctx.clearRect(0,0,sc.width,sc.height);
@@ -123,14 +118,14 @@ const stars=[...Array(150)].map(()=>({x:Math.random()*sc.width,y:Math.random()*s
   requestAnimationFrame(anim);
 })();
 
-/* AUDIO */
+// AUDIO
 const playlist=["assets/jdtestelesflammes.mp3","assets/melodrama.mp3"];
 let index=0,audio;
-
-/* ELEMENTS */
 const enter=document.getElementById("enter");
 const container=document.getElementById("container");
 const play=document.getElementById("play");
+const prev=document.getElementById("prev");
+const next=document.getElementById("next");
 const bar=document.getElementById("bar");
 const progress=document.getElementById("progress");
 const timeCurrent=document.getElementById("time-current");
@@ -138,7 +133,10 @@ const timeTotal=document.getElementById("time-total");
 const vol=document.getElementById("vol");
 const volIcon=document.getElementById("volIcon");
 
-/* ENTER CLICK */
+// FORMAT
+function format(t){return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0");}
+
+// ENTER CLICK
 enter.onclick=()=>{
   enter.style.display="none";
   container.style.opacity=1;
@@ -157,36 +155,32 @@ enter.onclick=()=>{
   }
 };
 
-/* FORMAT */
-function format(t){return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0");}
-
-/* CONTROLS */
+// CONTROLS
 play.onclick=()=>{audio.paused?(audio.play(),play.innerHTML='<i class="fa fa-pause"></i>'):(audio.pause(),play.innerHTML='<i class="fa fa-play"></i>');}
-document.getElementById("prev").onclick=()=>{index=(index-1+playlist.length)%playlist.length;audio.src=playlist[index];audio.play();}
-document.getElementById("next").onclick=()=>{index=(index+1)%playlist.length;audio.src=playlist[index];audio.play();}
+prev.onclick=()=>{index=(index-1+playlist.length)%playlist.length;audio.src=playlist[index];audio.play();}
+next.onclick=()=>{index=(index+1)%playlist.length;audio.src=playlist[index];audio.play();}
 bar.onclick=e=>{const r=bar.getBoundingClientRect();audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;}
 vol.oninput=()=>{audio.volume=vol.value;volIcon.className=audio.volume==0?'fa fa-volume-xmark':'fa fa-volume-high';}
 
-/* FULLSCREEN */
+// FULLSCREEN
 const fs=document.getElementById("fs");
 fs.onclick=()=>{document.fullscreenElement?(document.exitFullscreen(),fs.innerHTML='<i class="fa fa-expand"></i>'):(document.documentElement.requestFullscreen(),fs.innerHTML='<i class="fa fa-compress"></i>');}
 
-/* OWNER BADGE */
+// OWNER BADGE
 const ownerBadge=document.getElementById("ownerBadge");
 const ownerTooltip=document.getElementById("ownerTooltip");
 ownerBadge.onclick=()=>{ownerTooltip.style.display = ownerTooltip.style.display==="block"?"none":"block";};
 
-/* VIEWS TOOLTIP */
+// VIEWS TOOLTIP
 const viewsBtn=document.getElementById("viewsBtn");
 const viewsTooltip=document.getElementById("viewsTooltip");
 viewsBtn.onclick=e=>{e.stopPropagation();viewsTooltip.style.display = viewsTooltip.style.display==="block"?"none":"block";}
 document.addEventListener("click",()=>{viewsTooltip.style.display="none";});
 
-/* BIO DYNAMIQUE FLUIDE */
+// BIO DYNAMIQUE FLUIDE
 const role = document.getElementById("role");
 const roles = ["👨‍💻 Développeur","🎬 Monteur Vidéo","🤖 Créateur Bot Discord"];
 let current = 0;
-
 function typeWriter(){
   const txt = Array.from(roles[current]);
   let i=0;
@@ -209,15 +203,15 @@ function typeWriter(){
 }
 typeWriter();
 
-/* PARALLAXE MOBILE SUR TOUT LE CONTAINER */
-window.addEventListener('deviceorientation', (event) => {
-    const beta = event.beta || 0;   // avant/arrière
-    const gamma = event.gamma || 0; // gauche/droite
-    const maxOffset = 15;
-    const xOffset = (gamma / 45) * maxOffset;
-    const yOffset = (beta / 45) * maxOffset;
-    container.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
-});
+// PARALLAXE MOBILE ET SOURIS
+function setParallax(x,y){
+  const maxOffset=15;
+  const xOffset = (x/45)*maxOffset;
+  const yOffset = (y/45)*maxOffset;
+  container.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+}
+window.addEventListener('deviceorientation', (e)=>{setParallax(e.gamma||0,e.beta||0);});
+window.addEventListener('mousemove',(e)=>{const cx=window.innerWidth/2;const cy=window.innerHeight/2;setParallax(e.clientX-cx,e.clientY-cy);});
 </script>
 </body>
 </html>
