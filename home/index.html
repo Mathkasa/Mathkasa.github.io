@@ -169,7 +169,7 @@ canvas{
     <span>🤑 Gratuit</span>
   </div>
 
-  <button class="create-btn">Créer mon site</button>
+  <button class="create-btn" id="createSiteBtn">Créer mon site</button>
 </div>
 
 <script>
@@ -208,6 +208,11 @@ const stars = Array.from({length:120},()=>({
   });
   requestAnimationFrame(animate);
 })();
+
+/* BOUTON CRÉER MON SITE */
+document.getElementById("createSiteBtn").onclick = () => {
+    window.open("https://forms.gle/Dpsj9JMr7TJ3ZF3M7", "_blank");
+};
 </script>
 
 </body>
