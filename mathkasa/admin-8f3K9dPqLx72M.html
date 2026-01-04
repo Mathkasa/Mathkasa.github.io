@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Admin Panel – Mathkasa</title>
+<title>Admin Panel VIP – Mathkasa</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2572/2572734.png">
 <style>
@@ -34,18 +34,24 @@ button.actionBtn:hover {background:#ff0000;color:#000;transform:scale(1.05);}
     <h2>Statut du site</h2>
     <div>🟢 Statut : <span class="status-online">En ligne</span></div>
     <div>Heure actuelle : <span id="time"></span></div>
-    <div>Version : Gratuite</div>
+    <div>Version : VIP</div>
   </div>
 
   <div class="card">
     <h2>Support</h2>
-    <button class="actionBtn" onclick="contactStaff()">Contacter un staff</button>
+    <button class="actionBtn" onclick="contactStaff()">Contacter un staff VIP</button>
   </div>
 
   <div class="card">
-    <h2>Devenir VIP</h2>
-    <p>Obtenez un badge VIP et plus de fonctionnalités pour 1€</p>
-    <button class="actionBtn" onclick="buyVIP()">Passer VIP (1€)</button>
+    <h2>Musique & Playlist</h2>
+    <p>Ajoutez plusieurs musiques et créez votre playlist VIP.</p>
+    <button class="actionBtn" onclick="addMusic()">Ajouter musique</button>
+  </div>
+
+  <div class="card">
+    <h2>Personnalisation</h2>
+    <p>Changez le thème, avatar animé, bio dynamique améliorée.</p>
+    <button class="actionBtn" onclick="customize()">Personnaliser</button>
   </div>
 
 </div>
@@ -75,20 +81,25 @@ function contactStaff() {
 
 // ----------------- VIP -----------------
 function buyVIP() {
-  // ici redirection vers PayPal (exemple)
   window.open("https://www.paypal.com/paypalme/MATHKASA/1", "_blank");
-
-  // simulation paiement réussi : afficher badge
   localStorage.setItem("isVIP", "true");
   checkVIP();
 }
 
-// ----------------- Affichage badge VIP -----------------
+// Vérification VIP
 function checkVIP() {
   const vip = localStorage.getItem("isVIP");
   if(vip === "true") {
     document.getElementById("vipBadge").style.display = "inline-block";
   }
+}
+
+// Fonctions supplémentaires VIP
+function addMusic() {
+  alert("Ici tu pourras ajouter des musiques à la playlist VIP !");
+}
+function customize() {
+  alert("Ici tu pourras personnaliser avatar, bio et thème !");
 }
 
 // Vérification au chargement
