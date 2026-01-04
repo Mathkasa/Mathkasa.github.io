@@ -2,124 +2,206 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Créer Ton Site Personnalisé !</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Créer ton site personnalisé</title>
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:#000;color:#fff;font-family:Arial,sans-serif;overflow:hidden;position:relative;}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
 
-/* STARS */
-#stars{position:fixed;inset:0;z-index:0;}
+body {
+  background: black;
+  color: white;
+  overflow: hidden;
+}
 
-/* CLICK TO ENTER */
-.enter{position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;z-index:20;cursor:pointer;}
-.enter span{font-size:28px;color:#ff0000;text-shadow:0 0 20px #ff0000;animation:pulse 1.5s infinite;}
-@keyframes pulse{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
+/* ===== Fond étoiles ===== */
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  pointer-events: none;
+}
 
-/* MAIN CONTENT */
-.main-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:20px;transition:transform 0.1s;}
+/* ===== Click to enter ===== */
+#enterScreen {
+  position: fixed;
+  inset: 0;
+  background: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  cursor: pointer;
+}
 
-/* TITLE */
-.title{font-size:36px;color:#ff0000;text-shadow:0 0 20px #ff0000;font-weight:bold;text-align:center;}
+#enterScreen h1 {
+  color: red;
+  font-size: 28px;
+  animation: pulse 1.5s infinite;
+}
 
-/* BIO */
-.bio{font-size:22px;color:#00ff00;text-align:center;overflow:hidden;white-space:nowrap;width:90%;}
+@keyframes pulse {
+  0% { opacity: 0.4 }
+  50% { opacity: 1 }
+  100% { opacity: 0.4 }
+}
 
-/* BUTTON CREATE SITE */
-.create-btn{background:#ff0000;color:#000;padding:12px 20px;border-radius:10px;font-size:18px;font-weight:bold;text-decoration:none;transition:.3s;}
-.create-btn:hover{background:#00ff00;color:#000;transform:scale(1.05);}
+/* ===== Top buttons ===== */
+.top-left, .top-right {
+  position: fixed;
+  top: 15px;
+  z-index: 5;
+}
 
-/* TOP BUTTONS */
-.top-buttons{position:fixed;top:15px;left:15px;display:flex;gap:10px;z-index:2;}
-.top-buttons a{background:#ff0000;color:#000;padding:6px 10px;border-radius:6px;text-decoration:none;font-weight:bold;transition:.2s;}
-.top-buttons a:hover{background:#00ff00;color:#000;}
-.top-buttons-right{position:fixed;top:15px;right:15px;display:flex;gap:10px;z-index:2;}
-.top-buttons-right a{background:#ff0000;color:#000;padding:6px 10px;border-radius:6px;text-decoration:none;font-weight:bold;transition:.2s;}
-.top-buttons-right a:hover{background:#00ff00;color:#000;}
+.top-left { left: 15px; }
+.top-right { right: 15px; }
+
+.top-btn {
+  color: red;
+  text-decoration: none;
+  border: 1px solid red;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-left: 8px;
+  position: relative;
+  z-index: 10;
+}
+
+.top-btn:hover {
+  background: red;
+  color: black;
+}
+
+/* ===== Contenu ===== */
+.main {
+  position: relative;
+  z-index: 2;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+}
+
+.main h2 {
+  font-size: 26px;
+  margin-bottom: 20px;
+}
+
+.bio {
+  height: 24px;
+  overflow: hidden;
+  margin-bottom: 25px;
+}
+
+.bio span {
+  display: block;
+  animation: bioScroll 10s infinite;
+}
+
+@keyframes bioScroll {
+  0% { transform: translateY(0); }
+  25% { transform: translateY(-24px); }
+  50% { transform: translateY(-48px); }
+  75% { transform: translateY(-72px); }
+  100% { transform: translateY(0); }
+}
+
+.create-btn {
+  margin-top: 10px;
+  padding: 12px 24px;
+  background: red;
+  color: black;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
 </style>
 </head>
+
 <body>
 
 <canvas id="stars"></canvas>
 
-<div class="enter" id="enter"><span>Click to enter</span></div>
-
-<div class="top-buttons" style="display:none;" id="topButtons">
-  <a href="https://discord.gg/TON_SERVEUR" target="_blank">Discord</a>
+<!-- Click to enter -->
+<div id="enterScreen">
+  <h1>Click to enter</h1>
 </div>
 
-<div class="top-buttons-right" style="display:none;" id="discoverBtn">
-  <a href="/home/découvrir/">Découvrir</a>
+<!-- Musique -->
+<audio id="music" src="/home/musique.mp3" loop></audio>
+
+<!-- Boutons -->
+<div class="top-left">
+  <a class="top-btn" href="https://discord.gg/TON_INVITE" target="_blank">Discord</a>
 </div>
 
-<div class="main-content" style="display:none;" id="mainContent">
-  <div class="title">Créer Ton Site Personnalisé !</div>
-  <div class="bio" id="bio">🔗 Crée ton site</div>
-  <a href="https://docs.google.com/forms/..." class="create-btn" target="_blank">Créer mon site</a>
+<div class="top-right">
+  <a class="top-btn" href="/home/découvrir/index.html">Découvrir</a>
 </div>
 
-<audio id="bgMusic" src="musique.mp3" loop></audio>
+<!-- Contenu -->
+<div class="main">
+  <h2>Créer Ton Site Personnalisé !</h2>
+
+  <div class="bio">
+    <span>🔗 Crée ton site</span>
+    <span>🎧 Ton audio personnalisé</span>
+    <span>🟢 En ligne 24/7</span>
+    <span>🤑 Gratuit</span>
+  </div>
+
+  <button class="create-btn">Créer mon site</button>
+</div>
 
 <script>
-/* STARS */
-const sc=document.getElementById("stars"),sctx=sc.getContext("2d");
-function resize(){sc.width=innerWidth; sc.height=innerHeight;}
-resize(); window.addEventListener("resize",resize);
-const stars=[...Array(150)].map(()=>({x:Math.random()*sc.width,y:Math.random()*sc.height,r:Math.random()*1.5,v:Math.random()*.6+.3}));
-(function drawStars(){
-  sctx.clearRect(0,0,sc.width,sc.height);
-  sctx.fillStyle="#fff";
-  stars.forEach(s=>{
-    sctx.globalAlpha=Math.random();
-    sctx.beginPath();
-    sctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    sctx.fill();
-    s.y+=s.v;
-    if(s.y>sc.height){ s.y=0; s.x=Math.random()*sc.width; }
-  });
-  requestAnimationFrame(drawStars);
-})();
+/* ===== Musique ===== */
+document.getElementById("enterScreen").addEventListener("click", () => {
+  document.getElementById("music").play();
+  document.getElementById("enterScreen").style.display = "none";
+});
 
-/* CLICK TO ENTER */
-const enter = document.getElementById("enter");
-const topButtons = document.getElementById("topButtons");
-const discoverBtn = document.getElementById("discoverBtn");
-const mainContent = document.getElementById("mainContent");
-const bioEl = document.getElementById("bio");
-const audio = document.getElementById("bgMusic");
+/* ===== Étoiles ===== */
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
 
-const bioText = [
-  "🔗 Crée ton site",
-  "🎧 Ton audio personnalisé",
-  "🟢 En ligne 24/7",
-  "🤑 Gratuit"
-];
-
-let bioIndex = 0;
-function updateBio(){
-  bioEl.textContent = bioText[bioIndex];
-  bioIndex = (bioIndex+1)%bioText.length;
+function resize() {
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
 }
+resize();
+addEventListener("resize", resize);
 
-enter.onclick = ()=>{
-  enter.style.display = "none";
-  topButtons.style.display = "flex";
-  discoverBtn.style.display = "flex";
-  mainContent.style.display = "flex";
-  audio.play();
+const stars = Array.from({length: 100}, () => ({
+  x: Math.random() * canvas.width,
+  y: Math.random() * canvas.height,
+  r: Math.random() * 1.5
+}));
 
-  updateBio();
-  setInterval(updateBio,3000);
-};
-
-/* PARALLAX MOBILE (seulement sur contenu central) */
-if(window.DeviceOrientationEvent){
-  window.addEventListener('deviceorientation',function(e){
-    const x=e.gamma/30; 
-    const y=e.beta/30;
-    mainContent.style.transform=`translate(${x*10}px,${y*10}px)`;
+function animate() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = "white";
+  stars.forEach(s => {
+    s.y += 0.3;
+    if (s.y > canvas.height) s.y = 0;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+    ctx.fill();
   });
+  requestAnimationFrame(animate);
 }
+animate();
 </script>
+
 </body>
 </html>
