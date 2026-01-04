@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Connexion</title>
+<title>Connexion Admin</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body{
@@ -68,7 +68,13 @@ function doLogin(){
 
   if(admins[l] && admins[l] === p){
     localStorage.setItem("adminLogged","yes");
-    window.location.href = "admin.html";
+
+    // REDIRECTION VERS ADMIN SUR GITHUB PAGES
+    if(l === "mathkasa"){
+      window.location.href = "https://mathkasa.github.io/mathkasa/admin-8f3K9dPqLx72M.html";
+    } else {
+      window.location.href = "admin.html"; // autres staff
+    }
   } else {
     error.textContent = "Identifiant ou mot de passe incorrect";
   }
