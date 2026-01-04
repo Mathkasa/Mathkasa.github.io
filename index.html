@@ -47,7 +47,7 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 
 /* VOLUME */
 .volume-container{position:fixed;top:15px;left:15px;display:flex;align-items:center;gap:6px;z-index:2;}
-.volume-container input[type=range]{width:120px;accent-color:red;} /* accent-color rouge */
+.volume-container input[type=range]{width:120px;accent-color:red;}
 #volIcon{color:#ff0000;cursor:pointer;}
 
 /* FULLSCREEN */
@@ -58,6 +58,12 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 
 /* TOOLTIP */
 .tooltip{position:fixed;bottom:50px;left:15px;background:#1a0000;border:2px solid #ff0000;color:#ff0000;padding:6px 12px;font-family:monospace;font-size:14px;display:none;z-index:30;border-radius:4px;}
+/* BADGE TOOLTIP */
+.badge-tooltip{position:fixed;background:#1a0000;border:2px solid #ff0000;color:#ff0000;padding:4px 10px;font-family:monospace;font-size:12px;display:none;z-index:30;border-radius:4px;}
+
+/* ABOUT BUTTON */
+.about-btn{position:fixed;bottom:15px;right:15px;font-size:16px;color:#ff0000;border:1px solid #ff0000;padding:6px 12px;border-radius:6px;cursor:pointer;}
+.about-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a0000;border:2px solid #ff0000;color:#ff0000;padding:15px;font-family:monospace;display:none;z-index:50;text-align:center;max-width:90%;border-radius:6px;}
 </style>
 </head>
 <body>
@@ -74,11 +80,19 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
   <input type="range" id="vol" min="0" max="1" step="0.01">
 </div>
 
+<button class="about-btn" id="aboutBtn">À propos</button>
+<div class="about-popup" id="aboutPopup">
+  Ce site a été développé par Mathkasa.<br>
+  Musique et design intégrés par Mathkasa.<br>
+  2026 © Tous droits réservés.
+</div>
+
 <div class="container" id="container">
   <div class="avatar"></div>
   <div class="name-container">
     <div class="name">Mathkasa</div>
     <img src="https://cdn-icons-png.freepik.com/512/5753/5753201.png" class="badge" id="badge" alt="Owner">
+    <div class="badge-tooltip" id="badgeTooltip">Owner</div>
   </div>
   <div class="role">👨‍💻 Développeur | Monteur Vidéo</div>
 
@@ -143,6 +157,10 @@ const volIcon=document.getElementById("volIcon");
 const fs=document.getElementById("fs");
 const views=document.getElementById("views");
 const tooltip=document.getElementById("tooltip");
+const badge=document.getElementById("badge");
+const badgeTooltip=document.getElementById("badgeTooltip");
+const aboutBtn=document.getElementById("aboutBtn");
+const aboutPopup=document.getElementById("aboutPopup");
 
 /* FORMAT TIME */
 function format(t){return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0");}
@@ -191,6 +209,18 @@ fs.onclick=()=>{
 views.onclick=()=>{
   tooltip.style.display="block";
   setTimeout(()=>{tooltip.style.display="none";},2000);
+};
+
+/* BADGE TOOLTIP */
+badge.onclick=()=>{
+  badgeTooltip.style.display="block";
+  setTimeout(()=>{badgeTooltip.style.display="none";},1500);
+};
+
+/* ABOUT BUTTON */
+aboutBtn.onclick=()=>{
+  aboutPopup.style.display="block";
+  setTimeout(()=>{aboutPopup.style.display="none";},4000);
 };
 </script>
 </body>
