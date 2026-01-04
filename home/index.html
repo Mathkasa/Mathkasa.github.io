@@ -12,8 +12,13 @@ body{font-family:Arial,sans-serif;background:#000;color:#fff;overflow:hidden;pos
 /* STARS */
 #stars{position:fixed;inset:0;z-index:0;}
 
-/* HEADER */
-header{position:fixed;top:0;right:0;left:0;display:flex;justify-content:flex-end;padding:15px;z-index:5;}
+/* TOP LEFT BUTTONS */
+.top-left{position:fixed;top:15px;left:15px;display:flex;gap:10px;z-index:5;}
+.top-left button{background:#ff0000;color:#000;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:bold;transition:.2s;}
+.top-left button:hover{background:#000;color:#ff0000;transform:scale(1.05);}
+
+/* TOP RIGHT */
+header{position:fixed;top:15px;right:15px;z-index:5;}
 header button{background:#ff0000;color:#000;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:bold;transition:.2s;}
 header button:hover{background:#000;color:#ff0000;transform:scale(1.05);}
 
@@ -21,8 +26,6 @@ header button:hover{background:#000;color:#ff0000;transform:scale(1.05);}
 .container{position:relative;z-index:2;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-top:50px;}
 .title{font-size:36px;color:#ff0000;text-shadow:0 0 15px #ff0000;margin-bottom:30px;font-weight:bold;}
 .bio{font-size:24px;color:#ff0000;text-shadow:0 0 10px #ff0000;margin-bottom:30px;min-height:30px;}
-
-/* CREATE BUTTON */
 .createBtn{padding:15px 30px;background:#ff0000;color:#000;font-size:22px;border:none;border-radius:10px;cursor:pointer;font-weight:bold;transition:.3s;}
 .createBtn:hover{background:#000;color:#ff0000;transform:scale(1.05);}
 </style>
@@ -31,10 +34,18 @@ header button:hover{background:#000;color:#ff0000;transform:scale(1.05);}
 
 <canvas id="stars"></canvas>
 
+<!-- TOP LEFT BUTTONS -->
+<div class="top-left">
+  <button onclick="window.open('https://discord.gg/TON_SERVEUR','_blank')">Discord</button>
+  <button onclick="window.location.href='/home/decouvrir'">Découvrir</button>
+</div>
+
+<!-- TOP RIGHT -->
 <header>
   <button onclick="window.location.href='/home/login'">Connexion</button>
 </header>
 
+<!-- MAIN CONTENT -->
 <div class="container">
   <div class="title">Créer Ton Site Personnalisé !</div>
   <div class="bio" id="bio"></div>
@@ -67,9 +78,7 @@ const stars=[...Array(150)].map(()=>({x:Math.random()*sc.width,y:Math.random()*s
 /* BIO DYNAMIQUE */
 const bioEl=document.getElementById("bio");
 const bios=["🔗 Crée ton site","🎧 Ton audio personnalisé","🟢 En ligne 24/7","🤑 Gratuit"];
-let idx=0;
-let charIdx=0;
-let forward=true;
+let idx=0; let charIdx=0; let forward=true;
 function typeBio(){
   if(forward){
     bioEl.textContent=bios[idx].substring(0,charIdx+1);
