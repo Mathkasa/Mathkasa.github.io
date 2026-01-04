@@ -2,123 +2,81 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Créer ton site</title>
+<title>Home</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2572/2572734.png">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
-  * {margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
-  body {
-    background:#000;
-    color:#fff;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    height:100vh;
-    text-align:center;
-    overflow-x:hidden;
-    position:relative;
-  }
-  /* Bouton Connexion en haut */
-  .login-btn {
-    position:fixed;
-    top:15px;
-    right:15px;
-    background:#ff0000;
-    color:#000;
-    padding:8px 12px;
-    border:none;
-    border-radius:6px;
-    font-size:14px;
-    font-weight:bold;
-    cursor:pointer;
-    text-decoration:none;
-    transition:0.3s;
-    z-index:10;
-  }
-  .login-btn:hover {
-    transform:scale(1.1);
-    box-shadow:0 0 10px #ff0000;
-  }
-
-  h1 {
-    color:#ff0000;
-    margin-bottom:20px;
-    text-shadow: 0 0 15px #ff0000;
-  }
-  p {
-    margin-bottom:30px;
-    font-size:16px;
-    color:#fff;
-    opacity:0.8;
-  }
-  .btn {
-    background:#ff0000;
-    color:#000;
-    padding:15px 30px;
-    border:none;
-    border-radius:10px;
-    font-size:18px;
-    font-weight:bold;
-    cursor:pointer;
-    text-decoration:none;
-    transition:0.3s;
-  }
-  .btn:hover {
-    transform:scale(1.1);
-    box-shadow:0 0 20px #ff0000;
-  }
-
-  /* Stars Background */
-  #stars {
-    position:fixed;
-    inset:0;
-    z-index:-1;
-  }
+body{background:#000;color:#fff;font-family:Arial,sans-serif;margin:0;padding:0;}
+header{display:flex;justify-content:flex-end;padding:15px;}
+button#loginBtn{background:#ff0000;color:#000;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:bold;}
+/* POPUP LOGIN */
+#loginPopup{
+  display:none;
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:#111;
+  border:1px solid #ff0000;
+  padding:25px;
+  border-radius:10px;
+  z-index:50;
+  text-align:center;
+}
+#loginPopup input{
+  width:200px;
+  padding:8px;
+  margin:8px 0;
+  background:#000;
+  color:#fff;
+  border:1px solid #ff0000;
+}
+#loginPopup button{
+  width:100%;
+  padding:10px;
+  background:#ff0000;
+  color:#000;
+  border:none;
+  cursor:pointer;
+  font-weight:bold;
+}
+#error{color:red;margin-top:10px;font-size:14px;}
 </style>
 </head>
 <body>
 
-<canvas id="stars"></canvas>
+<header>
+  <button id="loginBtn">Connexion</button>
+</header>
 
-<!-- Bouton Connexion -->
-<a href="login.html" class="login-btn">Connexion</a>
-
-<h1>Crée ton site personnalisé</h1>
-<p>Remplis le formulaire et nous te contacterons !</p>
-
-<a href="TON_LIEN_GOOGLE_FORM_ICI" target="_blank" class="btn">
-  Créer mon site
-</a>
+<div id="loginPopup">
+  <h3 style="color:#ff0000;">Login Admin</h3>
+  <input id="login" placeholder="Identifiant"><br>
+  <input id="password" type="password" placeholder="Mot de passe"><br>
+  <button onclick="doLogin()">Se connecter</button>
+  <div id="error"></div>
+</div>
 
 <script>
-const sc = document.getElementById("stars");
-const ctx = sc.getContext("2d");
-function resize(){ sc.width=innerWidth; sc.height=innerHeight; }
-resize();
-window.addEventListener("resize",resize);
+// AFFICHER LE POPUP LOGIN
+document.getElementById("loginBtn").onclick = ()=>{
+  document.getElementById("loginPopup").style.display="block";
+};
 
-const stars=[...Array(150)].map(()=>({
-  x:Math.random()*sc.width,
-  y:Math.random()*sc.height,
-  r:Math.random()*1.5,
-  v:Math.random()*.6+.3
-}));
+// IDENTIFIANT UNIQUE
+const adminLogin = "Owner";
+const adminPass = "mathkasa";
 
-(function drawStars(){
-  ctx.clearRect(0,0,sc.width,sc.height);
-  ctx.fillStyle="#fff";
-  stars.forEach(s=>{
-    ctx.globalAlpha=Math.random();
-    ctx.beginPath();
-    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    ctx.fill();
-    s.y+=s.v;
-    if(s.y>sc.height){ s.y=0; s.x=Math.random()*sc.width; }
-  });
-  requestAnimationFrame(drawStars);
-})();
+function doLogin(){
+  const l = document.getElementById("login").value.trim();
+  const p = document.getElementById("password").value.trim();
+  const error = document.getElementById("error");
+
+  if(l === adminLogin && p === adminPass){
+    window.location.href = "https://mathkasa.github.io/mathkasa/admin-8f3K9dPqLx72M.html";
+  } else {
+    error.textContent = "Identifiant ou mot de passe incorrect";
+  }
+}
 </script>
 
 </body>
