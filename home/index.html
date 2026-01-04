@@ -17,7 +17,7 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;overflow:hidden;pos
 @keyframes pulse{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
 
 /* MAIN CONTENT */
-.main-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:20px;}
+.main-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:20px;transition:transform 0.1s;}
 
 /* TITLE */
 .title{font-size:36px;color:#ff0000;text-shadow:0 0 20px #ff0000;font-weight:bold;text-align:center;}
@@ -33,6 +33,9 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;overflow:hidden;pos
 .top-buttons{position:fixed;top:15px;left:15px;display:flex;gap:10px;z-index:2;}
 .top-buttons a{background:#ff0000;color:#000;padding:6px 10px;border-radius:6px;text-decoration:none;font-weight:bold;transition:.2s;}
 .top-buttons a:hover{background:#00ff00;color:#000;}
+.top-buttons-right{position:fixed;top:15px;right:15px;display:flex;gap:10px;z-index:2;}
+.top-buttons-right a{background:#ff0000;color:#000;padding:6px 10px;border-radius:6px;text-decoration:none;font-weight:bold;transition:.2s;}
+.top-buttons-right a:hover{background:#00ff00;color:#000;}
 </style>
 </head>
 <body>
@@ -43,6 +46,9 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;overflow:hidden;pos
 
 <div class="top-buttons" style="display:none;" id="topButtons">
   <a href="https://discord.gg/TON_SERVEUR" target="_blank">Discord</a>
+</div>
+
+<div class="top-buttons-right" style="display:none;" id="discoverBtn">
   <a href="/home/découvrir/">Découvrir</a>
 </div>
 
@@ -77,6 +83,7 @@ const stars=[...Array(150)].map(()=>({x:Math.random()*sc.width,y:Math.random()*s
 /* CLICK TO ENTER */
 const enter = document.getElementById("enter");
 const topButtons = document.getElementById("topButtons");
+const discoverBtn = document.getElementById("discoverBtn");
 const mainContent = document.getElementById("mainContent");
 const bioEl = document.getElementById("bio");
 const audio = document.getElementById("bgMusic");
@@ -97,22 +104,20 @@ function updateBio(){
 enter.onclick = ()=>{
   enter.style.display = "none";
   topButtons.style.display = "flex";
+  discoverBtn.style.display = "flex";
   mainContent.style.display = "flex";
   audio.play();
 
-  // Bio change toutes les 3 secondes
   updateBio();
   setInterval(updateBio,3000);
 };
 
-/* PARALLAX MOBILE */
+/* PARALLAX MOBILE (seulement sur contenu central) */
 if(window.DeviceOrientationEvent){
   window.addEventListener('deviceorientation',function(e){
     const x=e.gamma/30; 
     const y=e.beta/30;
-    [mainContent, bioEl, topButtons].forEach(el=>{
-      el.style.transform=`translate(${x*10}px,${y*10}px)`;
-    });
+    mainContent.style.transform=`translate(${x*10}px,${y*10}px)`;
   });
 }
 </script>
