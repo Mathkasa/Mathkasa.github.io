@@ -51,10 +51,9 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 /* FULLSCREEN */
 .fullscreen{position:fixed;top:15px;right:15px;font-size:20px;color:#ff0000;cursor:pointer;z-index:2;}
 
-/* VIEWS + credit */
+/* VIEWS */
 .views{position:fixed;bottom:15px;left:15px;font-size:18px;z-index:2;cursor:pointer;display:flex;align-items:center;gap:6px;}
 .views-tooltip{position:absolute;left:110%;bottom:0;background:#000;border:1px solid #ff0000;color:#ff0000;padding:4px 8px;font-size:12px;border-radius:4px;display:none;white-space:nowrap;}
-.credit{font-size:14px;color:#ff0000;margin-left:10px;}
 </style>
 </head>
 <body>
@@ -72,7 +71,6 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 
 <div class="views" id="viewsBtn">
   👁 15 692
-  <span class="credit">Page développée par Mathkasa</span>
   <div class="views-tooltip" id="viewsTooltip">
     Nombre de personnes ayant visité la page
   </div>
@@ -87,7 +85,7 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
     <div class="tooltip" id="ownerTooltip">Owner</div>
   </div>
 
-  <div class="role" id="role">👨‍💻 Développeur | Monteur Vidéo</div>
+  <div class="role" id="role"></div>
 
   <div class="links">
     <a href="https://discord.com/users/1376961618130505738" target="_blank"><i class="fab fa-discord"></i></a>
@@ -184,17 +182,41 @@ const viewsTooltip=document.getElementById("viewsTooltip");
 viewsBtn.onclick=e=>{e.stopPropagation();viewsTooltip.style.display = viewsTooltip.style.display==="block"?"none":"block";}
 document.addEventListener("click",()=>{viewsTooltip.style.display="none";});
 
+/* BIO DYNAMIQUE FLUIDE */
+const role = document.getElementById("role");
+const roles = ["👨‍💻 Développeur","🎬 Monteur Vidéo","🤖 Créateur Bot Discord"];
+let current = 0;
+
+function typeWriter(){
+  const txt = Array.from(roles[current]);
+  let i=0;
+  function write(){
+    if(i<txt.length){
+      role.textContent += txt[i]; i++;
+      setTimeout(write,100);
+    } else { setTimeout(erase,1000); }
+  }
+  function erase(){
+    if(i>=0){
+      role.textContent = txt.slice(0,i--).join('');
+      setTimeout(erase,50);
+    } else {
+      current = (current+1)%roles.length;
+      setTimeout(typeWriter,200);
+    }
+  }
+  write();
+}
+typeWriter();
+
 /* PARALLAXE MOBILE SUR TOUT LE CONTAINER */
 window.addEventListener('deviceorientation', (event) => {
     const beta = event.beta || 0;   // avant/arrière
     const gamma = event.gamma || 0; // gauche/droite
-
     const maxOffset = 15;
     const xOffset = (gamma / 45) * maxOffset;
     const yOffset = (beta / 45) * maxOffset;
-
     container.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
-});
 });
 </script>
 </body>
