@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Mathkasa</title>
-<link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2572/2572734.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2572/2572734.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
@@ -22,34 +22,30 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 /* MAIN */
 .container{position:relative;z-index:1;opacity:0;transition:.8s;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;}
 
-/* AVATAR + NAME + BADGES */
-.header{display:flex;flex-direction:column;align-items:center;margin-bottom:15px;}
+/* AVATAR */
 .avatar{width:120px;height:120px;border-radius:50%;background:url("https://i.pinimg.com/originals/85/9d/02/859d02cc14248320a24a21e13939ed73.gif") center/cover;border:3px solid #ff0000;box-shadow:0 0 25px #ff0000;margin-bottom:10px;}
-.name-badges{display:flex;align-items:center;gap:10px;}
-.name{font-size:34px;color:#ff0000;text-shadow:0 0 15px #ff0000;}
-.badges{display:flex;gap:8px;}
-.badge{width:30px;height:30px;border-radius:50%;cursor:pointer;transition:.2s;}
-.badge:hover{transform:scale(1.2);}
-.role{font-size:16px;color:#ff0000;margin-top:5px;}
+.name{font-size:34px;color:#ff0000;text-shadow:0 0 15px #ff0000;display:flex;align-items:center;gap:6px;}
 
-/* PLAYER */
-.player{display:flex;flex-direction:column;align-items:center;margin-top:10px;width:220px;}
-.controls{display:flex;justify-content:center;gap:15px;margin-top:10px;}
-.btn{width:44px;height:44px;border-radius:50%;background:#ff0000;color:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;}
-.btn:hover{transform:scale(1.1);}
-.progress-container{position:relative;width:100%;height:8px;background:#333;border-radius:4px;cursor:pointer;margin-top:10px;}
-.progress-bar{height:100%;width:0%;background:#ff0000;border-radius:4px;}
-.time-container{display:flex;justify-content:space-between;font-size:12px;opacity:.7;margin-top:5px;width:100%;}
+/* BADGES */
+.badge{width:24px;height:24px;border-radius:50%;border:1px solid #ff0000;background:rgba(255,0,0,0.2);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;}
 
-/* FULLSCREEN */
-.fullscreen{position:fixed;top:15px;right:15px;font-size:20px;color:#ff0000;cursor:pointer;z-index:2;}
+/* LINKS */
+.links{display:flex;gap:20px;margin:5px 0;z-index:2;}
+.links a{width:40px;height:40px;border:1px solid #ff0000;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#ff0000;text-decoration:none;transition:.2s;}
+.links a:hover{background:#ff0000;color:#000;transform:scale(1.1);}
 
 /* VOLUME */
 .volume-container{position:fixed;top:15px;left:15px;display:flex;align-items:center;gap:6px;z-index:2;}
 .volume-container input[type=range]{width:120px;}
 
+/* FULLSCREEN */
+.fullscreen{position:fixed;top:15px;right:15px;font-size:20px;color:#ff0000;cursor:pointer;z-index:2;}
+
 /* VIEWS */
-.views{position:fixed;bottom:15px;left:15px;font-size:20px;color:#ff0000;z-index:2;}
+.views{position:fixed;bottom:15px;left:15px;font-size:20px;opacity:.9;z-index:2;}
+
+/* PLAYER (invisible now, music auto) */
+audio{display:none;}
 </style>
 </head>
 <body>
@@ -57,158 +53,81 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 <canvas id="stars"></canvas>
 <div class="enter" id="enter"><span>Click to enter</span></div>
 
-<!-- Fullscreen & views -->
 <div class="fullscreen" id="fs"><i class="fa fa-expand"></i></div>
-<div class="views">👁 <span id="views">15692</span></div>
+<div class="views">👁 <span id="views">15 692</span></div>
 
-<!-- Volume -->
 <div class="volume-container">
   <i class="fa fa-volume-high" id="volIcon"></i>
   <input type="range" id="vol" min="0" max="1" step="0.01" value="0.6">
 </div>
 
-<!-- Container principal -->
 <div class="container" id="container">
-  <div class="header">
-    <div class="avatar"></div>
-    <div class="name-badges">
-      <div class="name">Mathkasa</div>
-      <div class="badges">
-        <img class="badge" src="https://cdn3.emoji.gg/emojis/6601-hypesquad-bravery.png" data-name="HypeSquad Bravery">
-        <img class="badge" src="https://cdn3.emoji.gg/emojis/66366-completed-a-quest.png" data-name="Quest Completed">
-        <img class="badge" src="https://cdn3.emoji.gg/emojis/41827-orbs.png" data-name="Orbs">
-        <img class="badge" src="https://cdn-icons-png.flaticon.com/512/386/386769.png" data-name="Staff">
-        <img class="badge" src="https://cdn-icons-png.flaticon.com/512/223/223399.png" data-name="OG">
-      </div>
-    </div>
-    <div class="role">👨‍💻 Développeur | Monteur Vidéo</div>
+  <div class="avatar"></div>
+  <div class="name">Mathkasa
+    <div class="badge" title="HypeSquad"><img src="https://cdn3.emoji.gg/emojis/6601-hypesquad-bravery.png" width="16"></div>
+    <div class="badge" title="Quest"><img src="https://cdn3.emoji.gg/emojis/66366-completed-a-quest.png" width="16"></div>
+    <div class="badge" title="Orb"><img src="https://cdn3.emoji.gg/emojis/41827-orbs.png" width="16"></div>
+    <div class="badge" title="Staff"><img src="https://cdn-icons-png.flaticon.com/512/386/386769.png" width="16"></div>
+    <div class="badge" title="OG"><img src="https://cdn-icons-png.flaticon.com/512/223/223399.png" width="16"></div>
   </div>
+  <div class="location">👨‍💻 Développeur | Monteur Vidéo</div>
 
-  <!-- Player -->
-  <div class="player">
-    <div class="progress-container" id="bar">
-      <div class="progress-bar" id="progress"></div>
-    </div>
-    <div class="time-container">
-      <span id="time-current">0:00</span>
-      <span id="time-total">0:00</span>
-    </div>
-    <div class="controls">
-      <div class="btn" id="prev"><i class="fa fa-backward"></i></div>
-      <div class="btn" id="play"><i class="fa fa-play"></i></div>
-      <div class="btn" id="next"><i class="fa fa-forward"></i></div>
-    </div>
+  <div class="links">
+    <a href="https://discord.com/users/1376961618130505738" target="_blank"><i class="fab fa-discord"></i></a>
+    <a href="https://www.tiktok.com/@mathkasa" target="_blank"><i class="fab fa-tiktok"></i></a>
+    <a href="https://www.youtube.com/@mathkasa" target="_blank"><i class="fab fa-youtube"></i></a>
   </div>
 </div>
 
-<audio id="music" src="assets/melodrama.mp3" preload="auto"></audio>
+<audio id="music" src="assets/jdtestelesflammes.mp3" preload="auto"></audio>
 
 <script>
 /* STARS */
-const sc=document.getElementById("stars"),sctx=sc.getContext("2d");
-function resize(){sc.width=innerWidth; sc.height=innerHeight;}
+const c=document.getElementById("stars"),ctx=c.getContext("2d");
+function resize(){c.width=innerWidth;c.height=innerHeight;}
 resize(); window.addEventListener("resize",resize);
-const stars=[...Array(150)].map(()=>({x:Math.random()*sc.width,y:Math.random()*sc.height,r:Math.random()*1.5,v:Math.random()*.6+.3}));
+const stars=[...Array(150)].map(()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.5,v:Math.random()*.6+.3}));
 (function drawStars(){
-  sctx.clearRect(0,0,sc.width,sc.height);
-  sctx.fillStyle="#fff";
+  ctx.clearRect(0,0,c.width,c.height);
+  ctx.fillStyle="#fff";
   stars.forEach(s=>{
-    sctx.globalAlpha=Math.random();
-    sctx.beginPath();
-    sctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    sctx.fill();
+    ctx.globalAlpha=Math.random();
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fill();
     s.y+=s.v;
-    if(s.y>sc.height){ s.y=0; s.x=Math.random()*sc.width; }
+    if(s.y>c.height){ s.y=0; s.x=Math.random()*c.width; }
   });
   requestAnimationFrame(drawStars);
 })();
 
-/* AUDIO & PLAYER */
+/* MUSIC */
 const enter=document.getElementById("enter");
 const container=document.getElementById("container");
 const audio=document.getElementById("music");
-const playBtn=document.getElementById("play");
-const prevBtn=document.getElementById("prev");
-const nextBtn=document.getElementById("next");
-const bar=document.getElementById("bar");
-const progress=document.getElementById("progress");
-const timeCurrent=document.getElementById("time-current");
-const timeTotal=document.getElementById("time-total");
 const volSlider=document.getElementById("vol");
 const volIcon=document.getElementById("volIcon");
+const fs=document.getElementById("fs");
 
-/* FORMAT TIME */
-function format(t){ return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0"); }
+function vibrate(p){if("vibrate" in navigator) navigator.vibrate(p);}
 
-/* CLICK TO ENTER */
-enter.onclick=()=>{
-  container.style.opacity=1;
+enter.onclick=async()=>{
+  vibrate([120,40,120]);
   enter.style.display="none";
-  audio.volume=volSlider.value;
-  audio.play();
-};
-
-/* PLAY BUTTON */
-playBtn.onclick=()=>{
-  if(audio.paused){ audio.play(); playBtn.innerHTML='<i class="fa fa-pause"></i>'; }
-  else{ audio.pause(); playBtn.innerHTML='<i class="fa fa-play"></i>'; }
-};
-
-/* PREV/NEXT */
-prevBtn.onclick=()=>{audio.currentTime=0;}
-nextBtn.onclick=()=>{audio.currentTime=audio.duration;}
-
-/* PROGRESS BAR */
-audio.ontimeupdate=()=>{
-  const pct=(audio.currentTime/audio.duration*100);
-  progress.style.width=pct+"%";
-  timeCurrent.textContent=format(audio.currentTime);
-  timeTotal.textContent=format(audio.duration);
-};
-bar.onclick=e=>{
-  const r=bar.getBoundingClientRect();
-  audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;
+  container.style.opacity=1;
+  try{ await audio.play(); }catch{}
 };
 
 /* VOLUME */
-volSlider.oninput=()=>{
-  audio.volume=volSlider.value;
-  volIcon.className = audio.volume==0?'fa fa-volume-xmark':'fa fa-volume-high';
-};
-volIcon.onclick=()=>{
-  audio.muted=!audio.muted;
-  volIcon.className = audio.muted?'fa fa-volume-xmark':'fa fa-volume-high';
-};
+volSlider.oninput=()=>{audio.volume=volSlider.value; volIcon.className=audio.volume==0?'fa fa-volume-xmark':'fa fa-volume-high';}
+volIcon.onclick=()=>{audio.muted=!audio.muted; volIcon.className=audio.muted?'fa fa-volume-xmark':'fa fa-volume-high';}
 
 /* FULLSCREEN */
-const fs=document.getElementById("fs");
 fs.onclick=()=>{
   if(!document.fullscreenElement){document.documentElement.requestFullscreen(); fs.innerHTML='<i class="fa fa-compress"></i>';}
   else{document.exitFullscreen(); fs.innerHTML='<i class="fa fa-expand"></i>';}
 };
-
-/* BADGES POPUP */
-const popup=document.createElement('div');
-popup.style.position='fixed';
-popup.style.top='50%';
-popup.style.left='50%';
-popup.style.transform='translate(-50%,-50%)';
-popup.style.background='#1a0000';
-popup.style.color='#ff0000';
-popup.style.padding='10px 15px';
-popup.style.fontFamily='monospace';
-popup.style.border='2px solid #ff0000';
-popup.style.display='none';
-popup.style.zIndex='30';
-document.body.appendChild(popup);
-
-document.querySelectorAll('.badge').forEach(b=>{
-  b.onclick=()=>{
-    popup.innerText=b.dataset.name;
-    popup.style.display='block';
-    setTimeout(()=>{popup.style.display='none';},2500);
-  }
-});
 </script>
+
 </body>
 </html>
