@@ -54,11 +54,6 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 /* VIEWS */
 .views{position:fixed;bottom:15px;left:15px;font-size:18px;z-index:2;cursor:pointer;display:flex;align-items:center;gap:6px;}
 .views-tooltip{position:absolute;left:110%;bottom:0;background:#000;border:1px solid #ff0000;color:#ff0000;padding:4px 8px;font-size:12px;border-radius:4px;display:none;white-space:nowrap;}
-
-/* ABOUT */
-.about-btn{position:fixed;bottom:15px;right:15px;background:#ff0000;color:#000;padding:10px 15px;border:none;border-radius:6px;cursor:pointer;}
-.about-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#ff0000;color:#000;padding:20px;border-radius:10px;display:none;z-index:50;text-align:center;}
-.close-popup{position:absolute;top:5px;right:10px;cursor:pointer;font-weight:bold;}
 </style>
 </head>
 <body>
@@ -69,22 +64,16 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 
 <div class="fullscreen" id="fs"><i class="fa fa-expand"></i></div>
 
-<div class="views" id="viewsBtn">
-  👁 15 692
-  <div class="views-tooltip" id="viewsTooltip">
-    Nombre de personnes ayant visité la page
-  </div>
-</div>
-
 <div class="volume-container">
   <i class="fa fa-volume-high" id="volIcon"></i>
   <input type="range" id="vol" min="0" max="1" step="0.01">
 </div>
 
-<button class="about-btn" id="aboutBtn">À propos</button>
-<div class="about-popup" id="aboutPopup">
-  <span class="close-popup" id="closeAbout">&times;</span>
-  <p>Cette page a été développée par <b>Mathkasa</b><br>Pour avoir ta page, contacte-moi.</p>
+<div class="views" id="viewsBtn">
+  👁 15 692
+  <div class="views-tooltip" id="viewsTooltip">
+    Nombre de personnes ayant visité la page
+  </div>
 </div>
 
 <div class="container" id="container">
@@ -117,6 +106,7 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 
 <script>
 document.addEventListener("DOMContentLoaded",()=>{
+
 /* STARS */
 const sc=document.getElementById("stars"),ctx=sc.getContext("2d");
 function resize(){sc.width=innerWidth;sc.height=innerHeight;}
@@ -156,6 +146,10 @@ enter.onclick=()=>{
   audio.volume=0.6;
   audio.play();
   play.innerHTML='<i class="fa fa-pause"></i>';
+
+  // boucle automatique
+  audio.onended = ()=>{audio.currentTime=0;audio.play();};
+
   audio.ontimeupdate=()=>{
     progress.style.width=(audio.currentTime/audio.duration*100)+"%";
     timeCurrent.textContent=format(audio.currentTime);
@@ -188,13 +182,6 @@ const viewsTooltip=document.getElementById("viewsTooltip");
 viewsBtn.onclick=e=>{e.stopPropagation();viewsTooltip.style.display = viewsTooltip.style.display==="block"?"none":"block";}
 document.addEventListener("click",()=>{viewsTooltip.style.display="none";});
 
-/* ABOUT */
-const aboutBtn = document.getElementById("aboutBtn");
-const aboutPopup = document.getElementById("aboutPopup");
-const closeAbout = document.getElementById("closeAbout");
-aboutBtn.onclick=()=>aboutPopup.style.display="block";
-closeAbout.onclick=()=>aboutPopup.style.display="none";
-
 /* BIO DYNAMIQUE FLUIDE */
 const role = document.getElementById("role");
 const roles = ["👨‍💻 Développeur","🎬 Monteur Vidéo","🤖 Créateur Bot Discord"];
@@ -211,8 +198,7 @@ function typeWriter(){
   }
   function erase(){
     if(txt.length>0){
-      txt.pop();
-      role.textContent = txt.join('');
+      role.textContent = txt.slice(0,i--).join('');
       setTimeout(erase,50);
     } else {
       current = (current+1)%roles.length;
@@ -222,6 +208,20 @@ function typeWriter(){
   write();
 }
 typeWriter();
+
+/* PARALLAXE MOBILE */
+window.addEventListener('deviceorientation', (event) => {
+  const beta = event.beta || 0;
+  const gamma = event.gamma || 0;
+  stars.forEach(s => {
+      s.x += gamma * 0.05;
+      s.y += beta * 0.05;
+      if (s.x>sc.width) s.x=0;
+      if (s.x<0) s.x=sc.width;
+      if (s.y>sc.height) s.y=0;
+      if (s.y<0) s.y=sc.height;
+  });
+});
 });
 </script>
 </body>
