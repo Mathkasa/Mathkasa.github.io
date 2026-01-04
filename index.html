@@ -1,52 +1,58 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Mathkasa</title>
-<link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2572/2572734.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2572/2572734.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;}
 body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overflow:hidden;}
 
 /* STARS */
-#stars{position:fixed;inset:0;z-index:0;}
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
 
 /* CLICK TO ENTER */
 .enter{position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;z-index:20;cursor:pointer;}
 .enter span{font-size:28px;color:#ff0000;text-shadow:0 0 20px #ff0000;animation:pulse 1.5s infinite;}
 @keyframes pulse{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
 
-/* MAIN CONTAINER */
+/* MAIN */
 .container{position:relative;z-index:1;opacity:0;transition:.8s;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;}
 
 /* AVATAR */
 .avatar{width:120px;height:120px;border-radius:50%;background:url("https://i.pinimg.com/originals/85/9d/02/859d02cc14248320a24a21e13939ed73.gif") center/cover;border:3px solid #ff0000;box-shadow:0 0 25px #ff0000;margin-bottom:15px;}
 .name{font-size:34px;color:#ff0000;text-shadow:0 0 15px #ff0000;}
+.location{opacity:.7;margin-bottom:20px;}
 
 /* LINKS */
-.links{display:flex;gap:20px;margin:15px 0;z-index:2;}
+.links{display:flex;gap:20px;margin:15px 0;}
 .links a{width:50px;height:50px;border:1px solid #ff0000;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#ff0000;text-decoration:none;transition:.2s;}
 .links a:hover{background:#ff0000;color:#000;transform:scale(1.1);}
 
-/* SERVER CAROUSEL */
-.server-carousel{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;opacity:0;transition:.8s;}
-.server-avatar{width:100px;height:100px;border-radius:50%;border:3px solid #ff0000;box-shadow:0 0 15px #ff0000;background-size:cover;background-position:center;position:relative;}
-.server-name{color:#ff0000;font-size:20px;text-align:center;}
-.server-online{width:14px;height:14px;background:#0f0;border-radius:50%;position:absolute;top:5px;right:5px;border:2px solid #000;}
+/* PLAYER */
+.player{width:90%;max-width:500px;margin-top:10px;}
+.progress-container{position:relative;width:100%;height:8px;background:#333;border-radius:4px;cursor:pointer;margin-bottom:8px;}
+.progress-bar{height:100%;width:0%;background:#ff0000;border-radius:4px;position:relative;}
+.knob{position:absolute;top:50%;transform:translate(-50%,-50%);width:14px;height:14px;background:#ff0000;border-radius:50%;pointer-events:none;}
+.time-container{display:flex;justify-content:space-between;font-size:12px;opacity:.7;margin-bottom:15px;}
+.controls{display:flex;justify-content:center;gap:15px;}
+.btn{width:44px;height:44px;border-radius:50%;background:#ff0000;color:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;}
 
-/* NAVIGATION FLÈCHES */
-.nav-arrows{display:flex;justify-content:center;gap:50px;margin-top:10px;opacity:0;transition:.8s;cursor:pointer;}
-.nav-arrows i{color:#ff0000;font-size:30px;}
-
-/* FULLSCREEN & VOLUME */
+/* FULLSCREEN */
 .fullscreen{position:fixed;top:15px;right:15px;font-size:20px;color:#ff0000;cursor:pointer;z-index:2;}
+
+/* VOLUME */
 .volume-container{position:fixed;top:15px;left:15px;display:flex;align-items:center;gap:6px;z-index:2;}
 .volume-container input[type=range]{width:120px;}
 
 /* VIEWS */
-.views{position:fixed;bottom:15px;left:15px;font-size:20px;opacity:.8;z-index:2;}
+.views{position:fixed;bottom:15px;left:15px;font-size:20px;opacity:.9;z-index:2;}
+
+/* FOOTER */
+.footer{position:fixed;bottom:5px;width:100%;text-align:center;font-size:12px;opacity:.7;color:#ff0000;}
 </style>
 </head>
 <body>
@@ -55,7 +61,7 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 <div class="enter" id="enter"><span>Click to enter</span></div>
 
 <div class="fullscreen" id="fs"><i class="fa fa-expand"></i></div>
-<div class="views">👁 <span id="views">0</span></div>
+<div class="views">👁 <span id="views">15692</span></div>
 
 <div class="volume-container">
   <i class="fa fa-volume-high" id="volIcon"></i>
@@ -63,29 +69,35 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 </div>
 
 <div class="container" id="container">
-  <!-- Page perso -->
-  <div class="page-personal">
-    <div class="avatar"></div>
-    <div class="name">Mathkasa</div>
-    <div class="links">
-      <a href="https://discord.com/users/1376961618130505738" target="_blank"><i class="fab fa-discord"></i></a>
-      <a href="https://www.tiktok.com/@mathkasa" target="_blank"><i class="fab fa-tiktok"></i></a>
-      <a href="https://www.youtube.com/@mathkasa" target="_blank"><i class="fab fa-youtube"></i></a>
-    </div>
+  <div class="avatar"></div>
+  <div class="name">Mathkasa</div>
+  <div class="location">👨‍💻 Développeur | Monteur Vidéo</div>
+
+  <div class="links">
+    <a href="https://discord.com/users/1376961618130505738" target="_blank"><i class="fab fa-discord"></i></a>
+    <a href="https://www.tiktok.com/@mathkasa" target="_blank"><i class="fab fa-tiktok"></i></a>
+    <a href="https://www.youtube.com/@mathkasa" target="_blank"><i class="fab fa-youtube"></i></a>
   </div>
 
-  <!-- Page serveurs -->
-  <div class="server-carousel" id="serverCarousel"></div>
-  <div class="nav-arrows" id="navArrows">
-    <i class="fa fa-arrow-left" id="arrowLeft"></i>
-    <i class="fa fa-arrow-right" id="arrowRight"></i>
+  <div class="player">
+    <div class="progress-container" id="bar">
+      <div class="progress-bar" id="progress"><div class="knob" id="knob"></div></div>
+    </div>
+    <div class="time-container">
+      <span id="time-current">0:00</span>
+      <span id="time-total">0:00</span>
+    </div>
+    <div class="controls">
+      <div class="btn" id="prev"><i class="fa fa-backward"></i></div>
+      <div class="btn" id="play"><i class="fa fa-play"></i></div>
+      <div class="btn" id="next"><i class="fa fa-forward"></i></div>
+    </div>
   </div>
 </div>
 
-<script>
-/* VIBRATION */
-function vibrate(p){if("vibrate" in navigator) navigator.vibrate(p);}
+<div class="footer">Page developed by Mathkasa</div>
 
+<script>
 /* STARS */
 const sc=document.getElementById("stars"),sctx=sc.getContext("2d");
 function resize(){sc.width=innerWidth; sc.height=innerHeight;}
@@ -105,98 +117,72 @@ const stars=[...Array(150)].map(()=>({x:Math.random()*sc.width,y:Math.random()*s
   requestAnimationFrame(drawStars);
 })();
 
-/* MUSIQUE */
-const playlist=["assets/melodrama.mp3","assets/jdtestelesflammes.mp3"];
-let index=0;
-let audio = new Audio(playlist[index]);
-audio.loop=true;
-audio.volume=0.6;
+/* PLAYLIST */
+const playlist=["assets/melodrama.mp3"];
+let index=0,audio=null;
 
-/* ELEMENTS */
 const enter=document.getElementById("enter");
 const container=document.getElementById("container");
+const playBtn=document.getElementById("play");
+const prev=document.getElementById("prev");
+const next=document.getElementById("next");
+const bar=document.getElementById("bar");
+const progress=document.getElementById("progress");
+const knob=document.getElementById("knob");
+const timeCurrent=document.getElementById("time-current");
+const timeTotal=document.getElementById("time-total");
 const volSlider=document.getElementById("vol");
 const volIcon=document.getElementById("volIcon");
-const fs=document.getElementById("fs");
-const viewsEl=document.querySelector(".views span");
-const serverCarousel=document.getElementById("serverCarousel");
-const navArrows=document.getElementById("navArrows");
-const pagePersonal=document.querySelector(".page-personal");
-const arrowLeft=document.getElementById("arrowLeft");
-const arrowRight=document.getElementById("arrowRight");
+const fsBtn=document.getElementById("fs");
 
-/* SERVERS */
-const servers=[
-  {
-    name:"E-sport Neytrix",
-    url:"https://discord.gg/FcN6YJexJV",
-    avatar:"https://cdn.discordapp.com/avatars/1398003123460640968/6442479fd3a97b2ee39cd6813fc8cd31.png",
-    members:256
-  },
-  {
-    name:"Anz.Server",
-    url:"https://discord.gg/6SK3P8FEw6",
-    avatar:"https://cdn.discordapp.com/avatars/1447178158863286345/84a7ee93c8e11686dac189470fb2fbe1.webp?size=512",
-    members:120
-  },
-  {
-    name:"Frontline RP",
-    url:"https://discord.gg/yEXEtZE6kM",
-    avatar:"https://cdn.discordapp.com/avatars/1456402873004069025/89ec62436fe1b0d57cb87c8c163ad5ca.png",
-    members:500
-  }
-];
-let serverIndex=0;
-
-/* RENDER SERVERS */
-function renderServer(){
-  serverCarousel.innerHTML="";
-  const srv=servers[serverIndex];
-  const avatarDiv=document.createElement("div");
-  avatarDiv.className="server-avatar";
-  avatarDiv.style.backgroundImage=`url(${srv.avatar})`;
-  const onlineDiv=document.createElement("div");
-  onlineDiv.className="server-online";
-  avatarDiv.appendChild(onlineDiv);
-  const nameDiv=document.createElement("div");
-  nameDiv.className="server-name";
-  nameDiv.innerHTML=`${srv.name} (${srv.members})`;
-  const link=document.createElement("a");
-  link.href=srv.url;
-  link.target="_blank";
-  link.appendChild(avatarDiv);
-  serverCarousel.appendChild(link);
-  serverCarousel.appendChild(nameDiv);
-}
+function format(t){ return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0"); }
 
 /* CLICK TO ENTER */
 enter.onclick=()=>{
-  vibrate([120,40,120]);
   enter.style.display="none";
   container.style.opacity=1;
+
+  audio=new Audio(playlist[index]);
+  audio.volume=volSlider.value||0.6;
   audio.play();
-  renderServer();
-  navArrows.style.opacity=1;
+  playBtn.innerHTML='<i class="fa fa-pause"></i>';
+
+  audio.ontimeupdate=()=>{
+    const pct=(audio.currentTime/audio.duration*100);
+    progress.style.width=pct+"%";
+    knob.style.left=pct+"%";
+    timeCurrent.textContent=format(audio.currentTime);
+    timeTotal.textContent=format(audio.duration);
+  };
 };
 
-/* NAVIGATION SERVERS */
-arrowLeft.onclick=()=>{serverIndex=(serverIndex-1+servers.length)%servers.length;renderServer();}
-arrowRight.onclick=()=>{serverIndex=(serverIndex+1)%servers.length;renderServer();}
+/* BUTTONS */
+playBtn.onclick=()=>{
+  if(audio.paused){audio.play(); playBtn.innerHTML='<i class="fa fa-pause"></i>';}
+  else{audio.pause(); playBtn.innerHTML='<i class="fa fa-play"></i>';}
+};
+prev.onclick=()=>{
+  index=(index-1+playlist.length)%playlist.length; audio.src=playlist[index]; audio.play(); playBtn.innerHTML='<i class="fa fa-pause"></i>';
+};
+next.onclick=()=>{
+  index=(index+1)%playlist.length; audio.src=playlist[index]; audio.play(); playBtn.innerHTML='<i class="fa fa-pause"></i>';
+};
+
+/* BAR CLICK */
+bar.onclick=e=>{
+  const r=bar.getBoundingClientRect();
+  audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;
+};
 
 /* VOLUME */
 volSlider.value=0.6;
 volSlider.oninput=()=>{audio.volume=volSlider.value; volIcon.className=audio.volume==0?'fa fa-volume-xmark':'fa fa-volume-high';}
-volIcon.onclick=()=>{audio.muted=!audio.muted; volIcon.className=audio.muted?'fa fa-volume-xmark':'fa fa-volume-high';}
 
 /* FULLSCREEN */
-fs.onclick=()=>{
-  if(!document.fullscreenElement){document.documentElement.requestFullscreen(); fs.innerHTML='<i class="fa fa-compress"></i>';}
-  else{document.exitFullscreen(); fs.innerHTML='<i class="fa fa-expand"></i>';}
+fsBtn.onclick=()=>{
+  if(!document.fullscreenElement){document.documentElement.requestFullscreen(); fsBtn.innerHTML='<i class="fa fa-compress"></i>';}
+  else{document.exitFullscreen(); fsBtn.innerHTML='<i class="fa fa-expand"></i>';}
 };
-
-/* VIEWS */
-fetch("https://api.countapi.xyz/hit/mathkasa/site").then(r=>r.json()).then(d=>viewsEl.textContent=d.value);
-
 </script>
 </body>
 </html>
