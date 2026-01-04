@@ -4,46 +4,58 @@
 <meta charset="UTF-8">
 <title>Connexion Admin</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2572/2572734.png">
 <style>
 body{
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
   background:#000;
   color:#fff;
-  font-family:Arial,sans-serif;
   display:flex;
   justify-content:center;
   align-items:center;
   height:100vh;
-  margin:0;
 }
 .box{
+  background:#111;
   border:1px solid #ff0000;
-  padding:25px;
   border-radius:10px;
-  width:280px;
+  padding:30px;
+  width:300px;
   text-align:center;
 }
-h2{color:#ff0000}
+h2{
+  color:#ff0000;
+  margin-bottom:20px;
+}
 input{
   width:100%;
   padding:10px;
   margin:10px 0;
-  background:#111;
+  background:#000;
   color:#fff;
   border:1px solid #ff0000;
+  border-radius:6px;
 }
 button{
   width:100%;
-  padding:10px;
+  padding:12px;
   background:#ff0000;
   color:#000;
   font-weight:bold;
   border:none;
   cursor:pointer;
+  border-radius:6px;
+  margin-top:10px;
 }
-#error{color:red;margin-top:10px}
+#error{
+  color:red;
+  margin-top:10px;
+  font-size:14px;
+}
 </style>
 </head>
-
 <body>
 
 <div class="box">
@@ -55,7 +67,7 @@ button{
 </div>
 
 <script>
-// IDENTIFIANT UNIQUE POUR L’INSTANT
+// IDENTIFIANT UNIQUE
 const adminLogin = "Owner";
 const adminPass = "mathkasa";
 
