@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Benji</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;font-family:Arial,sans-serif;}
+body{overflow:hidden;height:100vh;background:#fff;color:#000;}
+
+/* CLICK TO ENTER */
+#enter{position:fixed;inset:0;background:#000;display:flex;justify-content:center;align-items:center;z-index:10;cursor:pointer;}
+#enter h1{color:red;font-size:28px;animation:pulse 1.5s infinite;text-shadow:0 0 15px red;}
+@keyframes pulse{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
+
+/* VIDEO DE FOND */
+#bg-video{position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;}
+
+/* MAIN CONTENT */
+.main{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;}
+.main h2{font-size:32px;color:red;text-shadow:0 0 15px red;margin-bottom:20px;}
+
+/* BIO QUI DÉFILE */
+.bio{height:28px;overflow:hidden;margin-bottom:30px;color:red;font-weight:bold;}
+.bio span{display:block;animation:scroll 12s infinite;}
+@keyframes scroll{
+  0%{transform:translateY(0)}
+  25%{transform:translateY(-28px)}
+  50%{transform:translateY(-56px)}
+  75%{transform:translateY(-84px)}
+  100%{transform:translateY(0)}
+}
+
+/* BOUTON CREER SITE */
+.create-btn{padding:12px 28px;background:red;color:#000;border:none;border-radius:8px;font-size:16px;cursor:pointer;margin-top:10px;}
+
+/* TOP BAR */
+.top-bar{position:fixed;top:15px;left:15px;right:15px;display:flex;justify-content:space-between;align-items:center;z-index:2;}
+.left-buttons{display:flex;gap:10px;}
+.top-btn{color:red;text-decoration:none;border:1px solid red;padding:6px 12px;border-radius:6px;font-size:14px;}
+.top-btn:hover{background:red;color:black;}
+</style>
+</head>
+<body>
+
+<!-- CLICK TO ENTER -->
+<div id="enter"><h1>Click to enter</h1></div>
+
+<!-- VIDEO -->
+<video id="bg-video" src="assets/vidéos.mp4" autoplay muted loop></video>
+
+<!-- MUSIQUE -->
+<audio id="music" src="assets/og musique.mp3" loop></audio>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="left-buttons">
+    <a class="top-btn" href="https://www.tiktok.com/@benji.blzz" target="_blank">TikTok</a>
+    <a class="top-btn" href="https://www.tiktok.com/@benji.pbk" target="_blank">Playback</a>
+    <a class="top-btn" href="https://www.snapchat.com/add/benji.blz?locale=fr-FR" target="_blank">Snap</a>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+  <h2>Créer Ton Site Personnalisé !</h2>
+  <div class="bio">
+    <span>🎵 Play-back</span>
+    <span>😎 Mood</span>
+    <span>😏 Chill</span>
+    <span>💘 Lover</span>
+  </div>
+  <button class="create-btn" onclick="window.open('https://forms.gle/Dpsj9JMr7TJ3ZF3M7','_blank')">Créer mon site</button>
+</div>
+
+<script>
+const enter=document.getElementById("enter");
+const music=document.getElementById("music");
+const bgVideo=document.getElementById("bg-video");
+
+enter.onclick=()=>{
+  music.play();
+  enter.style.display="none";
+};
+</script>
+</body>
+</html>
