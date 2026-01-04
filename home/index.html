@@ -6,125 +6,122 @@
 <title>Créer ton site personnalisé</title>
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
 }
 
-body {
-  background: black;
-  color: white;
-  overflow: hidden;
+body{
+  background:black;
+  color:white;
+  overflow:hidden;
 }
 
-/* ===== Fond étoiles ===== */
-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 0;
-  pointer-events: none;
+/* ===== ÉTOILES ===== */
+canvas{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
 }
 
-/* ===== Click to enter ===== */
-#enterScreen {
-  position: fixed;
-  inset: 0;
-  background: black;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  cursor: pointer;
+/* ===== CLICK TO ENTER ===== */
+#enter{
+  position:fixed;
+  inset:0;
+  background:black;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10;
+  cursor:pointer;
 }
 
-#enterScreen h1 {
-  color: red;
-  font-size: 28px;
-  animation: pulse 1.5s infinite;
+#enter h1{
+  color:red;
+  font-size:28px;
+  animation:pulse 1.5s infinite;
 }
 
-@keyframes pulse {
-  0% { opacity: 0.4 }
-  50% { opacity: 1 }
-  100% { opacity: 0.4 }
+@keyframes pulse{
+  0%{opacity:.4}
+  50%{opacity:1}
+  100%{opacity:.4}
 }
 
-/* ===== Top buttons ===== */
-.top-left, .top-right {
-  position: fixed;
-  top: 15px;
-  z-index: 5;
+/* ===== TOP BUTTONS ===== */
+.top-left, .top-right{
+  position:fixed;
+  top:15px;
+  z-index:5;
 }
 
-.top-left { left: 15px; }
-.top-right { right: 15px; }
+.top-left{left:15px}
+.top-right{right:15px}
 
-.top-btn {
-  color: red;
-  text-decoration: none;
-  border: 1px solid red;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 14px;
-  margin-left: 8px;
-  position: relative;
-  z-index: 10;
+.top-btn{
+  color:red;
+  text-decoration:none;
+  border:1px solid red;
+  padding:6px 12px;
+  border-radius:6px;
+  font-size:14px;
 }
 
-.top-btn:hover {
-  background: red;
-  color: black;
+.top-btn:hover{
+  background:red;
+  color:black;
 }
 
-/* ===== Contenu ===== */
-.main {
-  position: relative;
-  z-index: 2;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 20px;
+/* ===== MAIN ===== */
+.main{
+  position:relative;
+  z-index:2;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:20px;
 }
 
-.main h2 {
-  font-size: 26px;
-  margin-bottom: 20px;
+.main h2{
+  font-size:26px;
+  margin-bottom:20px;
 }
 
-.bio {
-  height: 24px;
-  overflow: hidden;
-  margin-bottom: 25px;
+/* BIO QUI DÉFILE */
+.bio{
+  height:26px;
+  overflow:hidden;
+  margin-bottom:25px;
 }
 
-.bio span {
-  display: block;
-  animation: bioScroll 10s infinite;
+.bio span{
+  display:block;
+  animation:scroll 10s infinite;
 }
 
-@keyframes bioScroll {
-  0% { transform: translateY(0); }
-  25% { transform: translateY(-24px); }
-  50% { transform: translateY(-48px); }
-  75% { transform: translateY(-72px); }
-  100% { transform: translateY(0); }
+@keyframes scroll{
+  0%{transform:translateY(0)}
+  25%{transform:translateY(-26px)}
+  50%{transform:translateY(-52px)}
+  75%{transform:translateY(-78px)}
+  100%{transform:translateY(0)}
 }
 
-.create-btn {
-  margin-top: 10px;
-  padding: 12px 24px;
-  background: red;
-  color: black;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
+/* BOUTON */
+.create-btn{
+  padding:12px 26px;
+  background:red;
+  color:black;
+  border:none;
+  border-radius:8px;
+  font-size:16px;
+  cursor:pointer;
 }
 </style>
 </head>
@@ -133,15 +130,15 @@ canvas {
 
 <canvas id="stars"></canvas>
 
-<!-- Click to enter -->
-<div id="enterScreen">
+<!-- CLICK TO ENTER -->
+<div id="enter">
   <h1>Click to enter</h1>
 </div>
 
-<!-- Musique -->
+<!-- MUSIQUE -->
 <audio id="music" src="/home/musique.mp3" loop></audio>
 
-<!-- Boutons -->
+<!-- BOUTONS -->
 <div class="top-left">
   <a class="top-btn" href="https://discord.gg/TON_INVITE" target="_blank">Discord</a>
 </div>
@@ -150,7 +147,7 @@ canvas {
   <a class="top-btn" href="/home/découvrir/index.html">Découvrir</a>
 </div>
 
-<!-- Contenu -->
+<!-- CONTENU -->
 <div class="main">
   <h2>Créer Ton Site Personnalisé !</h2>
 
@@ -165,42 +162,41 @@ canvas {
 </div>
 
 <script>
-/* ===== Musique ===== */
-document.getElementById("enterScreen").addEventListener("click", () => {
+/* MUSIQUE */
+document.getElementById("enter").onclick = () => {
   document.getElementById("music").play();
-  document.getElementById("enterScreen").style.display = "none";
-});
+  document.getElementById("enter").style.display = "none";
+};
 
-/* ===== Étoiles ===== */
-const canvas = document.getElementById("stars");
-const ctx = canvas.getContext("2d");
+/* ÉTOILES */
+const c = document.getElementById("stars");
+const ctx = c.getContext("2d");
 
-function resize() {
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
+function resize(){
+  c.width = innerWidth;
+  c.height = innerHeight;
 }
 resize();
 addEventListener("resize", resize);
 
-const stars = Array.from({length: 100}, () => ({
-  x: Math.random() * canvas.width,
-  y: Math.random() * canvas.height,
-  r: Math.random() * 1.5
+const stars = Array.from({length:120},()=>({
+  x:Math.random()*c.width,
+  y:Math.random()*c.height,
+  r:Math.random()*1.5
 }));
 
-function animate() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.fillStyle = "white";
-  stars.forEach(s => {
-    s.y += 0.3;
-    if (s.y > canvas.height) s.y = 0;
+(function animate(){
+  ctx.clearRect(0,0,c.width,c.height);
+  ctx.fillStyle="white";
+  stars.forEach(s=>{
+    s.y+=0.3;
+    if(s.y>c.height) s.y=0;
     ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
     ctx.fill();
   });
   requestAnimationFrame(animate);
-}
-animate();
+})();
 </script>
 
 </body>
