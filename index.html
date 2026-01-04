@@ -21,13 +21,13 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 /* MAIN */
 .container{position:relative;z-index:1;opacity:0;transition:.8s;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;}
 
-/* AVATAR */
-.avatar{width:120px;height:120px;border-radius:50%;background:url("https://i.pinimg.com/originals/85/9d/02/859d02cc14248320a24a21e13939ed73.gif") center/cover;border:3px solid #ff0000;margin-bottom:15px;}
-
-/* NAME + BADGE */
-.name-container{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+/* AVATAR + NAME + BADGE */
+.name-container{display:flex;align-items:center;gap:8px;margin-bottom:5px;position:relative;}
 .name{font-size:34px;color:#ff0000;text-shadow:0 0 15px #ff0000;}
-.badge{width:28px;height:28px;cursor:pointer;border-radius:50%;}
+.badge{width:28px;height:28px;cursor:pointer;}
+
+/* OWNER TOOLTIP */
+.tooltip{position:absolute;top:50%;left:110%;transform:translateY(-50%);background:#000;border:1px solid #ff0000;color:#ff0000;padding:4px 8px;font-size:12px;white-space:nowrap;display:none;border-radius:4px;}
 
 /* ROLE */
 .role{font-size:16px;color:#ff0000;text-shadow:0 0 10px #ff0000;margin-bottom:15px;}
@@ -54,16 +54,7 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 .fullscreen{position:fixed;top:15px;right:15px;font-size:20px;color:#ff0000;cursor:pointer;z-index:2;}
 
 /* VIEWS */
-.views{position:fixed;bottom:15px;left:15px;font-size:20px;opacity:.8;z-index:2;cursor:pointer;}
-
-/* TOOLTIP */
-.tooltip{position:fixed;bottom:50px;left:15px;background:#1a0000;border:2px solid #ff0000;color:#ff0000;padding:6px 12px;font-family:monospace;font-size:14px;display:none;z-index:30;border-radius:4px;}
-/* BADGE TOOLTIP */
-.badge-tooltip{position:fixed;background:#1a0000;border:2px solid #ff0000;color:#ff0000;padding:4px 10px;font-family:monospace;font-size:12px;display:none;z-index:30;border-radius:4px;}
-
-/* ABOUT BUTTON */
-.about-btn{position:fixed;bottom:15px;right:15px;font-size:16px;color:#ff0000;border:1px solid #ff0000;padding:6px 12px;border-radius:6px;cursor:pointer;}
-.about-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a0000;border:2px solid #ff0000;color:#ff0000;padding:15px;font-family:monospace;display:none;z-index:50;text-align:center;max-width:90%;border-radius:6px;}
+.views{position:fixed;bottom:15px;left:15px;font-size:20px;opacity:.8;z-index:2;}
 </style>
 </head>
 <body>
@@ -72,28 +63,22 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 <div class="enter" id="enter"><span>Click to enter</span></div>
 
 <div class="fullscreen" id="fs"><i class="fa fa-expand"></i></div>
-<div class="views" id="views">👁 <span>15,692</span></div>
-<div class="tooltip" id="tooltip">Nombre de personnes ayant vu le site</div>
+<div class="views">👁 <span id="views">15,692</span></div>
 
 <div class="volume-container">
   <i class="fa fa-volume-high" id="volIcon"></i>
   <input type="range" id="vol" min="0" max="1" step="0.01">
 </div>
 
-<button class="about-btn" id="aboutBtn">À propos</button>
-<div class="about-popup" id="aboutPopup">
-  Ce site a été développé par Mathkasa.<br>
-  Musique et design intégrés par Mathkasa.<br>
-  2026 © Tous droits réservés.
-</div>
-
 <div class="container" id="container">
   <div class="avatar"></div>
+
   <div class="name-container">
     <div class="name">Mathkasa</div>
-    <img src="https://cdn-icons-png.freepik.com/512/5753/5753201.png" class="badge" id="badge" alt="Owner">
-    <div class="badge-tooltip" id="badgeTooltip">Owner</div>
+    <img src="https://cdn-icons-png.freepik.com/512/5753/5753201.png" class="badge" id="ownerBadge">
+    <div class="tooltip" id="ownerTooltip">Owner</div>
   </div>
+
   <div class="role">👨‍💻 Développeur | Monteur Vidéo</div>
 
   <div class="links">
@@ -138,14 +123,13 @@ const stars=[...Array(150)].map(()=>({x:Math.random()*sc.width,y:Math.random()*s
   requestAnimationFrame(drawStars);
 })();
 
-/* PLAYLIST */
+/* AUDIO */
 const playlist=["assets/jdtestelesflammes.mp3","assets/melodrama.mp3"];
 let index=0,audio=null;
 
-/* ELEMENTS */
 const enter=document.getElementById("enter");
 const container=document.getElementById("container");
-const playBtn=document.getElementById("play");
+const play=document.getElementById("play");
 const prev=document.getElementById("prev");
 const next=document.getElementById("next");
 const bar=document.getElementById("bar");
@@ -154,16 +138,9 @@ const timeCurrent=document.getElementById("time-current");
 const timeTotal=document.getElementById("time-total");
 const volSlider=document.getElementById("vol");
 const volIcon=document.getElementById("volIcon");
-const fs=document.getElementById("fs");
-const views=document.getElementById("views");
-const tooltip=document.getElementById("tooltip");
-const badge=document.getElementById("badge");
-const badgeTooltip=document.getElementById("badgeTooltip");
-const aboutBtn=document.getElementById("aboutBtn");
-const aboutPopup=document.getElementById("aboutPopup");
 
 /* FORMAT TIME */
-function format(t){return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0");}
+function format(t){ return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0"); }
 
 /* CLICK TO ENTER */
 enter.onclick=()=>{
@@ -173,7 +150,7 @@ enter.onclick=()=>{
   audio=new Audio(playlist[index]);
   audio.volume=volSlider.value||0.6;
   audio.play();
-  playBtn.innerHTML='<i class="fa fa-pause"></i>';
+  play.innerHTML='<i class="fa fa-pause"></i>';
 
   audio.ontimeupdate=()=>{
     const pct=(audio.currentTime/audio.duration*100);
@@ -183,10 +160,10 @@ enter.onclick=()=>{
   };
 };
 
-/* BUTTONS */
-playBtn.onclick=()=>{if(audio.paused){audio.play(); playBtn.innerHTML='<i class="fa fa-pause"></i>';} else{audio.pause(); playBtn.innerHTML='<i class="fa fa-play"></i>';}}
-prev.onclick=()=>{index=(index-1+playlist.length)%playlist.length; audio.src=playlist[index]; audio.play(); playBtn.innerHTML='<i class="fa fa-pause"></i>';}
-next.onclick=()=>{index=(index+1)%playlist.length; audio.src=playlist[index]; audio.play(); playBtn.innerHTML='<i class="fa fa-pause"></i>';}
+/* CONTROLS */
+play.onclick=()=>{if(audio.paused){audio.play(); play.innerHTML='<i class="fa fa-pause"></i>';} else{audio.pause(); play.innerHTML='<i class="fa fa-play"></i>';}}
+prev.onclick=()=>{index=(index-1+playlist.length)%playlist.length; audio.src=playlist[index]; audio.play(); play.innerHTML='<i class="fa fa-pause"></i>';}
+next.onclick=()=>{index=(index+1)%playlist.length; audio.src=playlist[index]; audio.play(); play.innerHTML='<i class="fa fa-pause"></i>';}
 
 /* BAR CLICK */
 bar.onclick=e=>{
@@ -197,31 +174,21 @@ bar.onclick=e=>{
 /* VOLUME */
 volSlider.value=0.6;
 volSlider.oninput=()=>{audio.volume=volSlider.value; volIcon.className=audio.volume==0?'fa fa-volume-xmark':'fa fa-volume-high';}
-volIcon.onclick=()=>{audio.volume=0; volSlider.value=0; volIcon.className='fa fa-volume-xmark';}
 
 /* FULLSCREEN */
+const fs=document.getElementById("fs");
 fs.onclick=()=>{
   if(!document.fullscreenElement){document.documentElement.requestFullscreen(); fs.innerHTML='<i class="fa fa-compress"></i>';}
   else{document.exitFullscreen(); fs.innerHTML='<i class="fa fa-expand"></i>';}
 };
 
-/* VIEWS TOOLTIP */
-views.onclick=()=>{
-  tooltip.style.display="block";
-  setTimeout(()=>{tooltip.style.display="none";},2000);
-};
-
-/* BADGE TOOLTIP */
-badge.onclick=()=>{
-  badgeTooltip.style.display="block";
-  setTimeout(()=>{badgeTooltip.style.display="none";},1500);
-};
-
-/* ABOUT BUTTON */
-aboutBtn.onclick=()=>{
-  aboutPopup.style.display="block";
-  setTimeout(()=>{aboutPopup.style.display="none";},4000);
+/* OWNER BADGE TOOLTIP */
+const ownerBadge=document.getElementById("ownerBadge");
+const ownerTooltip=document.getElementById("ownerTooltip");
+ownerBadge.onclick=()=>{
+  ownerTooltip.style.display = ownerTooltip.style.display==="block"?"none":"block";
 };
 </script>
+
 </body>
 </html>
