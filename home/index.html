@@ -16,13 +16,20 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;overflow:hidden;pos
 .enter span{font-size:28px;color:#ff0000;text-shadow:0 0 20px #ff0000;animation:pulse 1.5s infinite;}
 @keyframes pulse{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
 
+/* MAIN CONTENT */
+.main-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:20px;}
+
 /* TITLE */
-.title{position:relative;text-align:center;margin-top:50px;font-size:36px;color:#ff0000;text-shadow:0 0 20px #ff0000;font-weight:bold;z-index:2;}
+.title{font-size:36px;color:#ff0000;text-shadow:0 0 20px #ff0000;font-weight:bold;text-align:center;}
 
 /* BIO */
-.bio{position:relative;text-align:center;margin-top:20px;font-size:20px;color:#00ff00;z-index:2;height:100px;overflow:hidden;}
+.bio{font-size:22px;color:#00ff00;text-align:center;overflow:hidden;white-space:nowrap;width:90%;}
 
-/* BUTTONS TOP */
+/* BUTTON CREATE SITE */
+.create-btn{background:#ff0000;color:#000;padding:12px 20px;border-radius:10px;font-size:18px;font-weight:bold;text-decoration:none;transition:.3s;}
+.create-btn:hover{background:#00ff00;color:#000;transform:scale(1.05);}
+
+/* TOP BUTTONS */
 .top-buttons{position:fixed;top:15px;left:15px;display:flex;gap:10px;z-index:2;}
 .top-buttons a{background:#ff0000;color:#000;padding:6px 10px;border-radius:6px;text-decoration:none;font-weight:bold;transition:.2s;}
 .top-buttons a:hover{background:#00ff00;color:#000;}
@@ -39,9 +46,11 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;overflow:hidden;pos
   <a href="découvrir/index.html">Découvrir</a>
 </div>
 
-<div class="title" style="display:none;" id="title">Créer Ton Site Personnalisé !</div>
-
-<div class="bio" style="display:none;" id="bio"></div>
+<div class="main-content" style="display:none;" id="mainContent">
+  <div class="title" id="title">Créer Ton Site Personnalisé !</div>
+  <div class="bio" id="bio">🔗 Crée ton site</div>
+  <a href="https://docs.google.com/forms/..." class="create-btn" target="_blank">Créer mon site</a>
+</div>
 
 <audio id="bgMusic" src="assets/musique.mp3" loop></audio>
 
@@ -68,7 +77,7 @@ const stars=[...Array(150)].map(()=>({x:Math.random()*sc.width,y:Math.random()*s
 /* CLICK TO ENTER */
 const enter = document.getElementById("enter");
 const topButtons = document.getElementById("topButtons");
-const title = document.getElementById("title");
+const mainContent = document.getElementById("mainContent");
 const bioEl = document.getElementById("bio");
 const audio = document.getElementById("bgMusic");
 
@@ -88,13 +97,12 @@ function updateBio(){
 enter.onclick = ()=>{
   enter.style.display = "none";
   topButtons.style.display = "flex";
-  title.style.display = "block";
-  bioEl.style.display = "block";
+  mainContent.style.display = "flex";
   audio.play();
 
-  // Bio change toutes les 2 secondes
+  // Bio change toutes les 3 secondes
   updateBio();
-  setInterval(updateBio,2000);
+  setInterval(updateBio,3000);
 };
 
 /* PARALLAX MOBILE */
@@ -102,7 +110,7 @@ if(window.DeviceOrientationEvent){
   window.addEventListener('deviceorientation',function(e){
     const x=e.gamma/30; 
     const y=e.beta/30;
-    [title,bioEl,topButtons].forEach(el=>{
+    [mainContent, bioEl, topButtons].forEach(el=>{
       el.style.transform=`translate(${x*10}px,${y*10}px)`;
     });
   });
