@@ -23,19 +23,30 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 
 /* AVATAR */
 .avatar{width:120px;height:120px;border-radius:50%;background:url("https://i.pinimg.com/originals/85/9d/02/859d02cc14248320a24a21e13939ed73.gif") center/cover;border:3px solid #ff0000;box-shadow:0 0 25px #ff0000;margin-bottom:15px;}
+
+/* NAME + BADGE */
 .name-container{display:flex;align-items:center;gap:6px;margin-bottom:8px;}
-.name{font-size:32px;color:#ff0000;text-shadow:0 0 15px #ff0000;}
-.badge{width:22px;height:22px;opacity:0.8;cursor:pointer;}
+.name{font-size:34px;color:#ff0000;text-shadow:0 0 15px #ff0000;}
+.badge{width:20px;height:20px;cursor:pointer;}
+
+/* ROLE */
+.role{font-size:16px;color:#ff0000;text-shadow:0 0 10px #ff0000;margin-bottom:15px;}
 
 /* LINKS */
-.links{display:flex;gap:15px;margin:10px 0;z-index:2;}
-.links a{width:45px;height:45px;border:1px solid #ff0000;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#ff0000;text-decoration:none;transition:.2s;}
+.links{display:flex;gap:20px;margin:15px 0;z-index:2;}
+.links a{width:50px;height:50px;border:1px solid #ff0000;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#ff0000;text-decoration:none;transition:.2s;}
 .links a:hover{background:#ff0000;color:#000;transform:scale(1.1);}
 
 /* PLAYER */
-.player{margin-top:15px;display:flex;align-items:center;gap:15px;}
+.player{width:90%;max-width:500px;margin-top:10px;}
+.progress-container{position:fixed;top:15px;left:15px;width:200px;height:8px;background:#333;border-radius:4px;cursor:pointer;z-index:2;}
+.progress-bar{height:100%;width:0%;background:#ff0000;border-radius:4px;position:relative;}
+.time-container{display:flex;justify-content:space-between;font-size:12px;opacity:.7;margin-top:4px;margin-left:15px;width:200px;}
+.controls{display:flex;justify-content:center;gap:15px;margin-top:10px;}
 .btn{width:44px;height:44px;border-radius:50%;background:#ff0000;color:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-.volume-container{position:fixed;top:15px;left:15px;display:flex;align-items:center;gap:6px;z-index:2;}
+
+/* VOLUME */
+.volume-container{position:fixed;top:15px;left:230px;display:flex;align-items:center;gap:6px;z-index:2;}
 .volume-container input[type=range]{width:120px;}
 
 /* FULLSCREEN */
@@ -44,8 +55,9 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 /* VIEWS */
 .views{position:fixed;bottom:15px;left:15px;font-size:20px;opacity:.8;z-index:2;}
 
-/* TIME */
-.time-display{color:#ff0000;font-size:14px;opacity:0.8;}
+/* POPUP BADGE */
+.popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a0000;border:2px solid #ff0000;color:#ff0000;padding:10px;font-family:monospace;display:none;z-index:50;text-align:center;max-width:90%;animation:popupAnim .3s;}
+@keyframes popupAnim{0%{transform:translate(-50%,-60%) scale(0.8);opacity:0}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
 </style>
 </head>
 <body>
@@ -54,7 +66,7 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 <div class="enter" id="enter"><span>Click to enter</span></div>
 
 <div class="fullscreen" id="fs"><i class="fa fa-expand"></i></div>
-<div class="views">👁 <span id="views">15692</span></div>
+<div class="views">👁 <span id="views">15,692</span></div>
 
 <div class="volume-container">
   <i class="fa fa-volume-high" id="volIcon"></i>
@@ -65,12 +77,10 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
   <div class="avatar"></div>
   <div class="name-container">
     <div class="name">Mathkasa</div>
-    <img class="badge" src="https://cdn3.emoji.gg/emojis/6601-hypesquad-bravery.png" title="Hypesquad Bravery">
-    <img class="badge" src="https://cdn3.emoji.gg/emojis/66366-completed-a-quest.png" title="Quest Completed">
-    <img class="badge" src="https://cdn3.emoji.gg/emojis/41827-orbs.png" title="Orbs">
-    <img class="badge" src="https://cdn-icons-png.flaticon.com/512/386/386769.png" title="Staff">
-    <img class="badge" src="https://cdn-icons-png.flaticon.com/512/223/223399.png" title="OG">
+    <img src="https://cdn-icons-png.flaticon.com/512/223/223399.png" class="badge" id="badge" alt="Owner">
   </div>
+  <div class="role">👨‍💻 Développeur | Monteur Vidéo</div>
+
   <div class="links">
     <a href="https://discord.com/users/1376961618130505738" target="_blank"><i class="fab fa-discord"></i></a>
     <a href="https://www.tiktok.com/@mathkasa" target="_blank"><i class="fab fa-tiktok"></i></a>
@@ -78,71 +88,111 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
   </div>
 
   <div class="player">
-    <div class="btn" id="prev"><i class="fa fa-backward"></i></div>
-    <div class="btn" id="play"><i class="fa fa-play"></i></div>
-    <div class="btn" id="next"><i class="fa fa-forward"></i></div>
-    <div class="time-display" id="time">0:00 / 0:00</div>
+    <div class="progress-container" id="bar">
+      <div class="progress-bar" id="progress"></div>
+    </div>
+    <div class="time-container">
+      <span id="time-current">0:00</span>
+      <span id="time-total">0:00</span>
+    </div>
+    <div class="controls">
+      <div class="btn" id="prev"><i class="fa fa-backward"></i></div>
+      <div class="btn" id="play"><i class="fa fa-play"></i></div>
+      <div class="btn" id="next"><i class="fa fa-forward"></i></div>
+    </div>
   </div>
 </div>
 
+<div class="popup" id="popup">Owner</div>
+
 <script>
 /* STARS */
-const c=document.getElementById("stars"),ctx=c.getContext("2d");
-function resize(){c.width=innerWidth;c.height=innerHeight;}
+const sc=document.getElementById("stars"),sctx=sc.getContext("2d");
+function resize(){sc.width=innerWidth; sc.height=innerHeight;}
 resize(); window.addEventListener("resize",resize);
-const stars=[...Array(140)].map(()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.5,v:Math.random()*0.3+.1}));
-(function anim(){
-  ctx.clearRect(0,0,c.width,c.height);
-  ctx.fillStyle="#fff";
+const stars=[...Array(150)].map(()=>({x:Math.random()*sc.width,y:Math.random()*sc.height,r:Math.random()*1.5,v:Math.random()*.6+.3}));
+(function drawStars(){
+  sctx.clearRect(0,0,sc.width,sc.height);
+  sctx.fillStyle="#fff";
   stars.forEach(s=>{
-    ctx.globalAlpha=Math.random();
-    ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fill();
-    s.y+=s.v; if(s.y>c.height)s.y=0;
+    sctx.globalAlpha=Math.random();
+    sctx.beginPath();
+    sctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    sctx.fill();
+    s.y+=s.v;
+    if(s.y>sc.height){ s.y=0; s.x=Math.random()*sc.width; }
   });
-  requestAnimationFrame(anim);
+  requestAnimationFrame(drawStars);
 })();
 
-/* MUSIC */
+/* PLAYLIST */
 const playlist=["assets/jdtestelesflammes.mp3","assets/melodrama.mp3"];
 let index=0,audio=null;
 
+/* ELEMENTS */
 const enter=document.getElementById("enter");
 const container=document.getElementById("container");
 const playBtn=document.getElementById("play");
-const prevBtn=document.getElementById("prev");
-const nextBtn=document.getElementById("next");
-const vol=document.getElementById("vol");
+const prev=document.getElementById("prev");
+const next=document.getElementById("next");
+const bar=document.getElementById("bar");
+const progress=document.getElementById("progress");
+const timeCurrent=document.getElementById("time-current");
+const timeTotal=document.getElementById("time-total");
+const volSlider=document.getElementById("vol");
 const volIcon=document.getElementById("volIcon");
-const timeEl=document.getElementById("time");
+const fs=document.getElementById("fs");
+const badge=document.getElementById("badge");
+const popup=document.getElementById("popup");
 
+/* FORMAT TIME */
 function format(t){return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0");}
 
+/* CLICK TO ENTER */
 enter.onclick=()=>{
   enter.style.display="none";
   container.style.opacity=1;
 
   audio=new Audio(playlist[index]);
-  audio.volume=0.6;
+  audio.volume=volSlider.value||0.6;
   audio.play();
   playBtn.innerHTML='<i class="fa fa-pause"></i>';
 
   audio.ontimeupdate=()=>{
-    timeEl.textContent=`${format(audio.currentTime)} / ${format(audio.duration)}`;
+    const pct=(audio.currentTime/audio.duration*100);
+    progress.style.width=pct+"%";
+    timeCurrent.textContent=format(audio.currentTime);
+    timeTotal.textContent=format(audio.duration);
   };
 };
 
 /* BUTTONS */
-playBtn.onclick=()=>{if(audio.paused){audio.play();playBtn.innerHTML='<i class="fa fa-pause"></i>';}else{audio.pause();playBtn.innerHTML='<i class="fa fa-play"></i>';}}
-prevBtn.onclick=()=>{index=(index-1+playlist.length)%playlist.length; audio.src=playlist[index]; audio.play(); playBtn.innerHTML='<i class="fa fa-pause"></i>';};
-nextBtn.onclick=()=>{index=(index+1)%playlist.length; audio.src=playlist[index]; audio.play(); playBtn.innerHTML='<i class="fa fa-pause"></i>';};
+playBtn.onclick=()=>{if(audio.paused){audio.play(); playBtn.innerHTML='<i class="fa fa-pause"></i>';} else{audio.pause(); playBtn.innerHTML='<i class="fa fa-play"></i>';}}
+prev.onclick=()=>{index=(index-1+playlist.length)%playlist.length; audio.src=playlist[index]; audio.play(); playBtn.innerHTML='<i class="fa fa-pause"></i>';}
+next.onclick=()=>{index=(index+1)%playlist.length; audio.src=playlist[index]; audio.play(); playBtn.innerHTML='<i class="fa fa-pause"></i>';}
+
+/* BAR CLICK */
+bar.onclick=e=>{
+  const r=bar.getBoundingClientRect();
+  audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;
+};
 
 /* VOLUME */
-vol.value=0.6;
-vol.oninput=()=>{audio.volume=vol.value; volIcon.className=audio.volume==0?'fa fa-volume-xmark':'fa fa-volume-high';}
+volSlider.value=0.6;
+volSlider.oninput=()=>{audio.volume=volSlider.value; volIcon.className=audio.volume==0?'fa fa-volume-xmark':'fa fa-volume-high';}
+volIcon.onclick=()=>{audio.volume=0; volSlider.value=0; volIcon.className='fa fa-volume-xmark';}
 
 /* FULLSCREEN */
-const fs=document.getElementById("fs");
-fs.onclick=()=>{if(!document.fullscreenElement){document.documentElement.requestFullscreen(); fs.innerHTML='<i class="fa fa-compress"></i>';}else{document.exitFullscreen(); fs.innerHTML='<i class="fa fa-expand"></i>';}}
+fs.onclick=()=>{
+  if(!document.fullscreenElement){document.documentElement.requestFullscreen(); fs.innerHTML='<i class="fa fa-compress"></i>';}
+  else{document.exitFullscreen(); fs.innerHTML='<i class="fa fa-expand"></i>';}
+};
+
+/* BADGE POPUP */
+badge.onclick=()=>{
+  popup.style.display="block";
+  setTimeout(()=>{popup.style.display="none";},2000);
+};
 </script>
 </body>
 </html>
