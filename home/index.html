@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Mathkasa - Créateur de page</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{background:#000;color:#fff;font-family:Arial,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;margin:0;}
+h1{color:#ff0000;margin-bottom:20px;}
+form{display:flex;flex-direction:column;gap:10px;width:90%;max-width:400px;}
+input,textarea{padding:10px;border-radius:6px;border:1px solid #ff0000;background:#000;color:#fff;}
+button{padding:10px;border:none;border-radius:6px;background:#ff0000;color:#000;font-weight:bold;cursor:pointer;}
+button:hover{transform:scale(1.05);}
+#result{margin-top:20px;color:#0f0;}
+</style>
+</head>
+<body>
+<h1>Créer ton site Mathkasa</h1>
+<form id="siteForm">
+  <input type="text" id="pseudo" placeholder="Ton pseudo" required>
+  <input type="text" id="avatar" placeholder="URL de ton avatar GIF" required>
+  <textarea id="bio" placeholder="Ta description" rows="3"></textarea>
+  <input type="text" id="discord" placeholder="Lien Discord">
+  <input type="text" id="tiktok" placeholder="Lien TikTok">
+  <input type="text" id="youtube" placeholder="Lien YouTube">
+  <button type="submit">Créer mon site</button>
+</form>
+<div id="result"></div>
+
+<script>
+document.getElementById('siteForm').onsubmit = function(e){
+    e.preventDefault();
+
+    const pseudo = document.getElementById('pseudo').value.trim();
+    const avatar = document.getElementById('avatar').value.trim();
+    const bio = document.getElementById('bio').value.trim();
+    const discord = document.getElementById('discord').value.trim();
+    const tiktok = document.getElementById('tiktok').value.trim();
+    const youtube = document.getElementById('youtube').value.trim();
+
+    const html = `<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>${pseudo}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.avatar{width:120px;height:120px;border-radius:50%;background:url('${avatar}') center/cover;border:3px solid #ff0000;margin-bottom:10px;}
+.name{font-size:34px;color:#ff0000;margin-bottom:5px;}
+.role{font-size:16px;color:#ff0000;margin-bottom:15px;}
+.links{display:flex;gap:20px;}
+.links a{width:50px;height:50px;border:1px solid #ff0000;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#ff0000;text-decoration:none;transition:.2s;}
+.links a:hover{background:#ff0000;color:#000;transform:scale(1.1);}
+</style>
+</head>
+<body>
+<div class="avatar"></div>
+<div class="name">${pseudo}</div>
+<div class="role">${bio}</div>
+<div class="links">
+  ${discord?`<a href="${discord}" target="_blank"><i class="fab fa-discord"></i></a>`:''}
+  ${tiktok?`<a href="${tiktok}" target="_blank"><i class="fab fa-tiktok"></i></a>`:''}
+  ${youtube?`<a href="${youtube}" target="_blank"><i class="fab fa-youtube"></i></a>`:''}
+</div>
+</body>
+</html>`;
+
+    // Créer le fichier téléchargeable
+    const blob = new Blob([html], {type: 'text/html'});
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'index.html';
+    link.click();
+
+    document.getElementById('result').textContent = `Voici l’URL de ton site : mathkasa.github.io/home/${pseudo}`;
+}
+</script>
+</body>
+  </html>
