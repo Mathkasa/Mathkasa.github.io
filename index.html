@@ -139,6 +139,14 @@ let index=0,audio;
 /* ENTER */
 const enter=document.getElementById("enter");
 const container=document.getElementById("container");
+const play=document.getElementById("play");
+const bar=document.getElementById("bar");
+const progress=document.getElementById("progress");
+const timeCurrent=document.getElementById("time-current");
+const timeTotal=document.getElementById("time-total");
+const vol=document.getElementById("vol");
+const volIcon=document.getElementById("volIcon");
+
 enter.onclick=()=>{
   enter.style.display="none";
   container.style.opacity=1;
@@ -158,20 +166,25 @@ function format(t){return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart
 
 /* CONTROLS */
 play.onclick=()=>{audio.paused?(audio.play(),play.innerHTML='<i class="fa fa-pause"></i>'):(audio.pause(),play.innerHTML='<i class="fa fa-play"></i>');}
-prev.onclick=()=>{index=(index-1+playlist.length)%playlist.length;audio.src=playlist[index];audio.play();}
-next.onclick=()=>{index=(index+1)%playlist.length;audio.src=playlist[index];audio.play();}
+document.getElementById("prev").onclick=()=>{index=(index-1+playlist.length)%playlist.length;audio.src=playlist[index];audio.play();}
+document.getElementById("next").onclick=()=>{index=(index+1)%playlist.length;audio.src=playlist[index];audio.play();}
 bar.onclick=e=>{const r=bar.getBoundingClientRect();audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;}
 vol.oninput=()=>{audio.volume=vol.value;volIcon.className=audio.volume==0?'fa fa-volume-xmark':'fa fa-volume-high';}
 
 /* FULLSCREEN */
+const fs=document.getElementById("fs");
 fs.onclick=()=>{document.fullscreenElement?(document.exitFullscreen(),fs.innerHTML='<i class="fa fa-expand"></i>'):(document.documentElement.requestFullscreen(),fs.innerHTML='<i class="fa fa-compress"></i>');}
 
-/* TOOLTIPS */
-ownerBadge.onclick=()=>ownerTooltip.style.display=ownerTooltip.style.display=="block"?"none":"block";
+/* OWNER BADGE */
+const ownerBadge=document.getElementById("ownerBadge");
+const ownerTooltip=document.getElementById("ownerTooltip");
+ownerBadge.onclick=()=>{ownerTooltip.style.display = ownerTooltip.style.display==="block"?"none":"block";};
+
+/* VIEWS TOOLTIP */
 const viewsBtn=document.getElementById("viewsBtn");
 const viewsTooltip=document.getElementById("viewsTooltip");
-viewsBtn.onclick=e=>{e.stopPropagation();viewsTooltip.style.display=viewsTooltip.style.display=="block"?"none":"block";}
-document.onclick=()=>viewsTooltip.style.display="none";
+viewsBtn.onclick=e=>{e.stopPropagation();viewsTooltip.style.display = viewsTooltip.style.display==="block"?"none":"block";}
+document.addEventListener("click",()=>{viewsTooltip.style.display="none";});
 
 /* ABOUT */
 const aboutBtn = document.getElementById("aboutBtn");
@@ -180,19 +193,31 @@ const closeAbout = document.getElementById("closeAbout");
 aboutBtn.onclick=()=>aboutPopup.style.display="block";
 closeAbout.onclick=()=>aboutPopup.style.display="none";
 
-/* BIO DYNAMIQUE (Unicode safe pour emojis) */
-const role=document.getElementById("role");
-const roles=["👨‍💻 Développeur","🎬 Monteur Vidéo","🤖 Créateur Bot Discord"];
-let r=0,c=0,del=false;
+/* BIO DYNAMIQUE FLUIDE */
+const role = document.getElementById("role");
+const roles = ["👨‍💻 Développeur","🎬 Monteur Vidéo","🤖 Créateur Bot Discord"];
+let current = 0, charIndex = 0, deleting = false, wait = 0;
 
 setInterval(()=>{
-  let txt=Array.from(roles[r]);
-  if(!del){
-    role.textContent = txt.slice(0,++c).join('');
-    if(c>txt.length) setTimeout(()=>del=true,500);
+  if(wait>0){ wait--; return; } // pause si wait > 0
+
+  let txt = Array.from(roles[current]);
+
+  if(!deleting){
+    charIndex++;
+    role.textContent = txt.slice(0,charIndex).join('');
+    if(charIndex>=txt.length){ // texte complet affiché
+      deleting = true;
+      wait = 10; // pause (~1s)
+    }
   } else {
-    role.textContent = txt.slice(0,--c).join('');
-    if(c<0){ del=false; r=(r+1)%roles.length; }
+    charIndex--;
+    role.textContent = txt.slice(0,charIndex).join('');
+    if(charIndex<=0){ // effacement complet
+      deleting = false;
+      current = (current+1) % roles.length;
+      wait = 5; // petite pause avant réécriture
+    }
   }
 },100);
 </script>
