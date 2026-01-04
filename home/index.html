@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Créer ton site personnalisé</title>
+<title>Créer Ton Site Personnalisé</title>
 
 <style>
 *{
@@ -51,15 +51,22 @@ canvas{
   100%{opacity:.4}
 }
 
-/* ===== TOP BUTTONS ===== */
-.top-left, .top-right{
+/* ===== TOP BAR ===== */
+.top-bar{
   position:fixed;
   top:15px;
+  left:15px;
+  right:15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
   z-index:5;
 }
 
-.top-left{left:15px}
-.top-right{right:15px}
+.left-buttons{
+  display:flex;
+  gap:10px;
+}
 
 .top-btn{
   color:red;
@@ -89,20 +96,23 @@ canvas{
 }
 
 .main h2{
-  font-size:26px;
+  font-size:28px;
   margin-bottom:20px;
+  color:red;
+  text-shadow:0 0 15px red;
 }
 
 /* BIO QUI DÉFILE */
 .bio{
   height:26px;
   overflow:hidden;
-  margin-bottom:25px;
+  margin-bottom:30px;
+  color:red;
 }
 
 .bio span{
   display:block;
-  animation:scroll 10s infinite;
+  animation:scroll 12s infinite;
 }
 
 @keyframes scroll{
@@ -138,13 +148,14 @@ canvas{
 <!-- MUSIQUE -->
 <audio id="music" src="/home/musique.mp3" loop></audio>
 
-<!-- BOUTONS -->
-<div class="top-left">
-  <a class="top-btn" href="https://discord.gg/TON_INVITE" target="_blank">Discord</a>
-</div>
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="left-buttons">
+    <a class="top-btn" href="https://discord.gg/TON_INVITE" target="_blank">Discord</a>
+    <a class="top-btn" href="/home/découvrir/index.html">Découvrir</a>
+  </div>
 
-<div class="top-right">
-  <a class="top-btn" href="/home/découvrir/index.html">Découvrir</a>
+  <a class="top-btn" href="/home/login.html">Connexion</a>
 </div>
 
 <!-- CONTENU -->
@@ -162,7 +173,7 @@ canvas{
 </div>
 
 <script>
-/* MUSIQUE */
+/* CLICK TO ENTER + MUSIQUE */
 document.getElementById("enter").onclick = () => {
   document.getElementById("music").play();
   document.getElementById("enter").style.display = "none";
