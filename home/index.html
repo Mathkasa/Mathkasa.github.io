@@ -12,48 +12,61 @@ body{font-family:Arial,sans-serif;background:#000;color:#fff;overflow:hidden;pos
 /* STARS */
 #stars{position:fixed;inset:0;z-index:0;}
 
+/* CLICK TO ENTER */
+.enter{position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;z-index:20;cursor:pointer;}
+.enter span{font-size:28px;color:#ff0000;text-shadow:0 0 20px #ff0000;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
+
 /* TOP LEFT BUTTONS */
-.top-left{position:fixed;top:15px;left:15px;display:flex;gap:10px;z-index:5;}
+.top-left{position:fixed;top:15px;left:15px;display:flex;gap:10px;z-index:5;opacity:0;transition:.5s;}
 .top-left button{background:#ff0000;color:#000;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:bold;transition:.2s;}
 .top-left button:hover{background:#000;color:#ff0000;transform:scale(1.05);}
 
 /* TOP RIGHT */
-header{position:fixed;top:15px;right:15px;z-index:5;}
+header{position:fixed;top:15px;right:15px;z-index:5;opacity:0;transition:.5s;}
 header button{background:#ff0000;color:#000;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:bold;transition:.2s;}
 header button:hover{background:#000;color:#ff0000;transform:scale(1.05);}
 
 /* MAIN */
-.container{position:relative;z-index:2;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-top:50px;}
-.title{font-size:36px;color:#ff0000;text-shadow:0 0 15px #ff0000;margin-bottom:30px;font-weight:bold;}
-.bio{font-size:24px;color:#ff0000;text-shadow:0 0 10px #ff0000;margin-bottom:30px;min-height:30px;}
-.createBtn{padding:15px 30px;background:#ff0000;color:#000;font-size:22px;border:none;border-radius:10px;cursor:pointer;font-weight:bold;transition:.3s;}
+.container{position:relative;z-index:2;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-top:50px;opacity:0;transition:.8s;}
+.title{font-size:42px;color:#ff0000;text-shadow:0 0 25px #ff0000;margin-bottom:30px;font-weight:bold;animation:fadeInTitle 1s ease;}
+@keyframes fadeInTitle{0%{opacity:0;transform:translateY(-20px);}100%{opacity:1;transform:translateY(0);}}
+.bio{font-size:24px;color:#ff0000;text-shadow:0 0 15px #ff0000;margin-bottom:30px;min-height:30px;}
+.createBtn{padding:15px 30px;background:#ff0000;color:#000;font-size:22px;border:none;border-radius:10px;cursor:pointer;font-weight:bold;transition:.3s;animation:floatBtn 2s infinite alternate;}
 .createBtn:hover{background:#000;color:#ff0000;transform:scale(1.05);}
+@keyframes floatBtn{0%{transform:translateY(0);}100%{transform:translateY(-8px);}}
+
+/* PARALLAX EFFECT */
+[data-parallax]{transition:transform 0.1s linear;}
 </style>
 </head>
 <body>
 
 <canvas id="stars"></canvas>
 
+<!-- CLICK TO ENTER -->
+<div class="enter" id="enter"><span>Click to enter</span></div>
+
 <!-- TOP LEFT BUTTONS -->
-<div class="top-left">
+<div class="top-left" id="topLeft">
   <button onclick="window.open('https://discord.gg/TON_SERVEUR','_blank')">Discord</button>
-  <button onclick="window.location.href='/home/decouvrir'">Découvrir</button>
+  <button onclick="window.location.href='/home/découvrir/index.html'">Découvrir</button>
 </div>
 
 <!-- TOP RIGHT -->
-<header>
+<header id="header">
   <button onclick="window.location.href='/home/login'">Connexion</button>
 </header>
 
 <!-- MAIN CONTENT -->
-<div class="container">
+<div class="container" id="container" data-parallax>
   <div class="title">Créer Ton Site Personnalisé !</div>
-  <div class="bio" id="bio"></div>
-  <button class="createBtn" onclick="window.open('https://forms.gle/TON_FORM','_blank')">Créer ton site</button>
+  <div class="bio" id="bio" data-parallax></div>
+  <button class="createBtn" onclick="window.open('https://forms.gle/TON_FORM','_blank')" data-parallax>Créer ton site</button>
 </div>
 
-<!-- MUSIQUE EN ARRIÈRE-PLAN -->
-<audio src="assets/musique.mp3" autoplay loop></audio>
+<!-- MUSIQUE -->
+<audio id="bgMusic" src="assets/musique.mp3" loop></audio>
 
 <script>
 /* STARS */
@@ -75,6 +88,21 @@ const stars=[...Array(150)].map(()=>({x:Math.random()*sc.width,y:Math.random()*s
   requestAnimationFrame(drawStars);
 })();
 
+/* CLICK TO ENTER */
+const enter=document.getElementById("enter");
+const container=document.getElementById("container");
+const topLeft=document.getElementById("topLeft");
+const header=document.getElementById("header");
+const bgMusic=document.getElementById("bgMusic");
+
+enter.onclick = ()=>{
+  enter.style.display="none";
+  container.style.opacity=1;
+  topLeft.style.opacity=1;
+  header.style.opacity=1;
+  bgMusic.play().catch(e=>console.log("Musique bloquée par auto-play"));
+};
+
 /* BIO DYNAMIQUE */
 const bioEl=document.getElementById("bio");
 const bios=["🔗 Crée ton site","🎧 Ton audio personnalisé","🟢 En ligne 24/7","🤑 Gratuit"];
@@ -92,6 +120,17 @@ function typeBio(){
   setTimeout(typeBio,50);
 }
 typeBio();
+
+/* PARALLAX MOBILE */
+if(window.DeviceOrientationEvent){
+  window.addEventListener('deviceorientation',function(e){
+    const x=e.gamma/30; // left/right
+    const y=e.beta/30;  // up/down
+    document.querySelectorAll('[data-parallax]').forEach(el=>{
+      el.style.transform=`translate(${x*10}px,${y*10}px)`;
+    });
+  });
+}
 </script>
 </body>
 </html>
