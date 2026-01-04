@@ -22,12 +22,12 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 .container{position:relative;z-index:1;opacity:0;transition:.8s;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;}
 
 /* AVATAR */
-.avatar{width:120px;height:120px;border-radius:50%;background:url("https://i.pinimg.com/originals/85/9d/02/859d02cc14248320a24a21e13939ed73.gif") center/cover;border:3px solid #ff0000;box-shadow:0 0 25px #ff0000;margin-bottom:15px;}
+.avatar{width:120px;height:120px;border-radius:50%;background:url("https://i.pinimg.com/originals/85/9d/02/859d02cc14248320a24a21e13939ed73.gif") center/cover;border:3px solid #ff0000;margin-bottom:15px;}
 
 /* NAME + BADGE */
 .name-container{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
 .name{font-size:34px;color:#ff0000;text-shadow:0 0 15px #ff0000;}
-.badge{width:28px;height:28px;cursor:pointer;border-radius:50%;box-shadow:0 0 12px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000;}
+.badge{width:28px;height:28px;cursor:pointer;border-radius:50%;}
 
 /* ROLE */
 .role{font-size:16px;color:#ff0000;text-shadow:0 0 10px #ff0000;margin-bottom:15px;}
@@ -38,15 +38,15 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 .links a:hover{background:#ff0000;color:#000;transform:scale(1.1);}
 
 /* PLAYER */
-.player{width:90%;max-width:500px;margin-top:10px;}
-.progress-container{position:fixed;top:15px;left:15px;width:200px;height:8px;background:#333;border-radius:4px;cursor:pointer;z-index:2;}
+.player{width:90%;max-width:500px;margin-top:10px;display:flex;flex-direction:column;align-items:center;}
+.progress-container{position:relative;width:300px;height:8px;background:#333;border-radius:4px;cursor:pointer;margin-bottom:10px;}
 .progress-bar{height:100%;width:0%;background:#ff0000;border-radius:4px;position:relative;}
-.time-container{display:flex;justify-content:space-between;font-size:12px;opacity:.7;margin-top:4px;margin-left:15px;width:200px;}
-.controls{display:flex;justify-content:center;gap:15px;margin-top:10px;}
+.time-container{display:flex;justify-content:space-between;font-size:12px;opacity:.7;width:300px;margin-bottom:8px;}
+.controls{display:flex;justify-content:center;gap:15px;margin-top:5px;}
 .btn{width:44px;height:44px;border-radius:50%;background:#ff0000;color:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;}
 
 /* VOLUME */
-.volume-container{position:fixed;top:15px;left:230px;display:flex;align-items:center;gap:6px;z-index:2;}
+.volume-container{position:fixed;top:15px;left:15px;display:flex;align-items:center;gap:6px;z-index:2;}
 .volume-container input[type=range]{width:120px;}
 
 /* FULLSCREEN */
@@ -143,7 +143,6 @@ const volSlider=document.getElementById("vol");
 const volIcon=document.getElementById("volIcon");
 const fs=document.getElementById("fs");
 const badge=document.getElementById("badge");
-const popup=document.getElementById("popup");
 
 /* FORMAT TIME */
 function format(t){return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0");}
@@ -190,6 +189,7 @@ fs.onclick=()=>{
 
 /* BADGE POPUP */
 badge.onclick=()=>{
+  const popup=document.getElementById("popup");
   popup.style.display="block";
   setTimeout(()=>{popup.style.display="none";},2000);
 };
