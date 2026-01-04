@@ -2,25 +2,75 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Home</title>
+<title>Connexion Admin</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{background:#000;color:#fff;font-family:Arial,sans-serif;margin:0;padding:0;}
-header{display:flex;justify-content:flex-end;padding:15px;}
-button#loginBtn{background:#ff0000;color:#000;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:bold;}
+body{
+  background:#000;
+  color:#fff;
+  font-family:Arial,sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  margin:0;
+}
+.box{
+  border:1px solid #ff0000;
+  padding:25px;
+  border-radius:10px;
+  width:280px;
+  text-align:center;
+}
+h2{color:#ff0000}
+input{
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+  background:#111;
+  color:#fff;
+  border:1px solid #ff0000;
+}
+button{
+  width:100%;
+  padding:10px;
+  background:#ff0000;
+  color:#000;
+  font-weight:bold;
+  border:none;
+  cursor:pointer;
+}
+#error{color:red;margin-top:10px}
 </style>
 </head>
+
 <body>
 
-<header>
-  <button id="loginBtn">Connexion</button>
-</header>
+<div class="box">
+  <h2>Connexion Admin</h2>
+  <input id="login" placeholder="Identifiant">
+  <input id="password" type="password" placeholder="Mot de passe">
+  <button onclick="doLogin()">Se connecter</button>
+  <div id="error"></div>
+</div>
 
 <script>
-// REDIRECTION VERS login.html
-document.getElementById("loginBtn").onclick = ()=>{
-  window.location.href = "login.html";
-};
+// IDENTIFIANT UNIQUE POUR L’INSTANT
+const adminLogin = "Owner";
+const adminPass = "mathkasa";
+
+function doLogin(){
+  const l = document.getElementById("login").value.trim();
+  const p = document.getElementById("password").value.trim();
+  const error = document.getElementById("error");
+
+  if(l === adminLogin && p === adminPass){
+    // REDIRECTION VERS TON ADMIN SUR GITHUB PAGES
+    window.location.href = "https://mathkasa.github.io/mathkasa/admin-8f3K9dPqLx72M.html";
+  } else {
+    error.textContent = "Identifiant ou mot de passe incorrect";
+  }
+}
 </script>
 
 </body>
