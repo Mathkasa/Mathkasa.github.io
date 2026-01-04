@@ -17,7 +17,7 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 @keyframes pulse{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
 
 /* MAIN */
-.container{position:relative;z-index:1;opacity:0;transition:.8s;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:translate(0,0);}
+.container{position:relative;z-index:1;opacity:0;transition:.2s;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:translate(0,0);}
 
 /* AVATAR + NAME + BADGE */
 .avatar{width:120px;height:120px;border-radius:50%;background:url("https://i.pinimg.com/originals/85/9d/02/859d02cc14248320a24a21e13939ed73.gif") center/cover;border:3px solid #ff0000;box-shadow:0 0 25px #ff0000;margin-bottom:10px;}
@@ -145,8 +145,7 @@ enter.onclick=()=>{
   audio.play();
   play.innerHTML='<i class="fa fa-pause"></i>';
 
-  // boucle automatique
-  audio.onended = ()=>{audio.currentTime=0;audio.play();};
+  audio.onended = ()=>{audio.currentTime=0;audio.play();}; // boucle
 
   audio.ontimeupdate=()=>{
     progress.style.width=(audio.currentTime/audio.duration*100)+"%";
@@ -177,41 +176,34 @@ const viewsTooltip=document.getElementById("viewsTooltip");
 viewsBtn.onclick=e=>{e.stopPropagation();viewsTooltip.style.display = viewsTooltip.style.display==="block"?"none":"block";}
 document.addEventListener("click",()=>{viewsTooltip.style.display="none";});
 
-// BIO DYNAMIQUE FLUIDE
+// BIO DYNAMIQUE
 const role = document.getElementById("role");
 const roles = ["👨‍💻 Développeur","🎬 Monteur Vidéo","🤖 Créateur Bot Discord"];
 let current = 0;
 function typeWriter(){
   const txt = Array.from(roles[current]);
   let i=0;
-  function write(){
-    if(i<txt.length){
-      role.textContent += txt[i]; i++;
-      setTimeout(write,100);
-    } else { setTimeout(erase,1000); }
-  }
-  function erase(){
-    if(i>=0){
-      role.textContent = txt.slice(0,i--).join('');
-      setTimeout(erase,50);
-    } else {
-      current = (current+1)%roles.length;
-      setTimeout(typeWriter,200);
-    }
-  }
+  function write(){if(i<txt.length){role.textContent+=txt[i];i++;setTimeout(write,100);} else {setTimeout(erase,1000);}}
+  function erase(){if(i>=0){role.textContent=txt.slice(0,i--).join('');setTimeout(erase,50);} else {current=(current+1)%roles.length;setTimeout(typeWriter,200);}}
   write();
 }
 typeWriter();
 
-// PARALLAXE MOBILE ET SOURIS
-function setParallax(x,y){
+// PARALLAXE UNIQUEMENT MOBILE
+function setParallaxMobile(gamma,beta){
   const maxOffset=15;
-  const xOffset = (x/45)*maxOffset;
-  const yOffset = (y/45)*maxOffset;
-  container.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+  const xOffset=(gamma/45)*maxOffset;
+  const yOffset=(beta/45)*maxOffset;
+  container.style.transform=`translate(${xOffset}px, ${yOffset}px)`;
 }
-window.addEventListener('deviceorientation', (e)=>{setParallax(e.gamma||0,e.beta||0);});
-window.addEventListener('mousemove',(e)=>{const cx=window.innerWidth/2;const cy=window.innerHeight/2;setParallax(e.clientX-cx,e.clientY-cy);});
+
+if(window.DeviceOrientationEvent){
+  window.addEventListener('deviceorientation', e=>{
+    const gamma=e.gamma||0;
+    const beta=e.beta||0;
+    setParallaxMobile(gamma,beta);
+  });
+}
 </script>
 </body>
 </html>
