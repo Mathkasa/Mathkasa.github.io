@@ -2,31 +2,109 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Admin</title>
+<title>Panel Admin</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
-body{
-  background:#000;
-  color:#0f0;
-  font-family:Arial;
-  padding:20px;
-}
-h1{color:red;}
-.box{
-  border:1px solid red;
-  padding:15px;
-  margin-top:15px;
-}
+  body {margin:0;padding:20px;background:#000;color:#fff;font-family:Arial,sans-serif;}
+  h1 {color:#ff0000;text-shadow:0 0 15px #ff0000;margin-bottom:20px;text-align:center;}
+  .stats {display:flex;gap:20px;flex-wrap:wrap;margin-bottom:30px;justify-content:center;}
+  .stat {background:#111;padding:15px;border:1px solid #ff0000;border-radius:10px;width:150px;text-align:center;}
+  .stat h2 {color:#ff0000;margin-bottom:10px;font-size:16px;}
+  table {width:100%;border-collapse:collapse;margin-bottom:30px;}
+  th, td {padding:10px;text-align:center;border:1px solid #ff0000;}
+  th {background:#ff0000;color:#000;}
+  td button {padding:5px 10px;border:none;border-radius:6px;font-weight:bold;cursor:pointer;}
+  .accept {background:#00ff00;color:#000;}
+  .reject {background:#ff0000;color:#000;}
+  td .indicator {display:inline-block;width:12px;height:12px;border-radius:50%;margin:0 4px;}
+  .ok {background:#00ff00;}
+  .fail {background:#ff0000;}
+  @media(max-width:768px){table, th, td {font-size:12px;}}
 </style>
 </head>
 <body>
 
-<h1>Panel Admin</h1>
-<p>Page secrète – accès autorisé</p>
+<h1>Panel Admin - Statistiques</h1>
 
-<div class="box">
-  <p>Ici tu pourras gérer les demandes plus tard.</p>
+<div class="stats">
+  <div class="stat">
+    <h2>👁 Vues totales</h2>
+    <p id="totalViews">15,692</p>
+  </div>
+  <div class="stat">
+    <h2>🧑 Utilisateurs</h2>
+    <p id="totalUsers">128</p>
+  </div>
+  <div class="stat">
+    <h2>📄 Sites créés</h2>
+    <p id="totalSites">54</p>
+  </div>
 </div>
 
+<h2>Détails utilisateurs</h2>
+<table id="userTable">
+  <thead>
+    <tr>
+      <th>Pseudo</th>
+      <th>Vues</th>
+      <th>Discord</th>
+      <th>TikTok</th>
+      <th>YouTube</th>
+      <th>Musique</th>
+      <th>Bio</th>
+      <th>Parallax</th>
+      <th>Statut</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Les lignes seront ajoutées par JS -->
+  </tbody>
+</table>
+
+<script>
+// Exemple de données utilisateurs
+const users = [
+  {pseudo:"Mathkasa", views:15692, discord:"Math#1234", tiktok:"@mathkasa", youtube:"@mathkasa", music:true, bio:true, parallax:true, status:"En attente"},
+  {pseudo:"Alice", views:2500, discord:"Alice#5678", tiktok:"@alice", youtube:"@aliceYT", music:false, bio:true, parallax:false, status:"En attente"},
+  {pseudo:"Bob", views:980, discord:"Bob#4321", tiktok:"@bob", youtube:"@bobYT", music:true, bio:false, parallax:true, status:"En attente"},
+];
+
+// Ajouter les utilisateurs au tableau
+const tbody = document.getElementById("userTable").querySelector("tbody");
+users.forEach((u,i)=>{
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td>${u.pseudo}</td>
+    <td>${u.views}</td>
+    <td>${u.discord}</td>
+    <td>${u.tiktok}</td>
+    <td>${u.youtube}</td>
+    <td><span class="indicator ${u.music?'ok':'fail'}"></span></td>
+    <td><span class="indicator ${u.bio?'ok':'fail'}"></span></td>
+    <td><span class="indicator ${u.parallax?'ok':'fail'}"></span></td>
+    <td>
+      <button class="accept">✅</button>
+      <button class="reject">❌</button>
+      <span>${u.status}</span>
+    </td>
+  `;
+  tbody.appendChild(tr);
+
+  // Actions Valider / Refuser
+  const acceptBtn = tr.querySelector(".accept");
+  const rejectBtn = tr.querySelector(".reject");
+  const statusSpan = tr.querySelector("td span:last-child");
+
+  acceptBtn.onclick = ()=>{statusSpan.textContent="Validé";};
+  rejectBtn.onclick = ()=>{statusSpan.textContent="Refusé";};
+});
+
+// Mettre à jour les stats globales automatiquement
+document.getElementById("totalUsers").textContent = users.length;
+document.getElementById("totalViews").textContent = users.reduce((sum,u)=>sum+u.views,0);
+document.getElementById("totalSites").textContent = users.filter(u=>u.status==="Validé").length;
+
+</script>
 </body>
 </html>
