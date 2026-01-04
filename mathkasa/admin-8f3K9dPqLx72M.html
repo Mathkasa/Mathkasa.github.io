@@ -2,74 +2,97 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Panel Admin – Statut</title>
+<title>Admin Panel – Mathkasa</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2572/2572734.png">
 <style>
-body{
-  background:#000;
-  color:#fff;
-  font-family:Arial,sans-serif;
-  margin:0;
-  padding:20px;
-}
-h1{
-  color:#ff0000;
-  text-align:center;
-}
-.status-box{
-  background:#111;
-  border:1px solid #ff0000;
-  border-radius:10px;
-  padding:20px;
-  text-align:center;
-  margin-top:30px;
-}
-.ok{color:#00ff00;font-weight:bold;font-size:18px;}
-.time{color:#ff0000;font-size:14px;margin-top:5px;}
-.logout{
-  position:fixed;
-  top:15px;
-  right:15px;
-  background:#ff0000;
-  color:#000;
-  border:none;
-  padding:8px 12px;
-  cursor:pointer;
-  border-radius:6px;
-}
+body {margin:0;padding:0;font-family:Arial,sans-serif;background:#000;color:#fff;}
+header {display:flex;justify-content:space-between;align-items:center;padding:15px 30px;border-bottom:2px solid #ff0000;}
+header h1 {color:#ff0000;font-size:28px;text-shadow:0 0 10px #ff0000;}
+header button {background:#ff0000;color:#000;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:bold;transition:.2s;}
+header button:hover {transform:scale(1.05);}
+.container {padding:30px;display:flex;flex-direction:column;gap:25px;}
+.card {background:#111;border:1px solid #ff0000;border-radius:12px;padding:20px;box-shadow:0 0 15px #ff0000;}
+.card h2 {color:#ff0000;margin-bottom:12px;font-size:22px;text-shadow:0 0 8px #ff0000;}
+button.actionBtn {background:#000;color:#ff0000;border:1px solid #ff0000;padding:8px 14px;border-radius:6px;cursor:pointer;transition:.2s;}
+button.actionBtn:hover {background:#ff0000;color:#000;transform:scale(1.05);}
+.status-online {color:limegreen;font-weight:bold;}
+#time {font-weight:bold;}
+.vipBadge {display:inline-block;background:#ff0000;color:#000;padding:4px 8px;border-radius:6px;margin-left:10px;font-weight:bold;}
 </style>
 </head>
 <body>
 
-<button class="logout" onclick="logout()">Déconnexion</button>
+<header>
+  <h1>Panel Admin <span id="vipBadge" class="vipBadge" style="display:none;">VIP</span></h1>
+  <button onclick="logout()">Déconnexion</button>
+</header>
 
-<h1>Panel Admin – Statut du site</h1>
+<div class="container">
 
-<div class="status-box">
-  <div>🟢 Site actif et en ligne</div>
-  <div class="ok">24h / 7j</div>
-  <div class="time" id="time"></div>
+  <div class="card">
+    <h2>Statut du site</h2>
+    <div>🟢 Statut : <span class="status-online">En ligne</span></div>
+    <div>Heure actuelle : <span id="time"></span></div>
+    <div>Version : Gratuite</div>
+  </div>
+
+  <div class="card">
+    <h2>Support</h2>
+    <button class="actionBtn" onclick="contactStaff()">Contacter un staff</button>
+  </div>
+
+  <div class="card">
+    <h2>Devenir VIP</h2>
+    <p>Obtenez un badge VIP et plus de fonctionnalités pour 1€</p>
+    <button class="actionBtn" onclick="buyVIP()">Passer VIP (1€)</button>
+  </div>
+
 </div>
 
 <script>
-// PROTECTION LOGIN (si quelqu’un tente d’accéder directement)
-if(localStorage.getItem("adminLogged") !== "yes"){
-  window.location.href = "login.html";
+// ----------------- Déconnexion -----------------
+function logout() {
+  localStorage.removeItem("isVIP");
+  window.location.href = "https://mathkasa.github.io/home/login";
 }
 
-// HORLOGE LIVE
-function updateTime(){
+// ----------------- Heure live -----------------
+function updateTime() {
   const now = new Date();
-  document.getElementById("time").textContent = now.toLocaleString();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const s = String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('time').textContent = `${h}:${m}:${s}`;
 }
-setInterval(updateTime,1000);
+setInterval(updateTime, 1000);
 updateTime();
 
-// DÉCONNEXION
-function logout(){
-  localStorage.removeItem("adminLogged");
-  window.location.href = "login.html";
+// ----------------- Contacter un staff -----------------
+function contactStaff() {
+  window.open("https://discord.gg/TON_INVITE", "_blank");
 }
+
+// ----------------- VIP -----------------
+function buyVIP() {
+  // ici redirection vers PayPal (exemple)
+  window.open("https://www.paypal.com/paypalme/MATHKASA/1", "_blank");
+
+  // simulation paiement réussi : afficher badge
+  localStorage.setItem("isVIP", "true");
+  checkVIP();
+}
+
+// ----------------- Affichage badge VIP -----------------
+function checkVIP() {
+  const vip = localStorage.getItem("isVIP");
+  if(vip === "true") {
+    document.getElementById("vipBadge").style.display = "inline-block";
+  }
+}
+
+// Vérification au chargement
+checkVIP();
 </script>
 
 </body>
