@@ -116,6 +116,7 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 </div>
 
 <script>
+document.addEventListener("DOMContentLoaded",()=>{
 /* STARS */
 const sc=document.getElementById("stars"),ctx=sc.getContext("2d");
 function resize(){sc.width=innerWidth;sc.height=innerHeight;}
@@ -136,7 +137,7 @@ const stars=[...Array(150)].map(()=>({x:Math.random()*sc.width,y:Math.random()*s
 const playlist=["assets/jdtestelesflammes.mp3","assets/melodrama.mp3"];
 let index=0,audio;
 
-/* ENTER */
+/* ELEMENTS */
 const enter=document.getElementById("enter");
 const container=document.getElementById("container");
 const play=document.getElementById("play");
@@ -147,6 +148,7 @@ const timeTotal=document.getElementById("time-total");
 const vol=document.getElementById("vol");
 const volIcon=document.getElementById("volIcon");
 
+/* ENTER CLICK */
 enter.onclick=()=>{
   enter.style.display="none";
   container.style.opacity=1;
@@ -196,30 +198,31 @@ closeAbout.onclick=()=>aboutPopup.style.display="none";
 /* BIO DYNAMIQUE FLUIDE */
 const role = document.getElementById("role");
 const roles = ["👨‍💻 Développeur","🎬 Monteur Vidéo","🤖 Créateur Bot Discord"];
-let current = 0, charIndex = 0, deleting = false, wait = 0;
+let current = 0;
 
-setInterval(()=>{
-  if(wait>0){ wait--; return; } // pause si wait > 0
-
-  let txt = Array.from(roles[current]);
-
-  if(!deleting){
-    charIndex++;
-    role.textContent = txt.slice(0,charIndex).join('');
-    if(charIndex>=txt.length){ // texte complet affiché
-      deleting = true;
-      wait = 10; // pause (~1s)
-    }
-  } else {
-    charIndex--;
-    role.textContent = txt.slice(0,charIndex).join('');
-    if(charIndex<=0){ // effacement complet
-      deleting = false;
-      current = (current+1) % roles.length;
-      wait = 5; // petite pause avant réécriture
+function typeWriter(){
+  const txt = Array.from(roles[current]);
+  let i=0;
+  function write(){
+    if(i<txt.length){
+      role.textContent += txt[i]; i++;
+      setTimeout(write,100);
+    } else { setTimeout(erase,1000); }
+  }
+  function erase(){
+    if(txt.length>0){
+      txt.pop();
+      role.textContent = txt.join('');
+      setTimeout(erase,50);
+    } else {
+      current = (current+1)%roles.length;
+      setTimeout(typeWriter,200);
     }
   }
-},100);
+  write();
+}
+typeWriter();
+});
 </script>
 </body>
 </html>
