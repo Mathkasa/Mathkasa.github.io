@@ -1,32 +1,24 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<title>Benji</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;}
-body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overflow:hidden;}
-
-/* VIDEO DE FOND */
-#video-bg{position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-2;display:none;}
-
-/* STARS */
-#stars{position:fixed;inset:0;z-index:0;}
-
-/* CLICK TO ENTER */
-.enter{position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;z-index:20;cursor:pointer;}
-.enter span{font-size:28px;color:#ff0000;text-shadow:0 0 20px #ff0000;animation:pulse 1.5s infinite;}
-@keyframes pulse{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
-
-/* MAIN CONTENT */
+<!DOCTYPE html>  <html lang="fr">    <head>    
+<meta charset="UTF-8">    
+<title>Mathkasa</title>    
+<meta name="viewport" content="width=device-width, initial-scale=1.0">    
+<link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2572/2572734.png">    
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">    
+<style>    
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;}    
+body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overflow:hidden;}    
+#stars{position:fixed;inset:0;z-index:0;}  /* CLICK TO ENTER */  
+.enter{position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;z-index:20;cursor:pointer;}  
+.enter span{font-size:28px;color:#ff0000;text-shadow:0 0 20px #ff0000;animation:pulse 1.5s infinite;}  
+@keyframes pulse{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}  /* MAIN */
 .container{position:relative;z-index:1;opacity:0;transition:.2s;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:translate(0,0);}
 
-/* AVATAR + NAME */
-.avatar{width:150px;height:150px;border-radius:50%;background:url("https://i.ibb.co/mrYT39SQ/Screenshot-2026-01-04-19-48-05-570-edit-com-miui-videoplayer.jpg") center/cover;border:3px solid #ff0000;box-shadow:0 0 25px #ff0000;margin-bottom:10px;}
+/* AVATAR + NAME + BADGE */
+.avatar{width:120px;height:120px;border-radius:50%;background:url("https://i.pinimg.com/originals/85/9d/02/859d02cc14248320a24a21e13939ed73.gif") center/cover;border:3px solid #ff0000;box-shadow:0 0 25px #ff0000;margin-bottom:10px;}
 .name-container{display:flex;align-items:center;gap:8px;margin-bottom:5px;position:relative;}
 .name{font-size:34px;color:#ff0000;text-shadow:0 0 15px #ff0000;}
+.badge{width:28px;height:28px;cursor:pointer;}
+.tooltip{position:absolute;top:50%;left:110%;transform:translateY(-50%);background:#000;border:1px solid #ff0000;color:#ff0000;padding:4px 8px;font-size:12px;white-space:nowrap;display:none;border-radius:4px;}
 .role{font-size:16px;color:#ff0000;text-shadow:0 0 10px #ff0000;margin-bottom:15px;min-height:20px;}
 
 /* LINKS */
@@ -34,95 +26,155 @@ body{background:#000;color:#fff;font-family:Arial,sans-serif;height:100vh;overfl
 .links a{width:50px;height:50px;border:1px solid #ff0000;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#ff0000;text-decoration:none;transition:.2s;}
 .links a:hover{background:#ff0000;color:#000;transform:scale(1.1);}
 
+/* PLAYER */
+.player{width:90%;max-width:500px;margin-top:10px;display:flex;flex-direction:column;align-items:center;}
+.progress-container{position:relative;width:300px;height:8px;background:#333;border-radius:4px;cursor:pointer;margin-bottom:10px;}
+.progress-bar{height:100%;width:0%;background:#ff0000;border-radius:4px;position:relative;}
+.time-container{display:flex;justify-content:space-between;font-size:12px;opacity:.7;width:300px;margin-bottom:8px;}
+.controls{display:flex;gap:15px;}
+.btn{width:44px;height:44px;border-radius:50%;background:#ff0000;color:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+
 /* VOLUME */
 .volume-container{position:fixed;top:15px;left:15px;display:flex;align-items:center;gap:6px;z-index:2;}
 .volume-container input{width:120px;accent-color:red;}
 #volIcon{color:#ff0000;cursor:pointer;}
+
+/* FULLSCREEN */
+.fullscreen{position:fixed;top:15px;right:15px;font-size:20px;color:#ff0000;cursor:pointer;z-index:2;}
+
+/* VIEWS */
+.views{position:fixed;bottom:15px;left:15px;font-size:18px;z-index:2;cursor:pointer;display:flex;align-items:center;gap:6px;}
+.views-tooltip{position:absolute;left:110%;bottom:0;background:#000;border:1px solid #ff0000;color:#ff0000;padding:4px 8px;font-size:12px;border-radius:4px;display:none;white-space:nowrap;}
 </style>
-</head>
-<body>
 
-<!-- VIDEO DE FOND -->
-<video id="video-bg" autoplay muted loop>
-  <source src="assets/vidéos.mp4" type="video/mp4">
-</video>
-
-<!-- STARS -->
-<canvas id="stars"></canvas>
-
-<!-- CLICK TO ENTER -->
-<div class="enter" id="enter"><span>Click to enter</span></div>
-
-<!-- VOLUME -->
-<div class="volume-container">
-  <i class="fa fa-volume-high" id="volIcon"></i>
-  <input type="range" id="vol" min="0" max="1" step="0.01" value="0.5">
-</div>
-
-<!-- MAIN CONTENT -->
-<div class="container" id="container">
-  <div class="avatar"></div>
-  <div class="name-container">
-    <div class="name">Benji</div>
-  </div>
-  <div class="role" id="role"></div>
-  <div class="links">
-    <a href="https://www.tiktok.com/@benji.blzz" target="_blank"><i class="fab fa-tiktok"></i></a>
-    <a href="https://www.tiktok.com/@benji.pbk" target="_blank"><i class="fab fa-tiktok"></i></a>
-    <a href="https://www.snapchat.com/add/benji.blz" target="_blank"><i class="fab fa-snapchat"></i></a>
-  </div>
-</div>
-
-<!-- MUSIQUE -->
-<audio id="audio" src="assets/og musique.mp3" loop></audio>
-
-<script>
-// STARS
-const sc=document.getElementById("stars"),ctx=sc.getContext("2d");
-function resize(){sc.width=innerWidth;sc.height=innerHeight;}
-resize();window.addEventListener("resize",resize);
-const stars=[...Array(150)].map(()=>({x:Math.random()*sc.width,y:Math.random()*sc.height,r:Math.random()*1.5,v:Math.random()*.6+.3}));
-(function anim(){
-  ctx.clearRect(0,0,sc.width,sc.height);
-  ctx.fillStyle="#fff";
-  stars.forEach(s=>{
-    ctx.globalAlpha=Math.random();
-    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();
-    s.y+=s.v;if(s.y>sc.height){s.y=0;s.x=Math.random()*sc.width;}
-  });
-  requestAnimationFrame(anim);
-})();
-
-// CLICK TO ENTER
+</head>    
+<body>  <canvas id="stars"></canvas>  <div class="enter" id="enter"><span>404 Error</span></div>  <div class="fullscreen" id="fs"><i class="fa fa-expand"></i></div>  <div class="volume-container">    
+  <i class="fa fa-volume-high" id="volIcon"></i>    
+  <input type="range" id="vol" min="0" max="1" step="0.01">    
+</div>  <div class="views" id="viewsBtn">    
+  👁 15 692    
+  <div class="views-tooltip" id="viewsTooltip">    
+    Nombre de personnes ayant visité la page    
+  </div>    
+</div>  <div class="container" id="container">    
+  <div class="avatar"></div>    <div class="name-container">    
+    <div class="name">Mathkasa</div>    
+    <img src="https://cdn-icons-png.freepik.com/512/5753/5753201.png" class="badge" id="ownerBadge">    
+    <div class="tooltip" id="ownerTooltip">Owner</div>    
+  </div>    <div class="role" id="role"></div>    <div class="links">    
+    <a href="https://discord.com/users/1376961618130505738" target="_blank"><i class="fab fa-discord"></i></a>    
+    <a href="https://www.tiktok.com/@mathkasa" target="_blank"><i class="fab fa-tiktok"></i></a>    
+    <a href="https://www.youtube.com/@mathkasa" target="_blank"><i class="fab fa-youtube"></i></a>    
+  </div>    <div class="player">    
+    <div class="progress-container" id="bar"><div class="progress-bar" id="progress"></div></div>    
+    <div class="time-container"><span id="time-current">0:00</span><span id="time-total">0:00</span></div>    
+    <div class="controls">    
+      <div class="btn" id="prev"><i class="fa fa-backward"></i></div>    
+      <div class="btn" id="play"><i class="fa fa-play"></i></div>    
+      <div class="btn" id="next"><i class="fa fa-forward"></i></div>    
+    </div>    
+  </div>    
+</div>  <script>    
+// STARS    
+const sc=document.getElementById("stars"),ctx=sc.getContext("2d");    
+function resize(){sc.width=innerWidth;sc.height=innerHeight;}    
+resize();window.addEventListener("resize",resize);    
+const stars=[...Array(150)].map(()=>({x:Math.random()*sc.width,y:Math.random()*sc.height,r:Math.random()*1.5,v:Math.random()*.6+.3}));    
+(function anim(){    
+  ctx.clearRect(0,0,sc.width,sc.height);    
+  ctx.fillStyle="#fff";    
+  stars.forEach(s=>{    
+    ctx.globalAlpha=Math.random();    
+    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();    
+    s.y+=s.v;if(s.y>sc.height){s.y=0;s.x=Math.random()*sc.width;}    
+  });    
+  requestAnimationFrame(anim);    
+})();    // AUDIO
+const playlist=["assets/jdtestelesflammes.mp3","assets/melodrama.mp3"];
+let index=0,audio;
 const enter=document.getElementById("enter");
 const container=document.getElementById("container");
-const videoBg=document.getElementById("video-bg");
-const audio=document.getElementById("audio");
-enter.onclick=()=>{
-  enter.style.display="none";
-  container.style.opacity=1;
-  videoBg.style.display="block";
-  audio.play();
-};
-
-// VOLUME
+const play=document.getElementById("play");
+const prev=document.getElementById("prev");
+const next=document.getElementById("next");
+const bar=document.getElementById("bar");
+const progress=document.getElementById("progress");
+const timeCurrent=document.getElementById("time-current");
+const timeTotal=document.getElementById("time-total");
 const vol=document.getElementById("vol");
 const volIcon=document.getElementById("volIcon");
+
+// FORMAT
+function format(t){return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0");}
+
+// ENTER CLICK
+enter.onclick=()=>{
+enter.style.display="none";
+container.style.opacity=1;
+audio=new Audio(playlist[index]);
+audio.volume=0.6;
+audio.play();
+play.innerHTML='<i class="fa fa-pause"></i>';
+
+audio.onended = ()=>{audio.currentTime=0;audio.play();}; // boucle
+
+audio.ontimeupdate=()=>{
+progress.style.width=(audio.currentTime/audio.duration*100)+"%";
+timeCurrent.textContent=format(audio.currentTime);
+timeTotal.textContent=format(audio.duration);
+}
+};
+
+// CONTROLS
+play.onclick=()=>{audio.paused?(audio.play(),play.innerHTML='<i class="fa fa-pause"></i>'):(audio.pause(),play.innerHTML='<i class="fa fa-play"></i>');}
+prev.onclick=()=>{index=(index-1+playlist.length)%playlist.length;audio.src=playlist[index];audio.play();}
+next.onclick=()=>{index=(index+1)%playlist.length;audio.src=playlist[index];audio.play();}
+bar.onclick=e=>{const r=bar.getBoundingClientRect();audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;}
 vol.oninput=()=>{audio.volume=vol.value;volIcon.className=audio.volume==0?'fa fa-volume-xmark':'fa fa-volume-high';}
+
+// FULLSCREEN
+const fs=document.getElementById("fs");
+fs.onclick=()=>{document.fullscreenElement?(document.exitFullscreen(),fs.innerHTML='<i class="fa fa-expand"></i>'):(document.documentElement.requestFullscreen(),fs.innerHTML='<i class="fa fa-compress"></i>');}
+
+// OWNER BADGE
+const ownerBadge=document.getElementById("ownerBadge");
+const ownerTooltip=document.getElementById("ownerTooltip");
+ownerBadge.onclick=()=>{ownerTooltip.style.display = ownerTooltip.style.display==="block"?"none":"block";};
+
+// VIEWS TOOLTIP
+const viewsBtn=document.getElementById("viewsBtn");
+const viewsTooltip=document.getElementById("viewsTooltip");
+viewsBtn.onclick=e=>{e.stopPropagation();viewsTooltip.style.display = viewsTooltip.style.display==="block"?"none":"block";}
+document.addEventListener("click",()=>{viewsTooltip.style.display="none";});
 
 // BIO DYNAMIQUE
 const role = document.getElementById("role");
-const roles = ["🎵 Play-back","😎 mood","😏 Chill","💘 Lover"];
+const roles = ["👨‍💻 Développeur","🎬 Monteur Vidéo","🤖 Créateur Bot Discord"];
 let current = 0;
 function typeWriter(){
-  const txt = Array.from(roles[current]);
-  let i=0;
-  function write(){if(i<txt.length){role.textContent+=txt[i];i++;setTimeout(write,100);} else {setTimeout(erase,1000);}}
-  function erase(){if(i>=0){role.textContent=txt.slice(0,i--).join('');setTimeout(erase,50);} else {current=(current+1)%roles.length;setTimeout(typeWriter,200);}}
-  write();
+const txt = Array.from(roles[current]);
+let i=0;
+function write(){if(i<txt.length){role.textContent+=txt[i];i++;setTimeout(write,100);} else {setTimeout(erase,1000);}}
+function erase(){if(i>=0){role.textContent=txt.slice(0,i--).join('');setTimeout(erase,50);} else {current=(current+1)%roles.length;setTimeout(typeWriter,200);}}
+write();
 }
 typeWriter();
-</script>
 
-</body>
+// PARALLAXE UNIQUEMENT MOBILE
+function setParallaxMobile(gamma,beta){
+const maxOffset=15;
+const xOffset=(gamma/45)*maxOffset;
+const yOffset=(beta/45)*maxOffset;
+container.style.transform=translate(${xOffset}px, ${yOffset}px);
+}
+
+if(window.DeviceOrientationEvent){
+window.addEventListener('deviceorientation', e=>{
+const gamma=e.gamma||0;
+const beta=e.beta||0;
+setParallaxMobile(gamma,beta);
+});
+}
+</script>  </body>
+
 </html>
