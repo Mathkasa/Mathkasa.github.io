@@ -4,11 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Benji</title>
-<link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2572/2572734.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;}
-body{font-family:Arial,sans-serif;height:100vh;overflow:hidden;background:#000;color:#fff;}
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;}
+body{font-family:Arial,sans-serif;overflow:hidden;height:100vh;background:#000;color:#fff;}
 
 /* VIDEO BACKGROUND */
 #bgVideo{position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;}
@@ -21,8 +20,14 @@ body{font-family:Arial,sans-serif;height:100vh;overflow:hidden;background:#000;c
 .enter span{font-size:28px;color:#ff0000;text-shadow:0 0 20px #ff0000;animation:pulse 1.5s infinite;}
 @keyframes pulse{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
 
+/* TOP BUTTONS */
+.top-left, .top-right{position:fixed;top:15px;z-index:5;display:flex;align-items:center;gap:10px;}
+.top-left{left:15px;}
+.top-right{right:15px;}
+.top-btn{font-size:20px;color:#ff0000;cursor:pointer;}
+
 /* MAIN CONTAINER */
-.container{position:relative;z-index:2;opacity:0;transition:.3s;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:translate(0,0);text-align:center;}
+.container{position:relative;z-index:2;opacity:0;transition:.3s;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
 
 /* AVATAR + NAME */
 .avatar{width:120px;height:120px;border-radius:50%;background:url("https://i.ibb.co/mrYT39SQ/Screenshot-2026-01-04-19-48-05-570-edit-com-miui-videoplayer.jpg") center/cover;border:3px solid #ff0000;box-shadow:0 0 25px #ff0000;margin-bottom:10px;}
@@ -37,18 +42,12 @@ body{font-family:Arial,sans-serif;height:100vh;overflow:hidden;background:#000;c
 .links a:hover{background:#ff0000;color:#000;transform:scale(1.1);}
 
 /* PLAYER */
-.player{width:90%;max-width:500px;margin-top:10px;display:flex;flex-direction:column;align-items:center;}
-.progress-container{position:relative;width:300px;height:8px;background:#333;border-radius:4px;cursor:pointer;margin-bottom:10px;}
+.player{width:300px;margin-top:10px;display:flex;flex-direction:column;align-items:center;}
+.progress-container{position:relative;width:100%;height:8px;background:#333;border-radius:4px;cursor:pointer;margin-bottom:10px;}
 .progress-bar{height:100%;width:0%;background:#ff0000;border-radius:4px;position:relative;}
-.time-container{display:flex;justify-content:space-between;font-size:12px;opacity:.7;width:300px;margin-bottom:8px;}
-.controls{display:flex;gap:15px;}
+.time-container{display:flex;justify-content:space-between;font-size:12px;opacity:.7;width:100%;margin-bottom:8px;}
+.controls{display:flex;gap:15px;justify-content:center;margin-bottom:10px;}
 .btn{width:44px;height:44px;border-radius:50%;background:#ff0000;color:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-.volume-container{display:flex;align-items:center;gap:6px;margin-top:10px;}
-.volume-container input{width:120px;accent-color:red;}
-#volIcon{color:#ff0000;cursor:pointer;}
-.fullscreen{font-size:20px;color:#ff0000;cursor:pointer;margin-top:10px;}
-
-/* PARALLAX MOBILE */
 </style>
 </head>
 <body>
@@ -61,6 +60,15 @@ body{font-family:Arial,sans-serif;height:100vh;overflow:hidden;background:#000;c
 
 <!-- CLICK TO ENTER -->
 <div class="enter" id="enter"><span>Click to enter</span></div>
+
+<!-- TOP BUTTONS -->
+<div class="top-left">
+  <i class="fa fa-volume-high top-btn" id="volIcon"></i>
+  <input type="range" id="vol" min="0" max="1" step="0.01">
+</div>
+<div class="top-right">
+  <i class="fa fa-expand top-btn" id="fs"></i>
+</div>
 
 <!-- MAIN -->
 <div class="container" id="container">
@@ -89,11 +97,6 @@ body{font-family:Arial,sans-serif;height:100vh;overflow:hidden;background:#000;c
       <div class="btn" id="play"><i class="fa fa-play"></i></div>
       <div class="btn" id="next"><i class="fa fa-forward"></i></div>
     </div>
-    <div class="volume-container">
-      <i class="fa fa-volume-high" id="volIcon"></i>
-      <input type="range" id="vol" min="0" max="1" step="0.01">
-    </div>
-    <div class="fullscreen" id="fs"><i class="fa fa-expand"></i></div>
   </div>
 </div>
 
@@ -103,16 +106,7 @@ const sc=document.getElementById("stars"),ctx=sc.getContext("2d");
 function resize(){sc.width=innerWidth;sc.height=innerHeight;}
 resize();window.addEventListener("resize",resize);
 const stars=[...Array(150)].map(()=>({x:Math.random()*sc.width,y:Math.random()*sc.height,r:Math.random()*1.5,v:Math.random()*.6+.3}));
-(function anim(){
-  ctx.clearRect(0,0,sc.width,sc.height);
-  ctx.fillStyle="#fff";
-  stars.forEach(s=>{
-    ctx.globalAlpha=Math.random();
-    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();
-    s.y+=s.v;if(s.y>sc.height){s.y=0;s.x=Math.random()*sc.width;}
-  });
-  requestAnimationFrame(anim);
-})();
+(function anim(){ctx.clearRect(0,0,sc.width,sc.height);ctx.fillStyle="#fff";stars.forEach(s=>{ctx.globalAlpha=Math.random();ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();s.y+=s.v;if(s.y>sc.height){s.y=0;s.x=Math.random()*sc.width;}});requestAnimationFrame(anim);})();
 
 // AUDIO
 const playlist=["assets/og musique.mp3"];
@@ -141,12 +135,8 @@ enter.onclick=()=>{
   audio.volume=0.6;
   audio.play();
   play.innerHTML='<i class="fa fa-pause"></i>';
-  audio.onended = ()=>{audio.currentTime=0;audio.play();};
-  audio.ontimeupdate=()=>{
-    progress.style.width=(audio.currentTime/audio.duration*100)+"%";
-    timeCurrent.textContent=format(audio.currentTime);
-    timeTotal.textContent=format(audio.duration);
-  }
+  audio.onended=()=>{audio.currentTime=0;audio.play();};
+  audio.ontimeupdate=()=>{progress.style.width=(audio.currentTime/audio.duration*100)+"%";timeCurrent.textContent=format(audio.currentTime);timeTotal.textContent=format(audio.duration);}
 };
 
 // CONTROLS
@@ -161,19 +151,8 @@ volIcon.onclick=()=>{audio.muted=!audio.muted;volIcon.className=audio.muted?'fa 
 fs.onclick=()=>{document.fullscreenElement?(document.exitFullscreen(),fs.innerHTML='<i class="fa fa-expand"></i>'):(document.documentElement.requestFullscreen(),fs.innerHTML='<i class="fa fa-compress"></i>');}
 
 // PARALLAX MOBILE
-function setParallaxMobile(gamma,beta){
-  const maxOffset=15;
-  const xOffset=(gamma/45)*maxOffset;
-  const yOffset=(beta/45)*maxOffset;
-  container.style.transform=`translate(${xOffset}px, ${yOffset}px)`;
-}
-if(window.DeviceOrientationEvent){
-  window.addEventListener('deviceorientation', e=>{
-    const gamma=e.gamma||0;
-    const beta=e.beta||0;
-    setParallaxMobile(gamma,beta);
-  });
-}
+function setParallaxMobile(gamma,beta){const maxOffset=15;const xOffset=(gamma/45)*maxOffset;const yOffset=(beta/45)*maxOffset;container.style.transform=`translate(${xOffset}px, ${yOffset}px)`;}
+if(window.DeviceOrientationEvent){window.addEventListener('deviceorientation', e=>{const gamma=e.gamma||0;const beta=e.beta||0;setParallaxMobile(gamma,beta);});}
 </script>
 </body>
 </html>
