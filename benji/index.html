@@ -2,53 +2,188 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Benji</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<title>Benji</title>
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box;user-select:none;font-family:Arial,sans-serif;}
-body{overflow:hidden;height:100vh;background:#fff;color:#000;}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+}
 
-/* CLICK TO ENTER */
-#enter{position:fixed;inset:0;background:#000;display:flex;justify-content:center;align-items:center;z-index:10;cursor:pointer;}
-#enter h1{color:red;font-size:28px;animation:pulse 1.5s infinite;text-shadow:0 0 15px red;}
-@keyframes pulse{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
+body{
+  background:black;
+  color:red;
+  overflow:hidden;
+}
 
-/* VIDEO DE FOND */
-#bg-video{position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;}
+/* ===== ÉTOILES ===== */
+canvas{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+}
 
-/* MAIN CONTENT */
-.main{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;}
-.main h2{font-size:32px;color:red;text-shadow:0 0 15px red;margin-bottom:20px;}
+/* ===== CLICK TO ENTER ===== */
+#enter{
+  position:fixed;
+  inset:0;
+  background:black;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10;
+  cursor:pointer;
+}
+
+#enter h1{
+  color:red;
+  font-size:28px;
+  animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+  0%{opacity:.4}
+  50%{opacity:1}
+  100%{opacity:.4}
+}
+
+/* ===== TOP BAR ===== */
+.top-bar{
+  position:fixed;
+  top:15px;
+  left:15px;
+  right:15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  z-index:5;
+}
+
+.left-buttons{
+  display:flex;
+  gap:10px;
+}
+
+.top-btn{
+  color:red;
+  text-decoration:none;
+  border:1px solid red;
+  padding:6px 12px;
+  border-radius:6px;
+  font-size:14px;
+}
+
+.top-btn:hover{
+  background:red;
+  color:black;
+}
+
+/* ===== MAIN ===== */
+.main{
+  position:relative;
+  z-index:2;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:20px;
+}
+
+.main h2{
+  font-size:28px;
+  margin-bottom:20px;
+  color:red;
+  text-shadow:0 0 15px red;
+}
 
 /* BIO QUI DÉFILE */
-.bio{height:28px;overflow:hidden;margin-bottom:30px;color:red;font-weight:bold;}
-.bio span{display:block;animation:scroll 12s infinite;}
+.bio{
+  height:26px;
+  overflow:hidden;
+  margin-bottom:30px;
+  color:red;
+}
+
+.bio span{
+  display:block;
+  animation:scroll 12s infinite;
+}
+
 @keyframes scroll{
   0%{transform:translateY(0)}
-  25%{transform:translateY(-28px)}
-  50%{transform:translateY(-56px)}
-  75%{transform:translateY(-84px)}
+  25%{transform:translateY(-26px)}
+  50%{transform:translateY(-52px)}
+  75%{transform:translateY(-78px)}
   100%{transform:translateY(0)}
 }
 
-/* BOUTON CREER SITE */
-.create-btn{padding:12px 28px;background:red;color:#000;border:none;border-radius:8px;font-size:16px;cursor:pointer;margin-top:10px;}
+/* BOUTON */
+.create-btn{
+  padding:12px 26px;
+  background:red;
+  color:black;
+  border:none;
+  border-radius:8px;
+  font-size:16px;
+  cursor:pointer;
+  margin-top:10px;
+}
 
-/* TOP BAR */
-.top-bar{position:fixed;top:15px;left:15px;right:15px;display:flex;justify-content:space-between;align-items:center;z-index:2;}
-.left-buttons{display:flex;gap:10px;}
-.top-btn{color:red;text-decoration:none;border:1px solid red;padding:6px 12px;border-radius:6px;font-size:14px;}
-.top-btn:hover{background:red;color:black;}
+/* AVATAR */
+.avatar{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  background:url("https://i.ibb.co/mrYT39SQ/Screenshot-2026-01-04-19-48-05-570-edit-com-miui-videoplayer.jpg") center/cover;
+  border:3px solid red;
+  box-shadow:0 0 25px red;
+  margin-bottom:10px;
+}
+
+/* LIENS RESEAUX */
+.links{
+  display:flex;
+  gap:20px;
+  margin:10px 0;
+}
+
+.links a{
+  width:50px;
+  height:50px;
+  border:1px solid red;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:red;
+  text-decoration:none;
+  transition:.2s;
+}
+
+.links a:hover{
+  background:red;
+  color:black;
+}
+
 </style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
 </head>
 <body>
 
-<!-- CLICK TO ENTER -->
-<div id="enter"><h1>Click to enter</h1></div>
+<canvas id="stars"></canvas>
 
-<!-- VIDEO -->
-<video id="bg-video" src="assets/vidéos.mp4" autoplay muted loop></video>
+<!-- CLICK TO ENTER -->
+<div id="enter">
+  <h1>Click to enter</h1>
+</div>
 
 <!-- MUSIQUE -->
 <audio id="music" src="assets/og musique.mp3" loop></audio>
@@ -56,33 +191,78 @@ body{overflow:hidden;height:100vh;background:#fff;color:#000;}
 <!-- TOP BAR -->
 <div class="top-bar">
   <div class="left-buttons">
-    <a class="top-btn" href="https://www.tiktok.com/@benji.blzz" target="_blank">TikTok</a>
-    <a class="top-btn" href="https://www.tiktok.com/@benji.pbk" target="_blank">Playback</a>
-    <a class="top-btn" href="https://www.snapchat.com/add/benji.blz?locale=fr-FR" target="_blank">Snap</a>
+    <a class="top-btn" href="https://www.tiktok.com/@benji.blzz" target="_blank">TikTok 1</a>
+    <a class="top-btn" href="https://www.tiktok.com/@benji.pbk" target="_blank">TikTok 2</a>
+    <a class="top-btn" href="https://www.snapchat.com/add/benji.blz" target="_blank">Snap</a>
   </div>
+
+  <a class="top-btn" href="/home/login.html">Connexion</a>
 </div>
 
-<!-- MAIN CONTENT -->
+<!-- CONTENU -->
 <div class="main">
-  <h2>Créer Ton Site Personnalisé !</h2>
+  <div class="avatar"></div>
+
+  <h2>Benji</h2>
+
   <div class="bio">
     <span>🎵 Play-back</span>
     <span>😎 Mood</span>
     <span>😏 Chill</span>
     <span>💘 Lover</span>
   </div>
-  <button class="create-btn" onclick="window.open('https://forms.gle/Dpsj9JMr7TJ3ZF3M7','_blank')">Créer mon site</button>
+
+  <button class="create-btn" id="createSiteBtn">Créer mon site</button>
+
+  <div class="links">
+    <a href="https://www.tiktok.com/@benji.blzz" target="_blank"><i class="fab fa-tiktok"></i></a>
+    <a href="https://www.tiktok.com/@benji.pbk" target="_blank"><i class="fab fa-tiktok"></i></a>
+    <a href="https://www.snapchat.com/add/benji.blz" target="_blank"><i class="fab fa-snapchat"></i></a>
+  </div>
 </div>
 
 <script>
-const enter=document.getElementById("enter");
-const music=document.getElementById("music");
-const bgVideo=document.getElementById("bg-video");
+/* CLICK TO ENTER + MUSIQUE */
+document.getElementById("enter").onclick = () => {
+  document.getElementById("music").play();
+  document.getElementById("enter").style.display = "none";
+};
 
-enter.onclick=()=>{
-  music.play();
-  enter.style.display="none";
+/* ÉTOILES */
+const c = document.getElementById("stars");
+const ctx = c.getContext("2d");
+
+function resize(){
+  c.width = innerWidth;
+  c.height = innerHeight;
+}
+resize();
+addEventListener("resize", resize);
+
+const stars = Array.from({length:120},()=>({
+  x:Math.random()*c.width,
+  y:Math.random()*c.height,
+  r:Math.random()*1.5
+}));
+
+(function animate(){
+  ctx.clearRect(0,0,c.width,c.height);
+  ctx.fillStyle="white";
+  stars.forEach(s=>{
+    s.y+=0.3;
+    if(s.y>c.height) s.y=0;
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fill();
+  });
+  requestAnimationFrame(animate);
+})();
+
+/* BOUTON CRÉER MON SITE */
+document.getElementById("createSiteBtn").onclick = () => {
+    window.open("https://forms.gle/Dpsj9JMr7TJ3ZF3M7", "_blank");
 };
 </script>
+
 </body>
 </html>
